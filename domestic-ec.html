@@ -1,0 +1,1268 @@
+<!DOCTYPE html>
+<html lang='zh-CN'>
+<head><meta charset='UTF-8'><meta name='viewport' content='width=device-width,initial-scale=1.0'>
+<title>国内电商行业 RPA+AI 自动化机会地图</title>
+<style>
+
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,'PingFang SC','Microsoft YaHei',sans-serif;background:#F4F6FA;color:#333}
+#header{position:fixed;top:0;left:0;right:0;z-index:100;background:#fff;border-bottom:1px solid #E0E0E0}
+.header-top{display:flex;align-items:center;justify-content:space-between;height:54px;padding:0 20px}
+.header-top h1{font-size:17px;font-weight:700;color:#1B2A4A}
+.header-top .sub{font-size:11px;color:#888;margin-left:10px}
+.legend{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+.legend-item{display:flex;align-items:center;gap:5px;font-size:12px;color:#555}
+.legend-dot{width:10px;height:10px;border-radius:50%}
+.filter-bar{display:flex;align-items:center;gap:8px;padding:8px 20px 10px;border-top:1px solid #F0F0F0}
+.filter-bar span{font-size:13px;color:#666}
+.fb{padding:4px 14px;border-radius:20px;border:1.5px solid #ddd;background:#fff;font-size:13px;cursor:pointer;transition:all .2s;color:#555}
+.fb:hover{border-color:#aaa}
+.fb.act-all{background:#1B2A4A;color:#fff;border-color:#1B2A4A}
+.fb.act-rpa{background:#BBDEFB;color:#1565C0;border-color:#2196F3}
+.fb.act-ai{background:#E1BEE7;color:#6A1B9A;border-color:#9C27B0}
+.fb.act-rpaai{background:#C8E6C9;color:#2E7D32;border-color:#4CAF50}
+#filter-count{font-size:12px;color:#888}
+.search-wrap{position:relative;margin-left:auto;display:flex;align-items:center}
+#search-input{width:220px;padding:5px 30px 5px 14px;border:1.5px solid #ddd;border-radius:20px;font-size:13px;color:#333;outline:none;transition:border-color .2s;background:#fff}
+#search-input:focus{border-color:#1B2A4A;box-shadow:0 0 0 3px rgba(27,42,74,.07)}
+#search-input::placeholder{color:#c0c0c0}
+.s-icon{position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:13px;color:#bbb;pointer-events:none}
+#s-clear{display:none;position:absolute;right:10px;top:50%;transform:translateY(-50%);font-size:14px;color:#bbb;cursor:pointer;border:none;background:none;padding:0;line-height:1}
+#s-clear:hover{color:#555}
+.hl{background:#FFF176;border-radius:2px;padding:0 1px}
+.s-result-tip{font-size:12px;color:#1a56db;margin-left:8px;white-space:nowrap}
+#layout{display:flex;margin-top:116px;min-height:calc(100vh - 116px)}
+#sidebar{width:178px;min-width:178px;position:fixed;top:116px;left:0;bottom:0;background:#fff;border-right:1px solid #E8E8E8;overflow-y:auto;padding:10px 0}
+.nav-item{display:flex;align-items:center;gap:7px;padding:9px 14px;cursor:pointer;font-size:13px;color:#555;transition:background .15s;border-left:3px solid transparent}
+.nav-item:hover{background:#F4F6FA}
+.nav-item.active{background:#EEF4FF;color:#1a56db;font-weight:600;border-left-color:#1a56db}
+.nav-icon{font-size:17px}
+.nav-count{margin-left:auto;font-size:11px;background:#E8EAED;color:#666;border-radius:10px;padding:1px 6px}
+#main{margin-left:178px;flex:1;padding:18px 22px}
+.dept-section{margin-bottom:28px}
+.dept-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;padding-bottom:10px;border-bottom:2px solid #E0E0E0}
+.dept-icon{font-size:22px}
+.dept-title{font-size:19px;font-weight:700;color:#1B2A4A}
+.dept-count{font-size:12px;color:#999;margin-left:4px}
+.workflow-block{margin-bottom:18px}
+.wf-header{display:flex;align-items:center;gap:8px;cursor:pointer;padding:9px 14px;background:#F0F4FB;border:1px solid #DDE5F0;border-radius:8px 8px 0 0;user-select:none}
+.wf-header:hover{background:#E6EDF8}
+.wf-toggle{font-size:12px;color:#999;transition:transform .2s}
+.wf-toggle.col{transform:rotate(-90deg)}
+.wf-name{font-size:13.5px;font-weight:600;color:#1B2A4A}
+.wf-count{font-size:12px;color:#aaa;margin-left:auto}
+.nodes-table{width:100%;border-collapse:collapse;border:1px solid #DDE5F0;border-top:none;border-radius:0 0 8px 8px;display:table}
+.nodes-table.col{display:none}
+.th-row{background:#FAFAFA;display:table-row}
+.th{padding:8px 12px;font-size:11.5px;color:#888;font-weight:600;border-bottom:1px solid #E8E8E8;display:table-cell}
+.th-name{width:16%}.th-type{width:9%}.th-opp{width:45%}.th-eff{width:30%}
+.node-row{display:table-row;cursor:pointer;transition:background .15s}
+.node-row:hover{background:#F5F8FF}
+.node-row.hidden{display:none}
+.node-row+.node-row .td{border-top:1px solid #F0F0F0}
+.td{padding:10px 12px;vertical-align:top;font-size:13px;display:table-cell;line-height:1.6}
+.td-name{color:#333;font-weight:500}
+.td-name:hover{color:#1a56db;text-decoration:underline}
+.badge{display:inline-block;padding:2px 10px;border-radius:12px;font-size:11px;font-weight:700;white-space:nowrap}
+.b-RPA{background:#BBDEFB;color:#1565C0}
+.b-AI{background:#E1BEE7;color:#6A1B9A}
+.b-RPAAI{background:#C8E6C9;color:#2E7D32}
+.td-opp{color:#444}
+.td-eff{color:#2E7D32}
+#dp{display:none;position:fixed;top:0;right:0;bottom:0;width:430px;background:#fff;border-left:1px solid #E0E0E0;z-index:200;box-shadow:-4px 0 20px rgba(0,0,0,.1);overflow-y:auto;padding:24px}
+#dp.open{display:block}
+.dp-close{position:absolute;top:16px;right:16px;cursor:pointer;font-size:20px;color:#999}
+.dp-close:hover{color:#333}
+.dp-section{margin-bottom:16px}
+.dp-label{font-size:11px;font-weight:600;color:#888;margin-bottom:6px;letter-spacing:.5px;text-transform:uppercase}
+.dp-title{font-size:17px;font-weight:700;color:#1B2A4A;margin-bottom:14px;line-height:1.45}
+.dp-content{font-size:13.5px;color:#444;line-height:1.75;background:#F8F9FC;padding:12px;border-radius:6px}
+.dp-eff{background:#F0FFF4;border-left:3px solid #4CAF50;padding:12px;border-radius:0 6px 6px 0;font-size:13.5px;color:#2E7D32;line-height:1.75}
+#overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,.25);z-index:190}
+#overlay.open{display:block}
+#no-results{display:none;text-align:center;padding:60px;color:#bbb;font-size:15px}
+
+</style></head><body>
+<div id='header'>
+<div class='header-top'>
+<div style='display:flex;align-items:center'>
+<h1>国内电商行业 RPA+AI 自动化机会地图</h1>
+<span class='sub'>10 岗位 · 30 工作流 · 100 机会点</span>
+</div>
+<div class='legend'>
+<span class='legend-item'><span class='legend-dot' style='background:#2196F3'></span>RPA 流程自动化</span>
+<span class='legend-item'><span class='legend-dot' style='background:#9C27B0'></span>AI 智能增强</span>
+<span class='legend-item'><span class='legend-dot' style='background:#4CAF50'></span>RPA+AI 组合方案</span>
+</div></div>
+<div class='filter-bar'>
+<span>筛选：</span>
+<button class='fb act-all' onclick='setF("ALL",this)'>全部</button>
+<button class='fb' onclick='setF("RPA",this)'>RPA 流程自动化</button>
+<button class='fb' onclick='setF("AI",this)'>AI 智能增强</button>
+<button class='fb' onclick='setF("RPA+AI",this)'>RPA+AI 组合方案</button>
+<span id='filter-count'></span>
+<div class='search-wrap'>
+<input id='search-input' type='text' placeholder='搜索节点、机会点关键词...' oninput='doSearch(this.value)' onkeydown='if(event.key==="Escape"){clearSearch()}'>
+<span class='s-icon' id='s-icon'>🔍</span>
+<button id='s-clear' onclick='clearSearch()'>✕</button>
+<span class='s-result-tip' id='s-tip'></span>
+</div>
+</div></div>
+<div id='layout'>
+<div id='sidebar'>
+<div class='nav-item active' onclick='scrollTo2("dept-0",this)'>
+<span class='nav-icon'>🏪</span>
+<span>店铺运营</span>
+<span class='nav-count'>13</span></div>
+<div class='nav-item' onclick='scrollTo2("dept-1",this)'>
+<span class='nav-icon'>🛍️</span>
+<span>商品选品</span>
+<span class='nav-count'>10</span></div>
+<div class='nav-item' onclick='scrollTo2("dept-2",this)'>
+<span class='nav-icon'>📢</span>
+<span>广告投放</span>
+<span class='nav-count'>10</span></div>
+<div class='nav-item' onclick='scrollTo2("dept-3",this)'>
+<span class='nav-icon'>💬</span>
+<span>客服售后</span>
+<span class='nav-count'>10</span></div>
+<div class='nav-item' onclick='scrollTo2("dept-4",this)'>
+<span class='nav-icon'>📦</span>
+<span>仓储物流</span>
+<span class='nav-count'>10</span></div>
+<div class='nav-item' onclick='scrollTo2("dept-5",this)'>
+<span class='nav-icon'>🔗</span>
+<span>供应链采购</span>
+<span class='nav-count'>8</span></div>
+<div class='nav-item' onclick='scrollTo2("dept-6",this)'>
+<span class='nav-icon'>💰</span>
+<span>财务对账</span>
+<span class='nav-count'>10</span></div>
+<div class='nav-item' onclick='scrollTo2("dept-7",this)'>
+<span class='nav-icon'>✍️</span>
+<span>内容营销</span>
+<span class='nav-count'>9</span></div>
+<div class='nav-item' onclick='scrollTo2("dept-8",this)'>
+<span class='nav-icon'>📊</span>
+<span>数据分析</span>
+<span class='nav-count'>9</span></div>
+<div class='nav-item' onclick='scrollTo2("dept-9",this)'>
+<span class='nav-icon'>👥</span>
+<span>人事行政</span>
+<span class='nav-count'>11</span></div>
+</div>
+<div id='main'>
+<div class='dept-section' id='dept-0'>
+<div class='dept-header'>
+<span class='dept-icon'>🏪</span>
+<span class='dept-title'>店铺运营</span>
+<span class='dept-count'>13 个机会点</span>
+</div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-0-0",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>日常数据监控</span>
+<span class='wf-count'>5 个节点</span>
+</div>
+<table class='nodes-table' id='wf-0-0'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-0-0-0' data-type='RPA' onclick='showDP("多平台经营数据采集","RPA","定时登录生意参谋、千牛、京麦、拼多多商家后台、抖音罗盘，自动抓取流量/转化率/GMV/粉丝数等核心指标，汇入统一底表","省去每日人工登录多后台，数据延迟从2小时缩短至近实时，人均节省1.5h/天；某医药集团案例：每月节省60人时")'>
+<td class='td td-name'>多平台经营数据采集</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>定时登录生意参谋、千牛、京麦、拼多多商家后台、抖音罗盘，自动抓取流量/转化率/GMV/粉丝数等核心指标，汇入统一底表</td>
+<td class='td td-eff'>省去每日人工登录多后台，数据延迟从2小时缩短至近实时，人均节省1.5h/天；某医药集团案例：每月节省60人时</td>
+</tr>
+<tr class='node-row' id='node-0-0-1' data-type='RPA+AI' onclick='showDP("店铺经营日报/月报自动生成","RPA+AI","RPA汇总各平台指标，AI自动识别环比/同比异常波动，生成带业务解读的自然语言日报、月报，推送至钉钉群/企微","日报生成从人工1小时缩短至5分钟，异常响应速度提升80%；良品铺子案例：71600+人天节省")'>
+<td class='td td-name'>店铺经营日报/月报自动生成</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA汇总各平台指标，AI自动识别环比/同比异常波动，生成带业务解读的自然语言日报、月报，推送至钉钉群/企微</td>
+<td class='td td-eff'>日报生成从人工1小时缩短至5分钟，异常响应速度提升80%；良品铺子案例：71600+人天节省</td>
+</tr>
+<tr class='node-row' id='node-0-0-2' data-type='RPA' onclick='showDP("商品搜索词排名监控","RPA","自动进入天猫/京东/拼多多/抖音搜索页，循环搜索关键词，设定价格区间，抓取排名前200商品信息，定时写入Excel并推送变化预警","代替人工每天定时查询，竞品排名变化实时可见，关键词优化响应速度提升5倍")'>
+<td class='td td-name'>商品搜索词排名监控</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>自动进入天猫/京东/拼多多/抖音搜索页，循环搜索关键词，设定价格区间，抓取排名前200商品信息，定时写入Excel并推送变化预警</td>
+<td class='td td-eff'>代替人工每天定时查询，竞品排名变化实时可见，关键词优化响应速度提升5倍</td>
+</tr>
+<tr class='node-row' id='node-0-0-3' data-type='RPA+AI' onclick='showDP("全网控价与到手价监控","RPA+AI","RPA定时采集各渠道/分销商的商品到手价、券后价，AI识别破价情况并生成预警，自动推送给品控团队处理","窜货/破价发现时间从人工巡查1周缩短至每日自动预警，品牌价格体系保护力度大幅提升")'>
+<td class='td td-name'>全网控价与到手价监控</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA定时采集各渠道/分销商的商品到手价、券后价，AI识别破价情况并生成预警，自动推送给品控团队处理</td>
+<td class='td td-eff'>窜货/破价发现时间从人工巡查1周缩短至每日自动预警，品牌价格体系保护力度大幅提升</td>
+</tr>
+<tr class='node-row' id='node-0-0-4' data-type='RPA+AI' onclick='showDP("效果异常监控（流量/转化预警）","RPA+AI","RPA循环各平台推广后台，采集消耗/ROI数据，AI识别异常波动（预算超耗/转化骤降），自动推送钉钉/企微并@责任人","异常发现时间从次日复盘缩短至实时，大促期间断投或超投损失基本消除")'>
+<td class='td td-name'>效果异常监控（流量/转化预警）</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA循环各平台推广后台，采集消耗/ROI数据，AI识别异常波动（预算超耗/转化骤降），自动推送钉钉/企微并@责任人</td>
+<td class='td td-eff'>异常发现时间从次日复盘缩短至实时，大促期间断投或超投损失基本消除</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-0-1",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>商品管理与上架</span>
+<span class='wf-count'>4 个节点</span>
+</div>
+<table class='nodes-table' id='wf-0-1'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-0-1-0' data-type='RPA' onclick='showDP("商品自动化批量上架/下架","RPA","从Excel/ERP读取商品信息，自动填写各平台发布表单（标题/类目/属性/价格/库存），循环上架；下架时按SKU批量操作；单店铺新品可达600-700种","单品上架时间从30分钟降至3分钟，3人工作量缩减至1台机器人，准确率100%")'>
+<td class='td td-name'>商品自动化批量上架/下架</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>从Excel/ERP读取商品信息，自动填写各平台发布表单（标题/类目/属性/价格/库存），循环上架；下架时按SKU批量操作；单店铺新品可达600-700种</td>
+<td class='td td-eff'>单品上架时间从30分钟降至3分钟，3人工作量缩减至1台机器人，准确率100%</td>
+</tr>
+<tr class='node-row' id='node-0-1-1' data-type='RPA' onclick='showDP("商品违禁词检查","RPA","自动循环打开商品链接，检查标题/详情文本是否含违禁词，OCR识别主图上是否含违禁词，结果输出保存到表格并预警","每平台节省1个人力，准确率100%，全天候24小时可执行，避免因违禁词导致降权/封店")'>
+<td class='td td-name'>商品违禁词检查</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>自动循环打开商品链接，检查标题/详情文本是否含违禁词，OCR识别主图上是否含违禁词，结果输出保存到表格并预警</td>
+<td class='td td-eff'>每平台节省1个人力，准确率100%，全天候24小时可执行，避免因违禁词导致降权/封店</td>
+</tr>
+<tr class='node-row' id='node-0-1-2' data-type='RPA' onclick='showDP("主图批量替换与活动价检查","RPA","大促前从Excel批量读取商品ID和图片文件夹，自动登录商家后台逐条替换主图；同步检查主图活动价是否正确","大促主图更换次数无上限，100%准确，无需夜班人工值守执行")'>
+<td class='td td-name'>主图批量替换与活动价检查</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>大促前从Excel批量读取商品ID和图片文件夹，自动登录商家后台逐条替换主图；同步检查主图活动价是否正确</td>
+<td class='td td-eff'>大促主图更换次数无上限，100%准确，无需夜班人工值守执行</td>
+</tr>
+<tr class='node-row' id='node-0-1-3' data-type='RPA' onclick='showDP("商品后台价格复查修改","RPA","RPA按规则表循环检查各商品价格设置，发现异常（低于成本价/活动价未生效/优惠券叠加错误）自动修正或推送人工处理","价格错误发现时间从抽检发现缩短至实时监控，避免低价错卖导致的损失")'>
+<td class='td td-name'>商品后台价格复查修改</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA按规则表循环检查各商品价格设置，发现异常（低于成本价/活动价未生效/优惠券叠加错误）自动修正或推送人工处理</td>
+<td class='td td-eff'>价格错误发现时间从抽检发现缩短至实时监控，避免低价错卖导致的损失</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-0-2",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>营销活动与私域运营</span>
+<span class='wf-count'>4 个节点</span>
+</div>
+<table class='nodes-table' id='wf-0-2'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-0-2-0' data-type='RPA' onclick='showDP("店铺促销/优惠券批量设置","RPA","循环登录各平台后台，按活动规则批量创建促销活动，填写折扣/满减/优惠券金额/适用商品/生效时间等，支持天猫/拼多多/抖音各平台","每次促销活动每人节省3小时，活动设置错误率接近零，支持同时管理多平台活动节奏")'>
+<td class='td td-name'>店铺促销/优惠券批量设置</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>循环登录各平台后台，按活动规则批量创建促销活动，填写折扣/满减/优惠券金额/适用商品/生效时间等，支持天猫/拼多多/抖音各平台</td>
+<td class='td td-eff'>每次促销活动每人节省3小时，活动设置错误率接近零，支持同时管理多平台活动节奏</td>
+</tr>
+<tr class='node-row' id='node-0-2-1' data-type='RPA+AI' onclick='showDP("达人/团长批量采集与邀约","RPA+AI","RPA按条件在抖音/小红书/蒲公英批量搜索达人，抓取粉丝数/互动率/带货数据写入Excel；AI筛选高性价比达人后批量发送私信+邮件双渠道邀约","达人建联效率提升10倍以上；后秀案例：每2小时自动邀约新达人，解放每天2小时人工")'>
+<td class='td td-name'>达人/团长批量采集与邀约</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA按条件在抖音/小红书/蒲公英批量搜索达人，抓取粉丝数/互动率/带货数据写入Excel；AI筛选高性价比达人后批量发送私信+邮件双渠道邀约</td>
+<td class='td td-eff'>达人建联效率提升10倍以上；后秀案例：每2小时自动邀约新达人，解放每天2小时人工</td>
+</tr>
+<tr class='node-row' id='node-0-2-2' data-type='RPA' onclick='showDP("私域企微/微信批量运营","RPA","自动添加企微/个微好友、批量拉群、定时群发优惠活动消息/朋友圈/视频号内容，自动获取好友列表，聊天信息抓取沉淀","私域运营人效提升5倍，矩阵号内容分发效率提升3倍以上；宫芙案例：每月节省7人/天")'>
+<td class='td td-name'>私域企微/微信批量运营</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>自动添加企微/个微好友、批量拉群、定时群发优惠活动消息/朋友圈/视频号内容，自动获取好友列表，聊天信息抓取沉淀</td>
+<td class='td td-eff'>私域运营人效提升5倍，矩阵号内容分发效率提升3倍以上；宫芙案例：每月节省7人/天</td>
+</tr>
+<tr class='node-row' id='node-0-2-3' data-type='RPA' onclick='showDP("直播定时截图与实时数据查看","RPA","直播过程中RPA定时截图存档，实时抓取场观/互动/在线人数数据，直播异常（流量骤降/违规提示）自动预警","直播数据复盘有据可查，异常发现从人工盯屏变为自动预警，降低直播事故风险")'>
+<td class='td td-name'>直播定时截图与实时数据查看</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>直播过程中RPA定时截图存档，实时抓取场观/互动/在线人数数据，直播异常（流量骤降/违规提示）自动预警</td>
+<td class='td td-eff'>直播数据复盘有据可查，异常发现从人工盯屏变为自动预警，降低直播事故风险</td>
+</tr>
+</table></div>
+</div>
+<div class='dept-section' id='dept-1'>
+<div class='dept-header'>
+<span class='dept-icon'>🛍️</span>
+<span class='dept-title'>商品选品</span>
+<span class='dept-count'>10 个机会点</span>
+</div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-1-0",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>市场机会挖掘</span>
+<span class='wf-count'>4 个节点</span>
+</div>
+<table class='nodes-table' id='wf-1-0'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-1-0-0' data-type='RPA' onclick='showDP("全渠道热词趋势监控","RPA","自动采集生意参谋搜索词榜单、抖音热搜、小红书种草话题、拼多多飙升词，抖音/快手/微博平台热词定时抓取，整合到选品分析表格","趋势洞察从人工查3个平台扩展至全渠道覆盖，漏掉热点概率降低70%；某玩具客户案例：每人每天节省2h")'>
+<td class='td td-name'>全渠道热词趋势监控</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>自动采集生意参谋搜索词榜单、抖音热搜、小红书种草话题、拼多多飙升词，抖音/快手/微博平台热词定时抓取，整合到选品分析表格</td>
+<td class='td td-eff'>趋势洞察从人工查3个平台扩展至全渠道覆盖，漏掉热点概率降低70%；某玩具客户案例：每人每天节省2h</td>
+</tr>
+<tr class='node-row' id='node-1-0-1' data-type='AI' onclick='showDP("蓝海品类机会识别","AI","AI综合分析搜索量/转化率/竞争密度指标，识别高搜索低竞争品类，结合季节性需求趋势，自动输出优先级排序的选品候补清单","选品命中率从人工经验判断的20%提升至45%以上，选品效率提升5倍")'>
+<td class='td td-name'>蓝海品类机会识别</td>
+<td class='td'><span class='badge b-AI'>AI</span></td>
+<td class='td td-opp'>AI综合分析搜索量/转化率/竞争密度指标，识别高搜索低竞争品类，结合季节性需求趋势，自动输出优先级排序的选品候补清单</td>
+<td class='td td-eff'>选品命中率从人工经验判断的20%提升至45%以上，选品效率提升5倍</td>
+</tr>
+<tr class='node-row' id='node-1-0-2' data-type='RPA+AI' onclick='showDP("竞品新品/爆品实时监控","RPA+AI","RPA循环打开竞品店铺，按上新时间排序，自动识别新商品并抓取主图/价格/销量/评价，AI对比历史数据识别爆品趋势，推送到钉钉","竞品新品发现从每周人工巡查变为每日自动推送，数据量提升200%，节省0.5人工")'>
+<td class='td td-name'>竞品新品/爆品实时监控</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA循环打开竞品店铺，按上新时间排序，自动识别新商品并抓取主图/价格/销量/评价，AI对比历史数据识别爆品趋势，推送到钉钉</td>
+<td class='td td-eff'>竞品新品发现从每周人工巡查变为每日自动推送，数据量提升200%，节省0.5人工</td>
+</tr>
+<tr class='node-row' id='node-1-0-3' data-type='RPA' onclick='showDP("竞品主图批量获取与抄袭监控","RPA","自动登录各平台，按新品筛选批量下载竞品最新100件商品主图，同时监控自身主图是否被竞品抄袭复制","节省1人力，及时发现被抄袭，每天检验一次竞品主图状态，掌握设计趋势")'>
+<td class='td td-name'>竞品主图批量获取与抄袭监控</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>自动登录各平台，按新品筛选批量下载竞品最新100件商品主图，同时监控自身主图是否被竞品抄袭复制</td>
+<td class='td td-eff'>节省1人力，及时发现被抄袭，每天检验一次竞品主图状态，掌握设计趋势</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-1-1",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>商品数据深度分析</span>
+<span class='wf-count'>4 个节点</span>
+</div>
+<table class='nodes-table' id='wf-1-1'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-1-1-0' data-type='RPA+AI' onclick='showDP("竞品SKU价格/销量全量采集","RPA+AI","RPA循环抓取竞品店铺下各SKU的价格/销量/评价数/上新时间，与本品SKU逐一对比匹配，AI分析价差和市场定位建议","效率提升200%，节省0.5人工；全面掌握竞品定价策略，定价决策更有依据")'>
+<td class='td td-name'>竞品SKU价格/销量全量采集</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA循环抓取竞品店铺下各SKU的价格/销量/评价数/上新时间，与本品SKU逐一对比匹配，AI分析价差和市场定位建议</td>
+<td class='td td-eff'>效率提升200%，节省0.5人工；全面掌握竞品定价策略，定价决策更有依据</td>
+</tr>
+<tr class='node-row' id='node-1-1-1' data-type='RPA+AI' onclick='showDP("竞品爆款差评深挖","RPA+AI","RPA批量抓取竞品TOP销量SKU的买家评论，AI提炼核心卖点、高频差评痛点、产品改进方向，生成结构化选品/改款分析报告","新品开发周期缩短30%，首批上架差评规避率提升60%，产品力持续改进有数据支撑")'>
+<td class='td td-name'>竞品爆款差评深挖</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA批量抓取竞品TOP销量SKU的买家评论，AI提炼核心卖点、高频差评痛点、产品改进方向，生成结构化选品/改款分析报告</td>
+<td class='td td-eff'>新品开发周期缩短30%，首批上架差评规避率提升60%，产品力持续改进有数据支撑</td>
+</tr>
+<tr class='node-row' id='node-1-1-2' data-type='RPA+AI' onclick='showDP("竞品流量来源还原分析","RPA+AI","登录生意参谋进行竞品分析，下载销售分析/流量来源数据，AI分析竞品投流与爆款的关联关系，还原竞品流量获取路径","每天节省2h；低成本学习竞品投流打法，提升自身投流ROI")'>
+<td class='td td-name'>竞品流量来源还原分析</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>登录生意参谋进行竞品分析，下载销售分析/流量来源数据，AI分析竞品投流与爆款的关联关系，还原竞品流量获取路径</td>
+<td class='td td-eff'>每天节省2h；低成本学习竞品投流打法，提升自身投流ROI</td>
+</tr>
+<tr class='node-row' id='node-1-1-3' data-type='RPA' onclick='showDP("货品监控（库存/主推款/到手价）","RPA","定时监控重点商品的实时库存、主推款销售进度、到手价变化，超出阈值（低库存预警/滞销/破价）自动推送告警","货品异常从人工抽检发现变为实时监控，缺货/破价响应时间缩短90%")'>
+<td class='td td-name'>货品监控（库存/主推款/到手价）</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>定时监控重点商品的实时库存、主推款销售进度、到手价变化，超出阈值（低库存预警/滞销/破价）自动推送告警</td>
+<td class='td td-eff'>货品异常从人工抽检发现变为实时监控，缺货/破价响应时间缩短90%</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-1-2",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>选品决策支持</span>
+<span class='wf-count'>2 个节点</span>
+</div>
+<table class='nodes-table' id='wf-1-2'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-1-2-0' data-type='RPA+AI' onclick='showDP("带货视频素材批量下载分析","RPA+AI","自动登录飞瓜/蝉妈妈，搜索指定链接批量下载带货视频素材，AI分析带货效果和内容特征，建立企业爆文/爆品素材库","每2小时可自动下载所需素材，相当于节省1人力；让茶集团案例：每次15分钟完成，月省6人/天")'>
+<td class='td td-name'>带货视频素材批量下载分析</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>自动登录飞瓜/蝉妈妈，搜索指定链接批量下载带货视频素材，AI分析带货效果和内容特征，建立企业爆文/爆品素材库</td>
+<td class='td td-eff'>每2小时可自动下载所需素材，相当于节省1人力；让茶集团案例：每次15分钟完成，月省6人/天</td>
+</tr>
+<tr class='node-row' id='node-1-2-1' data-type='AI' onclick='showDP("季节性备货节奏预判","AI","AI结合历史销售曲线、节假日日历、社媒热度趋势，提前30天预判品类需求峰谷，输出季节性备货节奏建议和安全库存参数","旺季缺货率降低35%，淡季滞销库存减少20%，备货决策有数据依据")'>
+<td class='td td-name'>季节性备货节奏预判</td>
+<td class='td'><span class='badge b-AI'>AI</span></td>
+<td class='td td-opp'>AI结合历史销售曲线、节假日日历、社媒热度趋势，提前30天预判品类需求峰谷，输出季节性备货节奏建议和安全库存参数</td>
+<td class='td td-eff'>旺季缺货率降低35%，淡季滞销库存减少20%，备货决策有数据依据</td>
+</tr>
+</table></div>
+</div>
+<div class='dept-section' id='dept-2'>
+<div class='dept-header'>
+<span class='dept-icon'>📢</span>
+<span class='dept-title'>广告投放</span>
+<span class='dept-count'>10 个机会点</span>
+</div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-2-0",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>广告账户日常管理</span>
+<span class='wf-count'>4 个节点</span>
+</div>
+<table class='nodes-table' id='wf-2-0'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-2-0-0' data-type='RPA' onclick='showDP("跨平台投放数据日报","RPA","自动登录直通车、万相台无界版、巨量千川、磁力金牛等后台，抓取消耗/点击/转化/ROI数据，汇总至统一看板，自动发送日报","投放日报从1小时缩短至5分钟，多账户数据零遗漏；吉家宠物案例：22个店铺120+份表单每日自动获取")'>
+<td class='td td-name'>跨平台投放数据日报</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>自动登录直通车、万相台无界版、巨量千川、磁力金牛等后台，抓取消耗/点击/转化/ROI数据，汇总至统一看板，自动发送日报</td>
+<td class='td td-eff'>投放日报从1小时缩短至5分钟，多账户数据零遗漏；吉家宠物案例：22个店铺120+份表单每日自动获取</td>
+</tr>
+<tr class='node-row' id='node-2-0-1' data-type='RPA+AI' onclick='showDP("推广计划预算批量调整","RPA+AI","AI按ROI规则判断各推广计划预算调整方向，RPA循环登录各店铺后台批量修改预算，修改结果截图发送至钉钉群，失败项自动重试","20:00后释放95%人力；小金额推广计划基本不需要人工跟进，节省1个人力；单次操作从2-3小时降至2分钟/账户")'>
+<td class='td td-name'>推广计划预算批量调整</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>AI按ROI规则判断各推广计划预算调整方向，RPA循环登录各店铺后台批量修改预算，修改结果截图发送至钉钉群，失败项自动重试</td>
+<td class='td td-eff'>20:00后释放95%人力；小金额推广计划基本不需要人工跟进，节省1个人力；单次操作从2-3小时降至2分钟/账户</td>
+</tr>
+<tr class='node-row' id='node-2-0-2' data-type='RPA+AI' onclick='showDP("关键词智能出价优化","RPA+AI","AI分析关键词ROI表现，自动对高消耗低转化词降价或暂停，对高ROI词提价争夺首屏，策略执行通过RPA自动写回各平台","广告ROI平均提升20-35%，无效消耗减少30%，人工调价工作量降低80%")'>
+<td class='td td-name'>关键词智能出价优化</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>AI分析关键词ROI表现，自动对高消耗低转化词降价或暂停，对高ROI词提价争夺首屏，策略执行通过RPA自动写回各平台</td>
+<td class='td td-eff'>广告ROI平均提升20-35%，无效消耗减少30%，人工调价工作量降低80%</td>
+</tr>
+<tr class='node-row' id='node-2-0-3' data-type='RPA' onclick='showDP("推广费用成本核算","RPA","多店铺循环登录后台，采集各商品推广费用、达人推广费、退货退款数据，自动填写核算表格，剔除打包费/推广费重复计算项","节省0.5人工；每月节省4天时间，加强ROI管理周期；财务端实时掌握各渠道推广成本")'>
+<td class='td td-name'>推广费用成本核算</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>多店铺循环登录后台，采集各商品推广费用、达人推广费、退货退款数据，自动填写核算表格，剔除打包费/推广费重复计算项</td>
+<td class='td td-eff'>节省0.5人工；每月节省4天时间，加强ROI管理周期；财务端实时掌握各渠道推广成本</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-2-1",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>创意素材运营</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-2-1'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-2-1-0' data-type='AI' onclick='showDP("多版本广告文案批量生成","AI","AI根据商品卖点、目标人群标签、节日热点自动生成多版本广告标题和创意描述，适配直通车/巨量千川/磁力金牛不同平台调性","素材生产效率提升10倍，AB测试版本数从2-3个扩展至20个以上")'>
+<td class='td td-name'>多版本广告文案批量生成</td>
+<td class='td'><span class='badge b-AI'>AI</span></td>
+<td class='td td-opp'>AI根据商品卖点、目标人群标签、节日热点自动生成多版本广告标题和创意描述，适配直通车/巨量千川/磁力金牛不同平台调性</td>
+<td class='td td-eff'>素材生产效率提升10倍，AB测试版本数从2-3个扩展至20个以上</td>
+</tr>
+<tr class='node-row' id='node-2-1-1' data-type='RPA+AI' onclick='showDP("低效素材自动识别与预警","RPA+AI","RPA定时抓取各广告计划素材CTR和转化数据，AI标记低效素材（低于均值30%）并生成替换建议，推送运营人员审核","素材迭代周期从2周压缩至3天，账户平均CTR提升25%")'>
+<td class='td td-name'>低效素材自动识别与预警</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA定时抓取各广告计划素材CTR和转化数据，AI标记低效素材（低于均值30%）并生成替换建议，推送运营人员审核</td>
+<td class='td td-eff'>素材迭代周期从2周压缩至3天，账户平均CTR提升25%</td>
+</tr>
+<tr class='node-row' id='node-2-1-2' data-type='RPA' onclick='showDP("指定SKU带货视频素材下载","RPA","自动登录飞瓜平台，搜索指定商品链接，切换带货视频依次下载，保存至对应文件夹；规避平台风控，通过页面直接获取视频链接","100%无需人工判断，每2小时下载所需素材相当于节省1人力；视频链接精准获取，不触发风控")'>
+<td class='td td-name'>指定SKU带货视频素材下载</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>自动登录飞瓜平台，搜索指定商品链接，切换带货视频依次下载，保存至对应文件夹；规避平台风控，通过页面直接获取视频链接</td>
+<td class='td td-eff'>100%无需人工判断，每2小时下载所需素材相当于节省1人力；视频链接精准获取，不触发风控</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-2-2",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>直播投流管理</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-2-2'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-2-2-0' data-type='RPA' onclick='showDP("直播前投流计划预配置","RPA","直播开播前自动创建千川/磁力金牛投流计划，按历史最优参数预设出价/预算/定向，一键开启；开播准备自动设置（商品上架/封面/话题）","直播准备时间缩短40%，开播初期流量稳定性提升，无需临时手动操作")'>
+<td class='td td-name'>直播前投流计划预配置</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>直播开播前自动创建千川/磁力金牛投流计划，按历史最优参数预设出价/预算/定向，一键开启；开播准备自动设置（商品上架/封面/话题）</td>
+<td class='td td-eff'>直播准备时间缩短40%，开播初期流量稳定性提升，无需临时手动操作</td>
+</tr>
+<tr class='node-row' id='node-2-2-1' data-type='RPA+AI' onclick='showDP("直播实时数据监控","RPA+AI","直播中实时查看场观/互动/成交数据，AI分析GPM/CPM走势，异常时自动推送预警，支持人工一键采纳调价执行","直播间ROI波动减少40%；主播绩效考核数据自动采集，复盘有依据")'>
+<td class='td td-name'>直播实时数据监控</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>直播中实时查看场观/互动/成交数据，AI分析GPM/CPM走势，异常时自动推送预警，支持人工一键采纳调价执行</td>
+<td class='td td-eff'>直播间ROI波动减少40%；主播绩效考核数据自动采集，复盘有依据</td>
+</tr>
+<tr class='node-row' id='node-2-2-2' data-type='RPA' onclick='showDP("直播商品定时上架与评论回复","RPA","按直播脚本节奏定时自动上架对应商品，设置高光时刻商品曝光；同时自动抓取直播评论，根据预设关键词自动回复互动","解放主播助理70%重复操作，商品上架时机精准，互动率提升带动算法推流")'>
+<td class='td td-name'>直播商品定时上架与评论回复</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>按直播脚本节奏定时自动上架对应商品，设置高光时刻商品曝光；同时自动抓取直播评论，根据预设关键词自动回复互动</td>
+<td class='td td-eff'>解放主播助理70%重复操作，商品上架时机精准，互动率提升带动算法推流</td>
+</tr>
+</table></div>
+</div>
+<div class='dept-section' id='dept-3'>
+<div class='dept-header'>
+<span class='dept-icon'>💬</span>
+<span class='dept-title'>客服售后</span>
+<span class='dept-count'>10 个机会点</span>
+</div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-3-0",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>客服接待与订单管理</span>
+<span class='wf-count'>4 个节点</span>
+</div>
+<table class='nodes-table' id='wf-3-0'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-3-0-0' data-type='AI' onclick='showDP("售前高频问题自动回复","AI","AI训练店铺商品知识库，自动处理尺码/材质/发货时间/优惠叠加等标准咨询，接入千牛/飞鸽；情绪识别后将复杂问题路由至对应专席","自动化率达60-80%，响应时间从均值3分钟降至秒级；良品铺子案例：千牛留言自动转接大幅降低客服压力")'>
+<td class='td td-name'>售前高频问题自动回复</td>
+<td class='td'><span class='badge b-AI'>AI</span></td>
+<td class='td td-opp'>AI训练店铺商品知识库，自动处理尺码/材质/发货时间/优惠叠加等标准咨询，接入千牛/飞鸽；情绪识别后将复杂问题路由至对应专席</td>
+<td class='td td-eff'>自动化率达60-80%，响应时间从均值3分钟降至秒级；良品铺子案例：千牛留言自动转接大幅降低客服压力</td>
+</tr>
+<tr class='node-row' id='node-3-0-1' data-type='RPA' onclick='showDP("订单信息一键调取与展示","RPA","客服接待时RPA自动调取订单状态/物流轨迹/历史购买/售后工单，展示在千牛侧边栏；手机电联记录自动导出备档","客服查询时间从2分钟降至10秒，接待容量提升50%，服务质量更一致")'>
+<td class='td td-name'>订单信息一键调取与展示</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>客服接待时RPA自动调取订单状态/物流轨迹/历史购买/售后工单，展示在千牛侧边栏；手机电联记录自动导出备档</td>
+<td class='td td-eff'>客服查询时间从2分钟降至10秒，接待容量提升50%，服务质量更一致</td>
+</tr>
+<tr class='node-row' id='node-3-0-2' data-type='RPA' onclick='showDP("多平台订单下载与ERP对接","RPA","定时从各平台批量下载订单，自动推送至ERP审单，创建补发单/换货单，异常订单自动插旗备注，加密地址信息自动解密获取","多平台订单处理效率提升3倍，漏单率接近零，ERP数据实时同步")'>
+<td class='td td-name'>多平台订单下载与ERP对接</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>定时从各平台批量下载订单，自动推送至ERP审单，创建补发单/换货单，异常订单自动插旗备注，加密地址信息自动解密获取</td>
+<td class='td td-eff'>多平台订单处理效率提升3倍，漏单率接近零，ERP数据实时同步</td>
+</tr>
+<tr class='node-row' id='node-3-0-3' data-type='RPA+AI' onclick='showDP("客服聊天记录获取与质检","RPA+AI","RPA自动获取客服聊天记录，AI按响应时长/解决率/服务用语规范自动打分质检，生成质检报告推送管理层","质检覆盖率从人工5%提升至100%，服务标准一致性大幅提升，差评前置发现")'>
+<td class='td td-name'>客服聊天记录获取与质检</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA自动获取客服聊天记录，AI按响应时长/解决率/服务用语规范自动打分质检，生成质检报告推送管理层</td>
+<td class='td td-eff'>质检覆盖率从人工5%提升至100%，服务标准一致性大幅提升，差评前置发现</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-3-1",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>退款退货处理</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-3-1'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-3-1-0' data-type='RPA+AI' onclick='showDP("仅退款/退货退款自动化处理","RPA+AI","AI判断退款原因类型和责任归属，自动处理未发货仅退款、已发货仅退款（核实后退款）、批量拒绝明显恶意退款申请，RPA修改订单状态","简单退款处理从30分钟降至5分钟；好护士医疗案例：230+人天节省，退款响应速度大幅提升")'>
+<td class='td td-name'>仅退款/退货退款自动化处理</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>AI判断退款原因类型和责任归属，自动处理未发货仅退款、已发货仅退款（核实后退款）、批量拒绝明显恶意退款申请，RPA修改订单状态</td>
+<td class='td td-eff'>简单退款处理从30分钟降至5分钟；好护士医疗案例：230+人天节省，退款响应速度大幅提升</td>
+</tr>
+<tr class='node-row' id='node-3-1-1' data-type='RPA' onclick='showDP("退货物流爬取与入库退款","RPA","自动爬取退货快递轨迹，商品到达仓库确认后批量执行退款操作；退款退货信息自动登记，不明退货件自动查询关联订单","退货处理时效提升60%，漏退款风险消除，退款进度客户可见减少催促咨询")'>
+<td class='td td-name'>退货物流爬取与入库退款</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>自动爬取退货快递轨迹，商品到达仓库确认后批量执行退款操作；退款退货信息自动登记，不明退货件自动查询关联订单</td>
+<td class='td td-eff'>退货处理时效提升60%，漏退款风险消除，退款进度客户可见减少催促咨询</td>
+</tr>
+<tr class='node-row' id='node-3-1-2' data-type='RPA' onclick='showDP("退款拦截单创建与批量操作","RPA","发现疑似欺诈退款或平台活动规则被薅时，自动创建拦截单并提交平台申诉，批量处理大促期间高峰期退款工单","大促高峰期退款处理吞吐量提升5倍，恶意退款识别和拦截率提升50%")'>
+<td class='td td-name'>退款拦截单创建与批量操作</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>发现疑似欺诈退款或平台活动规则被薅时，自动创建拦截单并提交平台申诉，批量处理大促期间高峰期退款工单</td>
+<td class='td td-eff'>大促高峰期退款处理吞吐量提升5倍，恶意退款识别和拦截率提升50%</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-3-2",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>评价管理与客户维护</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-3-2'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-3-2-0' data-type='RPA+AI' onclick='showDP("好评自动回复与催评","RPA+AI","AI生成个性化好评回复话术，RPA自动发布；同时对已完成/待评价订单自动发送催评消息，提升店铺评价数量和评分","好评回复效率提升10倍，催评响应及时率100%，店铺DSR评分持续改善")'>
+<td class='td td-name'>好评自动回复与催评</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>AI生成个性化好评回复话术，RPA自动发布；同时对已完成/待评价订单自动发送催评消息，提升店铺评价数量和评分</td>
+<td class='td td-eff'>好评回复效率提升10倍，催评响应及时率100%，店铺DSR评分持续改善</td>
+</tr>
+<tr class='node-row' id='node-3-2-1' data-type='RPA+AI' onclick='showDP("差评监控与应对处理","RPA+AI","RPA实时监控新增差评，AI分析原因分类并生成针对性回评话术草稿，多店铺DSR评分等级实时登记监控","差评响应从8小时缩至1小时，回评效率提升5倍；差评根因数据反馈选品和供应链改进")'>
+<td class='td td-name'>差评监控与应对处理</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA实时监控新增差评，AI分析原因分类并生成针对性回评话术草稿，多店铺DSR评分等级实时登记监控</td>
+<td class='td td-eff'>差评响应从8小时缩至1小时，回评效率提升5倍；差评根因数据反馈选品和供应链改进</td>
+</tr>
+<tr class='node-row' id='node-3-2-2' data-type='RPA' onclick='showDP("旺旺红包/平台退差价/小额打款","RPA","根据赔付规则自动发送旺旺红包、执行平台退差价操作、批量小额打款给需要补偿的客户，赔付记录自动归档","赔付处理从人工逐单操作变为批量自动执行，赔付时效提升，客户满意度改善")'>
+<td class='td td-name'>旺旺红包/平台退差价/小额打款</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>根据赔付规则自动发送旺旺红包、执行平台退差价操作、批量小额打款给需要补偿的客户，赔付记录自动归档</td>
+<td class='td td-eff'>赔付处理从人工逐单操作变为批量自动执行，赔付时效提升，客户满意度改善</td>
+</tr>
+</table></div>
+</div>
+<div class='dept-section' id='dept-4'>
+<div class='dept-header'>
+<span class='dept-icon'>📦</span>
+<span class='dept-title'>仓储物流</span>
+<span class='dept-count'>10 个机会点</span>
+</div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-4-0",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>订单发货管理</span>
+<span class='wf-count'>4 个节点</span>
+</div>
+<table class='nodes-table' id='wf-4-0'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-4-0-0' data-type='RPA' onclick='showDP("多平台订单发货处理","RPA","自动汇总各平台待发货订单，按仓区/货架/SKU分组生成波次拣货单，对接WMS推送任务至PDA；平台订单发货状态自动回传","拣货效率提升30%，分拣差错率降低50%，多平台发货状态实时同步")'>
+<td class='td td-name'>多平台订单发货处理</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>自动汇总各平台待发货订单，按仓区/货架/SKU分组生成波次拣货单，对接WMS推送任务至PDA；平台订单发货状态自动回传</td>
+<td class='td td-eff'>拣货效率提升30%，分拣差错率降低50%，多平台发货状态实时同步</td>
+</tr>
+<tr class='node-row' id='node-4-0-1' data-type='RPA+AI' onclick='showDP("发货/揽收/停滞预警监控","RPA+AI","RPA监控订单超时未发货、快递已揽收超48小时无轨迹更新、派件失败等异常，AI分析原因（缺货/地址/风控），自动触发处理流程","发货超时率降低70%，物流异常从客户投诉后被动响应变为2小时内主动介入")'>
+<td class='td td-name'>发货/揽收/停滞预警监控</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA监控订单超时未发货、快递已揽收超48小时无轨迹更新、派件失败等异常，AI分析原因（缺货/地址/风控），自动触发处理流程</td>
+<td class='td td-eff'>发货超时率降低70%，物流异常从客户投诉后被动响应变为2小时内主动介入</td>
+</tr>
+<tr class='node-row' id='node-4-0-2' data-type='RPA' onclick='showDP("延迟发货报备自动化","RPA","系统识别即将超时的订单，自动在平台提交延迟发货报备申请，填写延迟原因和预计发货时间，避免平台处罚","延迟发货处罚减少80%，报备及时率100%，运营合规风险大幅降低")'>
+<td class='td td-name'>延迟发货报备自动化</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>系统识别即将超时的订单，自动在平台提交延迟发货报备申请，填写延迟原因和预计发货时间，避免平台处罚</td>
+<td class='td td-eff'>延迟发货处罚减少80%，报备及时率100%，运营合规风险大幅降低</td>
+</tr>
+<tr class='node-row' id='node-4-0-3' data-type='RPA' onclick='showDP("仓储管理报表自动生成","RPA","RPA从WMS采集打包/发货速率/差错工单/人员效率/物流费用结算数据，自动生成仓库日效看板，推送给仓管负责人","仓库管理从滞后统计变为实时监控，作业瓶颈识别速度提升3倍，物流费用核对效率提升")'>
+<td class='td td-name'>仓储管理报表自动生成</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA从WMS采集打包/发货速率/差错工单/人员效率/物流费用结算数据，自动生成仓库日效看板，推送给仓管负责人</td>
+<td class='td td-eff'>仓库管理从滞后统计变为实时监控，作业瓶颈识别速度提升3倍，物流费用核对效率提升</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-4-1",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>库存管理</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-4-1'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-4-1-0' data-type='RPA+AI' onclick='showDP("库存巡检与周转时长分析","RPA+AI","RPA定时从WMS采集各SKU实库数量和周转天数，AI识别滞销积压商品（周转超30天）和即将断货商品，生成库存健康报告","缺货率降低40%，滞销库存减少25%，资金占用效率提升20%")'>
+<td class='td td-name'>库存巡检与周转时长分析</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA定时从WMS采集各SKU实库数量和周转天数，AI识别滞销积压商品（周转超30天）和即将断货商品，生成库存健康报告</td>
+<td class='td td-eff'>缺货率降低40%，滞销库存减少25%，资金占用效率提升20%</td>
+</tr>
+<tr class='node-row' id='node-4-1-1' data-type='RPA' onclick='showDP("多仓库存实时同步","RPA","RPA实时同步各平台可售库存与实物仓存数据，防止超卖；多仓时根据距离/运费自动计算最优发货仓并推荐","超卖工单减少90%，多仓调拨效率提升50%，物流成本优化")'>
+<td class='td td-name'>多仓库存实时同步</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA实时同步各平台可售库存与实物仓存数据，防止超卖；多仓时根据距离/运费自动计算最优发货仓并推荐</td>
+<td class='td td-eff'>超卖工单减少90%，多仓调拨效率提升50%，物流成本优化</td>
+</tr>
+<tr class='node-row' id='node-4-1-2' data-type='AI' onclick='showDP("货期跟进与补货预警","AI","AI基于销售预测和当前库存水位，提前3-7天输出各SKU补货建议和安全库存参数，结合供应商交期自动生成补货时间轴","缺货率降低40%，滞销库存减少25%，备货资金利用率提升20%")'>
+<td class='td td-name'>货期跟进与补货预警</td>
+<td class='td'><span class='badge b-AI'>AI</span></td>
+<td class='td td-opp'>AI基于销售预测和当前库存水位，提前3-7天输出各SKU补货建议和安全库存参数，结合供应商交期自动生成补货时间轴</td>
+<td class='td td-eff'>缺货率降低40%，滞销库存减少25%，备货资金利用率提升20%</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-4-2",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>物流追踪与异常处置</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-4-2'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-4-2-0' data-type='RPA+AI' onclick='showDP("异常件建工单与快递索赔","RPA+AI","RPA识别物流丢件/破损/延误异常，自动创建异常工单，批量截取物流轨迹截图发送给快递公司索赔，AI生成结构化索赔材料","异常件处理时效提升60%，索赔材料准备从1小时降至15分钟，索赔成功率提升25%")'>
+<td class='td td-name'>异常件建工单与快递索赔</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA识别物流丢件/破损/延误异常，自动创建异常工单，批量截取物流轨迹截图发送给快递公司索赔，AI生成结构化索赔材料</td>
+<td class='td td-eff'>异常件处理时效提升60%，索赔材料准备从1小时降至15分钟，索赔成功率提升25%</td>
+</tr>
+<tr class='node-row' id='node-4-2-1' data-type='RPA' onclick='showDP("退货物流自动查询与入库","RPA","自动追踪退货快递轨迹，到达仓库后自动核对退货商品信息，标签自生成辅助入库分区，地址归一处理减少错分仓","退货入库效率提升50%，地址错误导致的二次分拣率大幅降低")'>
+<td class='td td-name'>退货物流自动查询与入库</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>自动追踪退货快递轨迹，到达仓库后自动核对退货商品信息，标签自生成辅助入库分区，地址归一处理减少错分仓</td>
+<td class='td td-eff'>退货入库效率提升50%，地址错误导致的二次分拣率大幅降低</td>
+</tr>
+<tr class='node-row' id='node-4-2-2' data-type='AI' onclick='showDP("多承运商时效与费用比对","AI","AI定期分析各快递公司不同路由时效/破损率/费用数据，给出分区域优选承运商建议，物流费用结算数据自动核对","平均配送时效缩短0.5天，货损率降低15%，物流费用核算效率提升60%")'>
+<td class='td td-name'>多承运商时效与费用比对</td>
+<td class='td'><span class='badge b-AI'>AI</span></td>
+<td class='td td-opp'>AI定期分析各快递公司不同路由时效/破损率/费用数据，给出分区域优选承运商建议，物流费用结算数据自动核对</td>
+<td class='td td-eff'>平均配送时效缩短0.5天，货损率降低15%，物流费用核算效率提升60%</td>
+</tr>
+</table></div>
+</div>
+<div class='dept-section' id='dept-5'>
+<div class='dept-header'>
+<span class='dept-icon'>🔗</span>
+<span class='dept-title'>供应链采购</span>
+<span class='dept-count'>8 个机会点</span>
+</div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-5-0",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>供应商管理</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-5-0'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-5-0-0' data-type='RPA' onclick='showDP("批量询价采集与比价","RPA","RPA向供应商名录批量发送标准化询价邮件/钉钉消息，收集回复后自动汇总到比价表，最优渠道和价格自动比较标注，超时自动催单","询价采集时间从3天缩短至4小时，供应商覆盖数量提升3倍，比价遗漏率接近零")'>
+<td class='td td-name'>批量询价采集与比价</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA向供应商名录批量发送标准化询价邮件/钉钉消息，收集回复后自动汇总到比价表，最优渠道和价格自动比较标注，超时自动催单</td>
+<td class='td td-eff'>询价采集时间从3天缩短至4小时，供应商覆盖数量提升3倍，比价遗漏率接近零</td>
+</tr>
+<tr class='node-row' id='node-5-0-1' data-type='RPA+AI' onclick='showDP("供应商绩效动态评估","RPA+AI","RPA从ERP采集交货准时率/质检合格率/退货率数据，AI生成供应商月度评分报告，对低分供应商自动推送警告并触发审核流程","供应商评估从每年一次变为实时动态，优质供应商识别效率提升，淘汰劣质供应商有据可依")'>
+<td class='td td-name'>供应商绩效动态评估</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA从ERP采集交货准时率/质检合格率/退货率数据，AI生成供应商月度评分报告，对低分供应商自动推送警告并触发审核流程</td>
+<td class='td td-eff'>供应商评估从每年一次变为实时动态，优质供应商识别效率提升，淘汰劣质供应商有据可依</td>
+</tr>
+<tr class='node-row' id='node-5-0-2' data-type='RPA' onclick='showDP("供应商协同与生产报表","RPA","RPA对接供应商ERP/钉钉，自动同步生产进度报表，采购计划更新后自动推送给供应商确认，供应协同信息双向透明","供应商沟通效率提升50%，生产计划变更响应时间从2天缩短至当天")'>
+<td class='td td-name'>供应商协同与生产报表</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA对接供应商ERP/钉钉，自动同步生产进度报表，采购计划更新后自动推送给供应商确认，供应协同信息双向透明</td>
+<td class='td td-eff'>供应商沟通效率提升50%，生产计划变更响应时间从2天缩短至当天</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-5-1",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>采购执行与验收</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-5-1'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-5-1-0' data-type='RPA' onclick='showDP("采购订单自动生成与追踪","RPA","基于AI补货建议自动生成标准化采购订单，推送至ERP审批流并同步通知供应商；RPA自动跟踪生产/备货/发货进度，临近交期未更新自动催货","采购订单处理从1天缩短至2小时，到货准时率提升25%，断货损失大幅降低")'>
+<td class='td td-name'>采购订单自动生成与追踪</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>基于AI补货建议自动生成标准化采购订单，推送至ERP审批流并同步通知供应商；RPA自动跟踪生产/备货/发货进度，临近交期未更新自动催货</td>
+<td class='td td-eff'>采购订单处理从1天缩短至2小时，到货准时率提升25%，断货损失大幅降低</td>
+</tr>
+<tr class='node-row' id='node-5-1-1' data-type='RPA+AI' onclick='showDP("采购入库分仓与快递自动验收","RPA+AI","采购货物到仓后，RPA扫码核对入库信息自动录入WMS，AI辅助图像识别质检，快递自动验收，异常品触发供应商索赔流程","验收录入效率提升50%，质检标准一致性提升，质量问题可追溯")'>
+<td class='td td-name'>采购入库分仓与快递自动验收</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>采购货物到仓后，RPA扫码核对入库信息自动录入WMS，AI辅助图像识别质检，快递自动验收，异常品触发供应商索赔流程</td>
+<td class='td td-eff'>验收录入效率提升50%，质检标准一致性提升，质量问题可追溯</td>
+</tr>
+<tr class='node-row' id='node-5-1-2' data-type='RPA+AI' onclick='showDP("订单生成/纠错/预测","RPA+AI","根据销售预测自动生成补货采购订单，AI识别订单数据异常（数量/地址/SKU错误）自动纠错，历史数据驱动的需求预测模型持续优化","采购决策准确率提升30-40%，订单错误率降低80%，缺货和积压同步降低")'>
+<td class='td td-name'>订单生成/纠错/预测</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>根据销售预测自动生成补货采购订单，AI识别订单数据异常（数量/地址/SKU错误）自动纠错，历史数据驱动的需求预测模型持续优化</td>
+<td class='td td-eff'>采购决策准确率提升30-40%，订单错误率降低80%，缺货和积压同步降低</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-5-2",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>计划生产管理</span>
+<span class='wf-count'>2 个节点</span>
+</div>
+<table class='nodes-table' id='wf-5-2'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-5-2-0' data-type='RPA' onclick='showDP("计划报表管理与更新","RPA","RPA自动采集生产进度数据更新计划报表，汇总各品类的产能利用率/交期达成率，自动推送周计划执行报告给管理层","计划报表更新从手工每周一次变为每日自动，计划执行偏差发现时间提前")'>
+<td class='td td-name'>计划报表管理与更新</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA自动采集生产进度数据更新计划报表，汇总各品类的产能利用率/交期达成率，自动推送周计划执行报告给管理层</td>
+<td class='td td-eff'>计划报表更新从手工每周一次变为每日自动，计划执行偏差发现时间提前</td>
+</tr>
+<tr class='node-row' id='node-5-2-1' data-type='RPA+AI' onclick='showDP("数据监管预警与库存/SKU统计","RPA+AI","RPA汇总各仓库SKU库存数据，AI识别异常（负库存/超存/长期积压），自动推送预警并生成库存健康分析报告","库存异常发现时间从月报变为实时，SKU统计准确率100%，库存管理精细化")'>
+<td class='td td-name'>数据监管预警与库存/SKU统计</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA汇总各仓库SKU库存数据，AI识别异常（负库存/超存/长期积压），自动推送预警并生成库存健康分析报告</td>
+<td class='td td-eff'>库存异常发现时间从月报变为实时，SKU统计准确率100%，库存管理精细化</td>
+</tr>
+</table></div>
+</div>
+<div class='dept-section' id='dept-6'>
+<div class='dept-header'>
+<span class='dept-icon'>💰</span>
+<span class='dept-title'>财务对账</span>
+<span class='dept-count'>10 个机会点</span>
+</div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-6-0",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>平台结算对账</span>
+<span class='wf-count'>4 个节点</span>
+</div>
+<table class='nodes-table' id='wf-6-0'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-6-0-0' data-type='RPA' onclick='showDP("多平台账单自动下载汇总","RPA","RPA定时登录天猫/京东/拼多多/抖音小店等平台，自动下载结算报表/手续费明细/纳税报表，批量归档至统一目录；平台待结算金额自动汇总","账单采集从每月人工2天缩短至每日自动完成，对账周期实时化；漏账率接近零")'>
+<td class='td td-name'>多平台账单自动下载汇总</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA定时登录天猫/京东/拼多多/抖音小店等平台，自动下载结算报表/手续费明细/纳税报表，批量归档至统一目录；平台待结算金额自动汇总</td>
+<td class='td td-eff'>账单采集从每月人工2天缩短至每日自动完成，对账周期实时化；漏账率接近零</td>
+</tr>
+<tr class='node-row' id='node-6-0-1' data-type='RPA+AI' onclick='showDP("平台与OMS对账/应收应付管理","RPA+AI","RPA将平台结算数据与ERP/OMS销售台账自动比对，AI识别差异来源（退款/佣金/活动扣款），生成差异清单；批量生成对账函","对账效率提升80%，差异识别准确率从70%提升至95%以上；某电商集团：对账函自动生成节省50%人力")'>
+<td class='td td-name'>平台与OMS对账/应收应付管理</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA将平台结算数据与ERP/OMS销售台账自动比对，AI识别差异来源（退款/佣金/活动扣款），生成差异清单；批量生成对账函</td>
+<td class='td td-eff'>对账效率提升80%，差异识别准确率从70%提升至95%以上；某电商集团：对账函自动生成节省50%人力</td>
+</tr>
+<tr class='node-row' id='node-6-0-2' data-type='RPA' onclick='showDP("银行收支对账与余额流水管理","RPA","RPA自动登录银行网银下载流水，与ERP收款记录自动比对，识别未到账/多到账/重复到账异常；银行余额定时同步至资金管理台账","银行对账从每月人工3天缩短至隔日自动完成，资金异常发现时间从月末提前至实时")'>
+<td class='td td-name'>银行收支对账与余额流水管理</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA自动登录银行网银下载流水，与ERP收款记录自动比对，识别未到账/多到账/重复到账异常；银行余额定时同步至资金管理台账</td>
+<td class='td td-eff'>银行对账从每月人工3天缩短至隔日自动完成，资金异常发现时间从月末提前至实时</td>
+</tr>
+<tr class='node-row' id='node-6-0-3' data-type='RPA+AI' onclick='showDP("预提费用汇总与现金流预测","RPA+AI","RPA汇总各部门预提费用申请，AI结合应收应付账期数据，自动生成月度/季度现金流预测报告，识别资金缺口风险","现金流预测频率从季度提升至月度自动生成，资金调度提前量增加，融资需求更精准")'>
+<td class='td td-name'>预提费用汇总与现金流预测</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA汇总各部门预提费用申请，AI结合应收应付账期数据，自动生成月度/季度现金流预测报告，识别资金缺口风险</td>
+<td class='td td-eff'>现金流预测频率从季度提升至月度自动生成，资金调度提前量增加，融资需求更精准</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-6-1",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>财务报税与发票管理</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-6-1'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-6-1-0' data-type='RPA' onclick='showDP("纳税申报与增值税申报","RPA","RPA自动从各平台汇总销售额/退款额，按税率分类，生成增值税申报底稿；对接税务系统完成一键零申报/增值税申报提交","申报数据准备时间从3天缩短至4小时，申报错误率大幅降低，税务合规风险降低")'>
+<td class='td td-name'>纳税申报与增值税申报</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA自动从各平台汇总销售额/退款额，按税率分类，生成增值税申报底稿；对接税务系统完成一键零申报/增值税申报提交</td>
+<td class='td td-eff'>申报数据准备时间从3天缩短至4小时，申报错误率大幅降低，税务合规风险降低</td>
+</tr>
+<tr class='node-row' id='node-6-1-1' data-type='RPA+AI' onclick='showDP("发票管理与开票自动化","RPA+AI","根据对账结果自动生成开票申请并触发SAP批量开票；增值税发票OCR识别，电子发票信息自动提取归档至财务系统","发票处理从3天缩至当天完成，开票遗漏率近零；SAP批量开票效率提升10倍")'>
+<td class='td td-name'>发票管理与开票自动化</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>根据对账结果自动生成开票申请并触发SAP批量开票；增值税发票OCR识别，电子发票信息自动提取归档至财务系统</td>
+<td class='td td-eff'>发票处理从3天缩至当天完成，开票遗漏率近零；SAP批量开票效率提升10倍</td>
+</tr>
+<tr class='node-row' id='node-6-1-2' data-type='RPA' onclick='showDP("分销商余额及授信余额统计","RPA","RPA定时采集各分销商的账户余额/授信额度/欠款信息，自动汇总至信用管理表格，超额预警推送财务和销售负责人","分销商信用风险实时可见，坏账预防能力提升，资金安全性提升")'>
+<td class='td td-name'>分销商余额及授信余额统计</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA定时采集各分销商的账户余额/授信额度/欠款信息，自动汇总至信用管理表格，超额预警推送财务和销售负责人</td>
+<td class='td td-eff'>分销商信用风险实时可见，坏账预防能力提升，资金安全性提升</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-6-2",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>资产与预算管理</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-6-2'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-6-2-0' data-type='RPA' onclick='showDP("资产折旧/转移/报废/盘点","RPA","RPA按资产台账自动计算月度折旧，资产转移/报废操作自动更新账册；年度盘点时自动核对实物清单与系统台账差异","资产管理合规性提升，月度折旧计算从人工2天缩至自动完成，盘点差异发现率提升")'>
+<td class='td td-name'>资产折旧/转移/报废/盘点</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA按资产台账自动计算月度折旧，资产转移/报废操作自动更新账册；年度盘点时自动核对实物清单与系统台账差异</td>
+<td class='td td-eff'>资产管理合规性提升，月度折旧计算从人工2天缩至自动完成，盘点差异发现率提升</td>
+</tr>
+<tr class='node-row' id='node-6-2-1' data-type='RPA+AI' onclick='showDP("预算编制/管控/分析","RPA+AI","RPA汇总各部门费用执行数据对比预算，AI识别超支风险部门/项目，生成预算执行预警报告；支持各部门自助查询预算余额","费用超支提前预警，年度预算执行偏差从15%缩小至5%以内，预算管控从事后变为事中")'>
+<td class='td td-name'>预算编制/管控/分析</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA汇总各部门费用执行数据对比预算，AI识别超支风险部门/项目，生成预算执行预警报告；支持各部门自助查询预算余额</td>
+<td class='td td-eff'>费用超支提前预警，年度预算执行偏差从15%缩小至5%以内，预算管控从事后变为事中</td>
+</tr>
+<tr class='node-row' id='node-6-2-2' data-type='AI' onclick='showDP("报销单据智能审核","AI","AI识别上传发票/收据图片，自动提取金额/日期/供应商，与申请单比对，标记异常发票/虚假报销，生成审核意见","报销审核周期从5天缩至1天，疑似虚假报销识别率提升60%，财务内控能力增强")'>
+<td class='td td-name'>报销单据智能审核</td>
+<td class='td'><span class='badge b-AI'>AI</span></td>
+<td class='td td-opp'>AI识别上传发票/收据图片，自动提取金额/日期/供应商，与申请单比对，标记异常发票/虚假报销，生成审核意见</td>
+<td class='td td-eff'>报销审核周期从5天缩至1天，疑似虚假报销识别率提升60%，财务内控能力增强</td>
+</tr>
+</table></div>
+</div>
+<div class='dept-section' id='dept-7'>
+<div class='dept-header'>
+<span class='dept-icon'>✍️</span>
+<span class='dept-title'>内容营销</span>
+<span class='dept-count'>9 个机会点</span>
+</div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-7-0",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>素材管理与内容生产</span>
+<span class='wf-count'>4 个节点</span>
+</div>
+<table class='nodes-table' id='wf-7-0'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-7-0-0' data-type='RPA' onclick='showDP("图文素材批量下载与自动命名","RPA","批量下载竞品/达人的图文素材，按品类/日期/类型自动命名归档；作图/抠图/加水印自动化，AI批量生成多背景商品图","图片生成从拍摄半天缩至4分钟生成一组；每小时自动生成800张商品图；让茶集团案例：月省6人/天")'>
+<td class='td td-name'>图文素材批量下载与自动命名</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>批量下载竞品/达人的图文素材，按品类/日期/类型自动命名归档；作图/抠图/加水印自动化，AI批量生成多背景商品图</td>
+<td class='td td-eff'>图片生成从拍摄半天缩至4分钟生成一组；每小时自动生成800张商品图；让茶集团案例：月省6人/天</td>
+</tr>
+<tr class='node-row' id='node-7-0-1' data-type='RPA' onclick='showDP("社媒内容批量发布","RPA","多账号矩阵自动切换，批量上传视频/图文至抖音/快手/小红书/B站/视频号，自动填写标题/描述/话题标签，按排期定时发布","发布效率提升60%，节省0.5人力；宫芙案例：单平台300个视频/天，月省7人/天；矩阵号覆盖扩大3倍")'>
+<td class='td td-name'>社媒内容批量发布</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>多账号矩阵自动切换，批量上传视频/图文至抖音/快手/小红书/B站/视频号，自动填写标题/描述/话题标签，按排期定时发布</td>
+<td class='td td-eff'>发布效率提升60%，节省0.5人力；宫芙案例：单平台300个视频/天，月省7人/天；矩阵号覆盖扩大3倍</td>
+</tr>
+<tr class='node-row' id='node-7-0-2' data-type='AI' onclick='showDP("短视频带货脚本与文案AI生成","AI","AI结合商品卖点/平台热点/带货脚本框架生成短视频脚本，适配60秒/3分钟/直播切片；自动生成小红书种草笔记，匹配话题标签","脚本创作从2小时降至15分钟，内容产出量提升5倍，小红书内容发布量提升10倍")'>
+<td class='td td-name'>短视频带货脚本与文案AI生成</td>
+<td class='td'><span class='badge b-AI'>AI</span></td>
+<td class='td td-opp'>AI结合商品卖点/平台热点/带货脚本框架生成短视频脚本，适配60秒/3分钟/直播切片；自动生成小红书种草笔记，匹配话题标签</td>
+<td class='td td-eff'>脚本创作从2小时降至15分钟，内容产出量提升5倍，小红书内容发布量提升10倍</td>
+</tr>
+<tr class='node-row' id='node-7-0-3' data-type='RPA+AI' onclick='showDP("社媒热词与竞品舆情监控","RPA+AI","定时抓取抖音/快手/微博/小红书平台热词变化，采集竞品账号信息和爆款内容，AI分析内容趋势，生成创作灵感推荐","热词监控实时化，每人每天节省2h；内容团队蹭热点响应时间从隔天缩至当天")'>
+<td class='td td-name'>社媒热词与竞品舆情监控</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>定时抓取抖音/快手/微博/小红书平台热词变化，采集竞品账号信息和爆款内容，AI分析内容趋势，生成创作灵感推荐</td>
+<td class='td td-eff'>热词监控实时化，每人每天节省2h；内容团队蹭热点响应时间从隔天缩至当天</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-7-1",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>达人KOL管理</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-7-1'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-7-1-0' data-type='RPA+AI' onclick='showDP("达人批量筛选与建联","RPA+AI","按条件在小红书/蒲公英/抖音批量搜索达人，抓取数据写入Excel；AI筛选高性价比达人，通过邮件+私信双渠道同时发送邀约话术","建联效率提升10倍；后秀品牌案例：每2小时自动邀约新达人，解放每天2小时人工成本")'>
+<td class='td td-name'>达人批量筛选与建联</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>按条件在小红书/蒲公英/抖音批量搜索达人，抓取数据写入Excel；AI筛选高性价比达人，通过邮件+私信双渠道同时发送邀约话术</td>
+<td class='td td-eff'>建联效率提升10倍；后秀品牌案例：每2小时自动邀约新达人，解放每天2小时人工成本</td>
+</tr>
+<tr class='node-row' id='node-7-1-1' data-type='RPA+AI' onclick='showDP("带货数据实时追踪与复盘","RPA+AI","RPA定时采集达人合作链接实时销量/GMV/退货率，AI汇总带货效果分析，自动触发分佣核算流程；建立企业达人效果数据库","带货数据实时化，佣金核算从人工3天缩至隔日自动完成；达人ROI可视化，续合作决策有依据")'>
+<td class='td td-name'>带货数据实时追踪与复盘</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA定时采集达人合作链接实时销量/GMV/退货率，AI汇总带货效果分析，自动触发分佣核算流程；建立企业达人效果数据库</td>
+<td class='td td-eff'>带货数据实时化，佣金核算从人工3天缩至隔日自动完成；达人ROI可视化，续合作决策有依据</td>
+</tr>
+<tr class='node-row' id='node-7-1-2' data-type='RPA' onclick='showDP("样品物流监控与合作跟进","RPA","RPA跟踪样品寄送物流轨迹，到达后自动提醒达人确认；跟踪合同签署/内容发布时间节点，超期未完成自动催办并记录日志","达人合作违约率降低40%，样品和合同跟进漏项率接近零，项目管理效率提升")'>
+<td class='td td-name'>样品物流监控与合作跟进</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA跟踪样品寄送物流轨迹，到达后自动提醒达人确认；跟踪合同签署/内容发布时间节点，超期未完成自动催办并记录日志</td>
+<td class='td td-eff'>达人合作违约率降低40%，样品和合同跟进漏项率接近零，项目管理效率提升</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-7-2",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>社媒数据采集与私域运营</span>
+<span class='wf-count'>2 个节点</span>
+</div>
+<table class='nodes-table' id='wf-7-2'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-7-2-0' data-type='RPA+AI' onclick='showDP("小红书/抖音关键词笔记评论抓取","RPA+AI","按关键词批量搜索小红书/抖音内容，抓取点赞/收藏/评论/文案数据，AI提炼爆文规律和内容热点，建立企业爆文库","每人每天节省4h；霞堡案例：建立企业爆文库，代替人工定时更新内容数据，激励申请自动提交")'>
+<td class='td td-name'>小红书/抖音关键词笔记评论抓取</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>按关键词批量搜索小红书/抖音内容，抓取点赞/收藏/评论/文案数据，AI提炼爆文规律和内容热点，建立企业爆文库</td>
+<td class='td td-eff'>每人每天节省4h；霞堡案例：建立企业爆文库，代替人工定时更新内容数据，激励申请自动提交</td>
+</tr>
+<tr class='node-row' id='node-7-2-1' data-type='RPA' onclick='showDP("视频号/微信私域客户信息沉淀","RPA","进入小程序订单管理后台，循环搜索订单号批量获取下单客户信息，导入Excel；后续自动添加微信、拉群、发群消息等私域动作","每人每天节省4h；预制菜客户案例：年货节每天几万单，客户信息100%自动沉淀至私域")'>
+<td class='td td-name'>视频号/微信私域客户信息沉淀</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>进入小程序订单管理后台，循环搜索订单号批量获取下单客户信息，导入Excel；后续自动添加微信、拉群、发群消息等私域动作</td>
+<td class='td td-eff'>每人每天节省4h；预制菜客户案例：年货节每天几万单，客户信息100%自动沉淀至私域</td>
+</tr>
+</table></div>
+</div>
+<div class='dept-section' id='dept-8'>
+<div class='dept-header'>
+<span class='dept-icon'>📊</span>
+<span class='dept-title'>数据分析</span>
+<span class='dept-count'>9 个机会点</span>
+</div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-8-0",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>经营数据自动化分析</span>
+<span class='wf-count'>4 个节点</span>
+</div>
+<table class='nodes-table' id='wf-8-0'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-8-0-0' data-type='RPA+AI' onclick='showDP("店铺销售/推广/直播/粉丝多维日报","RPA+AI","RPA汇聚天猫/京东/拼多多/抖音等各平台店铺销售/推广/直播/爆款库存/粉丝会员数据，AI自动识别异常指标生成业务解读晨报","管理决策数据响应从T+1缩短至T+0，多维数据在一处呈现，决策质量和速度双提升")'>
+<td class='td td-name'>店铺销售/推广/直播/粉丝多维日报</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA汇聚天猫/京东/拼多多/抖音等各平台店铺销售/推广/直播/爆款库存/粉丝会员数据，AI自动识别异常指标生成业务解读晨报</td>
+<td class='td td-eff'>管理决策数据响应从T+1缩短至T+0，多维数据在一处呈现，决策质量和速度双提升</td>
+</tr>
+<tr class='node-row' id='node-8-0-1' data-type='RPA+AI' onclick='showDP("店铺利润报表自动核算","RPA+AI","多店铺循环登录后台采集销售/退款/广告/平台佣金/仓储费用数据，AI自动核算各SKU/渠道净利润，生成日报/周报/月报汇总","利润核算频次从月度提升至周度自动，相当于节省2人/日；亏损商品早发现早处置")'>
+<td class='td td-name'>店铺利润报表自动核算</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>多店铺循环登录后台采集销售/退款/广告/平台佣金/仓储费用数据，AI自动核算各SKU/渠道净利润，生成日报/周报/月报汇总</td>
+<td class='td td-eff'>利润核算频次从月度提升至周度自动，相当于节省2人/日；亏损商品早发现早处置</td>
+</tr>
+<tr class='node-row' id='node-8-0-2' data-type='RPA+AI' onclick='showDP("全渠道运营数据下载汇总分析","RPA+AI","进入天猫/抖音等后台市场排行板块，搜索品牌/产品关键词下载热门商品报表，汇总整合后导入BI系统，AI分析单品市场排名表现","某央企医药集团案例：每天节省2小时，每月节省60小时；排名数据实时可见，选品和运营决策更精准")'>
+<td class='td td-name'>全渠道运营数据下载汇总分析</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>进入天猫/抖音等后台市场排行板块，搜索品牌/产品关键词下载热门商品报表，汇总整合后导入BI系统，AI分析单品市场排名表现</td>
+<td class='td td-eff'>某央企医药集团案例：每天节省2小时，每月节省60小时；排名数据实时可见，选品和运营决策更精准</td>
+</tr>
+<tr class='node-row' id='node-8-0-3' data-type='AI' onclick='showDP("销售预测与备货建议","AI","AI基于历史销售/营销节奏/大促周期预测品类/SKU级别销量，结合供应链交期自动输出备货参考报告和订货时间轴","预测准确率较人工判断提升30-40%，库存积压和缺货同步降低，备货资金利用率提升")'>
+<td class='td td-name'>销售预测与备货建议</td>
+<td class='td'><span class='badge b-AI'>AI</span></td>
+<td class='td td-opp'>AI基于历史销售/营销节奏/大促周期预测品类/SKU级别销量，结合供应链交期自动输出备货参考报告和订货时间轴</td>
+<td class='td td-eff'>预测准确率较人工判断提升30-40%，库存积压和缺货同步降低，备货资金利用率提升</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-8-1",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>推广与竞品数据分析</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-8-1'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-8-1-0' data-type='RPA+AI' onclick='showDP("推广效果数据自动获取分析","RPA+AI","循环登录各平台广告账号，采集消耗/点击/转化/ROI数据，AI按店铺/品类/商品维度分析推广效率，生成ROI优化建议","效率提升70%，每月节省4天时间；财务端实时掌握整体ROI，加强资金核查周期管理")'>
+<td class='td td-name'>推广效果数据自动获取分析</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>循环登录各平台广告账号，采集消耗/点击/转化/ROI数据，AI按店铺/品类/商品维度分析推广效率，生成ROI优化建议</td>
+<td class='td td-eff'>效率提升70%，每月节省4天时间；财务端实时掌握整体ROI，加强资金核查周期管理</td>
+</tr>
+<tr class='node-row' id='node-8-1-1' data-type='RPA+AI' onclick='showDP("商品流量来源获取分析","RPA+AI","登录生意参谋/巨量云图获取商品流量来源数据（搜索/推荐/直播/投流），AI分析各流量渠道ROI贡献，识别高价值流量来源","流量来源分析从手动半天提升至自动完成，流量结构优化有数据支撑")'>
+<td class='td td-name'>商品流量来源获取分析</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>登录生意参谋/巨量云图获取商品流量来源数据（搜索/推荐/直播/投流），AI分析各流量渠道ROI贡献，识别高价值流量来源</td>
+<td class='td td-eff'>流量来源分析从手动半天提升至自动完成，流量结构优化有数据支撑</td>
+</tr>
+<tr class='node-row' id='node-8-1-2' data-type='RPA+AI' onclick='showDP("竞店竞品跟踪分析","RPA+AI","定时采集竞店核心指标（销量/评分/粉丝/上新）和竞品SKU数据，AI生成竞争格局分析报告，识别竞品策略变化和市场动向","竞品分析从人工每2周一次升级为每周自动生成，战略响应更敏捷")'>
+<td class='td td-name'>竞店竞品跟踪分析</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>定时采集竞店核心指标（销量/评分/粉丝/上新）和竞品SKU数据，AI生成竞争格局分析报告，识别竞品策略变化和市场动向</td>
+<td class='td td-eff'>竞品分析从人工每2周一次升级为每周自动生成，战略响应更敏捷</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-8-2",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>用户洞察与数据治理</span>
+<span class='wf-count'>2 个节点</span>
+</div>
+<table class='nodes-table' id='wf-8-2'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-8-2-0' data-type='AI' onclick='showDP("用户画像与人群标签分析","AI","AI分析达摩盘/巨量云图人群画像，结合店铺购买行为识别高价值用户特征，输出精准人群标签建议，指导广告圈人和个性化营销","广告精准度提升，ROAS平均提升25%以上，老客精准触达效率提升3倍")'>
+<td class='td td-name'>用户画像与人群标签分析</td>
+<td class='td'><span class='badge b-AI'>AI</span></td>
+<td class='td td-opp'>AI分析达摩盘/巨量云图人群画像，结合店铺购买行为识别高价值用户特征，输出精准人群标签建议，指导广告圈人和个性化营销</td>
+<td class='td td-eff'>广告精准度提升，ROAS平均提升25%以上，老客精准触达效率提升3倍</td>
+</tr>
+<tr class='node-row' id='node-8-2-1' data-type='RPA' onclick='showDP("跨平台数据口径统一","RPA","RPA自动对齐各平台GMV/成交额/退款口径差异，生成标准化口径汇总表；数据质量检查脚本定期运行识别数据源错误和口径不一致","跨平台数据可比性大幅提升，管理层决策不再受口径混乱干扰，数据资产价值提升")'>
+<td class='td td-name'>跨平台数据口径统一</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA自动对齐各平台GMV/成交额/退款口径差异，生成标准化口径汇总表；数据质量检查脚本定期运行识别数据源错误和口径不一致</td>
+<td class='td td-eff'>跨平台数据可比性大幅提升，管理层决策不再受口径混乱干扰，数据资产价值提升</td>
+</tr>
+</table></div>
+</div>
+<div class='dept-section' id='dept-9'>
+<div class='dept-header'>
+<span class='dept-icon'>👥</span>
+<span class='dept-title'>人事行政</span>
+<span class='dept-count'>11 个机会点</span>
+</div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-9-0",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>招聘管理</span>
+<span class='wf-count'>4 个节点</span>
+</div>
+<table class='nodes-table' id='wf-9-0'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-9-0-0' data-type='RPA+AI' onclick='showDP("Boss直聘信息摘取与自动发消息","RPA+AI","RPA自动从Boss直聘/猎聘批量摘取候选人信息，按JD要求AI评分排序，对符合条件候选人自动发送沟通消息/交换微信，重复面试自动预警","简历筛选效率提升10倍，初筛准确率提升50%，建联响应速度提升3倍，重复邀约率降低90%")'>
+<td class='td td-name'>Boss直聘信息摘取与自动发消息</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA自动从Boss直聘/猎聘批量摘取候选人信息，按JD要求AI评分排序，对符合条件候选人自动发送沟通消息/交换微信，重复面试自动预警</td>
+<td class='td td-eff'>简历筛选效率提升10倍，初筛准确率提升50%，建联响应速度提升3倍，重复邀约率降低90%</td>
+</tr>
+<tr class='node-row' id='node-9-0-1' data-type='RPA' onclick='showDP("候选人面试通知与录用流程","RPA","RPA根据面试官日历自动安排时间，批量发送面试邀约邮件；面试通过后自动生成人资录用通知书，推送候选人签署","面试安排沟通从2小时降至10分钟，候选人爽约率降低30%，录用通知书生成效率提升80%")'>
+<td class='td td-name'>候选人面试通知与录用流程</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA根据面试官日历自动安排时间，批量发送面试邀约邮件；面试通过后自动生成人资录用通知书，推送候选人签署</td>
+<td class='td td-eff'>面试安排沟通从2小时降至10分钟，候选人爽约率降低30%，录用通知书生成效率提升80%</td>
+</tr>
+<tr class='node-row' id='node-9-0-2' data-type='RPA+AI' onclick='showDP("招聘舆情监督与数据汇总","RPA+AI","RPA定期抓取各招聘平台对公司的评价/吐槽内容，AI分析主要问题点；汇总各渠道简历来源数据和招聘漏斗转化率，生成招聘分析报告","雇主品牌问题提前发现，各渠道招聘ROI可见，渠道预算优化有依据")'>
+<td class='td td-name'>招聘舆情监督与数据汇总</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA定期抓取各招聘平台对公司的评价/吐槽内容，AI分析主要问题点；汇总各渠道简历来源数据和招聘漏斗转化率，生成招聘分析报告</td>
+<td class='td td-eff'>雇主品牌问题提前发现，各渠道招聘ROI可见，渠道预算优化有依据</td>
+</tr>
+<tr class='node-row' id='node-9-0-3' data-type='AI' onclick='showDP("抓取同类岗位描述与JD优化","AI","AI批量采集同类岗位的市场JD，分析高频技能要求和薪资范围，自动优化内部JD表述，提升岗位吸引力和候选人匹配度","JD优化周期从人工2天缩短至4小时，简历投递量提升20%，候选人质量提升")'>
+<td class='td td-name'>抓取同类岗位描述与JD优化</td>
+<td class='td'><span class='badge b-AI'>AI</span></td>
+<td class='td td-opp'>AI批量采集同类岗位的市场JD，分析高频技能要求和薪资范围，自动优化内部JD表述，提升岗位吸引力和候选人匹配度</td>
+<td class='td td-eff'>JD优化周期从人工2天缩短至4小时，简历投递量提升20%，候选人质量提升</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-9-1",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>社保福利与员工管理</span>
+<span class='wf-count'>3 个节点</span>
+</div>
+<table class='nodes-table' id='wf-9-1'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-9-1-0' data-type='RPA' onclick='showDP("社保公积金缴纳与个税申报","RPA","新员工入职后RPA自动完成社保增员申报/公积金开户；保卡信息查询、个税一键零申报、单工伤保险批量申报全流程自动化","社保申报错误率降低80%，申报时效100%达标，HR从高频重复操作中解放，每月节省2天工作量")'>
+<td class='td td-name'>社保公积金缴纳与个税申报</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>新员工入职后RPA自动完成社保增员申报/公积金开户；保卡信息查询、个税一键零申报、单工伤保险批量申报全流程自动化</td>
+<td class='td td-eff'>社保申报错误率降低80%，申报时效100%达标，HR从高频重复操作中解放，每月节省2天工作量</td>
+</tr>
+<tr class='node-row' id='node-9-1-1' data-type='RPA' onclick='showDP("入离职信息管理与权限操作","RPA","入职/离职触发RPA自动执行：入职员工资料补充、系统账号开通；离职信息核对、权限注销、设备收回登记、离职结算触发","入离职流程处理从3-5天缩短至1天，权限遗漏和账号残留问题消除，信息安全提升")'>
+<td class='td td-name'>入离职信息管理与权限操作</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>入职/离职触发RPA自动执行：入职员工资料补充、系统账号开通；离职信息核对、权限注销、设备收回登记、离职结算触发</td>
+<td class='td td-eff'>入离职流程处理从3-5天缩短至1天，权限遗漏和账号残留问题消除，信息安全提升</td>
+</tr>
+<tr class='node-row' id='node-9-1-2' data-type='RPA+AI' onclick='showDP("员工关怀管理自动化","RPA+AI","AI识别高离职风险员工（满意度低/绩效下滑/考勤异常），自动触发管理关怀提醒；生日/工作纪念日自动推送祝福和员工福利","核心岗位离职率降低15%，员工关怀覆盖率100%，提前干预降低被动离职")'>
+<td class='td td-name'>员工关怀管理自动化</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>AI识别高离职风险员工（满意度低/绩效下滑/考勤异常），自动触发管理关怀提醒；生日/工作纪念日自动推送祝福和员工福利</td>
+<td class='td td-eff'>核心岗位离职率降低15%，员工关怀覆盖率100%，提前干预降低被动离职</td>
+</tr>
+</table></div>
+<div class='workflow-block'>
+<div class='wf-header' onclick='toggleWF("wf-9-2",this)'>
+<span class='wf-toggle'>&#9660;</span>
+<span class='wf-name'>薪资考勤与绩效行政</span>
+<span class='wf-count'>4 个节点</span>
+</div>
+<table class='nodes-table' id='wf-9-2'>
+<tr class='th-row'><td class='th th-name'>流程节点</td><td class='th th-type'>类型</td><td class='th th-opp'>自动化机会点</td><td class='th th-eff'>效能提升</td></tr>
+<tr class='node-row' id='node-9-2-0' data-type='RPA' onclick='showDP("人事考勤统计与补卡提醒","RPA","RPA从钉钉/企微自动提取月度考勤数据，识别迟到/早退/旷工/漏打卡记录，自动推送补卡提醒给员工，生成考勤汇总报表","考勤统计从人工每月2天缩至隔日自动生成，准确率100%，员工漏打卡及时提醒减少纠纷")'>
+<td class='td td-name'>人事考勤统计与补卡提醒</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA从钉钉/企微自动提取月度考勤数据，识别迟到/早退/旷工/漏打卡记录，自动推送补卡提醒给员工，生成考勤汇总报表</td>
+<td class='td td-eff'>考勤统计从人工每月2天缩至隔日自动生成，准确率100%，员工漏打卡及时提醒减少纠纷</td>
+</tr>
+<tr class='node-row' id='node-9-2-1' data-type='RPA' onclick='showDP("薪资计算与工资条通知","RPA","RPA汇集考勤/绩效/社保/个税/特殊奖惩数据，自动生成薪资核算底表；工资条自动逐人发送至邮件或企微，加密保护隐私","薪资核算准备时间从3天缩至半天，发放错误率大幅降低，员工查询薪资信息自助化")'>
+<td class='td td-name'>薪资计算与工资条通知</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>RPA汇集考勤/绩效/社保/个税/特殊奖惩数据，自动生成薪资核算底表；工资条自动逐人发送至邮件或企微，加密保护隐私</td>
+<td class='td td-eff'>薪资核算准备时间从3天缩至半天，发放错误率大幅降低，员工查询薪资信息自助化</td>
+</tr>
+<tr class='node-row' id='node-9-2-2' data-type='RPA+AI' onclick='showDP("绩效数据归集与核算","RPA+AI","RPA从OMS/广告后台/客服系统采集员工KPI完成数据，AI汇总绩效草稿报告，支持管理者快速评分调整；绩效统计核算自动化","绩效汇总工作量减少70%，数据来源透明可溯，绩效纠纷减少")'>
+<td class='td td-name'>绩效数据归集与核算</td>
+<td class='td'><span class='badge b-RPAAI'>RPA+AI</span></td>
+<td class='td td-opp'>RPA从OMS/广告后台/客服系统采集员工KPI完成数据，AI汇总绩效草稿报告，支持管理者快速评分调整；绩效统计核算自动化</td>
+<td class='td td-eff'>绩效汇总工作量减少70%，数据来源透明可溯，绩效纠纷减少</td>
+</tr>
+<tr class='node-row' id='node-9-2-3' data-type='RPA' onclick='showDP("物料采购与办公设备管理","RPA","汇总各部门物料采购需求，自动生成采购申请单推送审批；办公设备库存/报修状态自动统计，疫情防控/政策更新信息定时同步推送","行政采购效率提升50%，设备管理台账实时更新，合规政策传达及时率100%")'>
+<td class='td td-name'>物料采购与办公设备管理</td>
+<td class='td'><span class='badge b-RPA'>RPA</span></td>
+<td class='td td-opp'>汇总各部门物料采购需求，自动生成采购申请单推送审批；办公设备库存/报修状态自动统计，疫情防控/政策更新信息定时同步推送</td>
+<td class='td td-eff'>行政采购效率提升50%，设备管理台账实时更新，合规政策传达及时率100%</td>
+</tr>
+</table></div>
+</div>
+<div id='no-results'>当前筛选条件下暂无匹配机会点</div>
+</div></div>
+<div id='overlay' onclick='closeDP()'></div>
+<div id='dp'>
+<span class='dp-close' onclick='closeDP()'>&#10005;</span>
+<div id='dp-type' style='margin-bottom:10px'></div>
+<div class='dp-title' id='dp-title'></div>
+<div class='dp-section'><div class='dp-label'>自动化机会点</div><div class='dp-content' id='dp-opp'></div></div>
+<div class='dp-section'><div class='dp-label'>效能提升</div><div class='dp-eff' id='dp-eff'></div></div>
+</div>
+<script>
+var cf='ALL';
+var sq='';
+
+function setF(t,btn){
+  cf=t;
+  var bs=document.querySelectorAll('.fb');
+  for(var i=0;i<bs.length;i++) bs[i].className='fb';
+  if(t==='ALL') btn.className='fb act-all';
+  else if(t==='RPA') btn.className='fb act-rpa';
+  else if(t==='AI') btn.className='fb act-ai';
+  else btn.className='fb act-rpaai';
+  applyFilters();
+}
+
+function applyFilters(){
+  var rows=document.querySelectorAll('.node-row'), cnt=0;
+  for(var j=0;j<rows.length;j++){
+    var typeOk = (cf==='ALL' || rows[j].getAttribute('data-type')===cf);
+    var searchOk = true;
+    if(sq){
+      var text = rows[j].getAttribute('data-text')||'';
+      searchOk = text.indexOf(sq)>-1;
+    }
+    if(typeOk && searchOk){ rows[j].classList.remove('hidden'); cnt++; }
+    else { rows[j].classList.add('hidden'); }
+  }
+  var fc=document.getElementById('filter-count');
+  if(cf!=='ALL' && !sq) fc.innerHTML='显示 '+cnt+' 个机会点';
+  else fc.innerHTML='';
+  document.getElementById('no-results').style.display=cnt===0?'block':'none';
+  // 更新折叠状态：有搜索词时全部展开
+  var tables=document.querySelectorAll('.nodes-table');
+  var toggles=document.querySelectorAll('.wf-toggle');
+  if(sq){
+    for(var k=0;k<tables.length;k++){ tables[k].classList.remove('col'); toggles[k].classList.remove('col'); }
+  }
+}
+
+function doSearch(val){
+  sq = val.trim().toLowerCase();
+  var clearBtn=document.getElementById('s-clear');
+  var icon=document.getElementById('s-icon');
+  var tip=document.getElementById('s-tip');
+  // 清空旧高亮
+  clearHighlights();
+  if(sq){
+    clearBtn.style.display='block';
+    icon.style.display='none';
+    applyFilters();
+    // 高亮匹配文本
+    var cnt = highlightText(sq);
+    tip.innerHTML = cnt>0 ? ('找到 '+cnt+' 处匹配') : '';
+  } else {
+    clearBtn.style.display='none';
+    icon.style.display='block';
+    tip.innerHTML='';
+    applyFilters();
+  }
+}
+
+function clearSearch(){
+  document.getElementById('search-input').value='';
+  sq='';
+  document.getElementById('s-clear').style.display='none';
+  document.getElementById('s-icon').style.display='block';
+  document.getElementById('s-tip').innerHTML='';
+  clearHighlights();
+  applyFilters();
+}
+
+function clearHighlights(){
+  var hls=document.querySelectorAll('.hl');
+  for(var i=0;i<hls.length;i++){
+    var p=hls[i].parentNode;
+    p.replaceChild(document.createTextNode(hls[i].textContent),hls[i]);
+    p.normalize();
+  }
+}
+
+function highlightText(kw){
+  var cnt=0;
+  var tds=document.querySelectorAll('.node-row:not(.hidden) .td');
+  for(var i=0;i<tds.length;i++){
+    cnt += highlightNode(tds[i], kw);
+  }
+  return cnt;
+}
+
+function highlightNode(el, kw){
+  var cnt=0;
+  var children=el.childNodes;
+  for(var i=children.length-1;i>=0;i--){
+    var node=children[i];
+    if(node.nodeType===3){
+      var text=node.nodeValue;
+      var lower=text.toLowerCase();
+      var idx=lower.indexOf(kw);
+      if(idx>-1){
+        var frag=document.createDocumentFragment();
+        var last=0;
+        while(idx>-1){
+          frag.appendChild(document.createTextNode(text.slice(last,idx)));
+          var span=document.createElement('span');
+          span.className='hl';
+          span.textContent=text.slice(idx,idx+kw.length);
+          frag.appendChild(span);
+          cnt++;
+          last=idx+kw.length;
+          idx=lower.indexOf(kw,last);
+        }
+        frag.appendChild(document.createTextNode(text.slice(last)));
+        el.replaceChild(frag,node);
+      }
+    }
+  }
+  return cnt;
+}
+
+function toggleWF(id,hdr){
+  document.getElementById(id).classList.toggle('col');
+  hdr.querySelector('.wf-toggle').classList.toggle('col');
+}
+function scrollTo2(id,nav){
+  var el=document.getElementById(id);
+  if(el) el.scrollIntoView({behavior:'smooth',block:'start'});
+  var ns=document.querySelectorAll('.nav-item');
+  for(var i=0;i<ns.length;i++) ns[i].classList.remove('active');
+  nav.classList.add('active');
+}
+function showDP(name,type,opp,eff){
+  document.getElementById('dp-title').innerHTML=name;
+  document.getElementById('dp-opp').innerHTML=opp;
+  document.getElementById('dp-eff').innerHTML=eff;
+  var cls=type==='RPA'?'b-RPA':(type==='AI'?'b-AI':'b-RPAAI');
+  document.getElementById('dp-type').innerHTML='<span class=\'badge '+cls+'\'>'+type+'</span>';
+  document.getElementById('dp').classList.add('open');
+  document.getElementById('overlay').classList.add('open');
+}
+function closeDP(){
+  document.getElementById('dp').classList.remove('open');
+  document.getElementById('overlay').classList.remove('open');
+}
+window.addEventListener('scroll',function(){
+  var secs=document.querySelectorAll('.dept-section');
+  var navs=document.querySelectorAll('.nav-item');
+  for(var i=secs.length-1;i>=0;i--){
+    if(secs[i].getBoundingClientRect().top<=140){
+      for(var j=0;j<navs.length;j++) navs[j].classList.remove('active');
+      navs[i].classList.add('active'); break;
+    }
+  }
+});
+// 初始化：为每行写入可搜索文本
+(function(){
+  var rows=document.querySelectorAll('.node-row');
+  for(var i=0;i<rows.length;i++){
+    var tds=rows[i].querySelectorAll('.td');
+    var t='';
+    for(var j=0;j<tds.length;j++) t+=tds[j].textContent.toLowerCase()+' ';
+    rows[i].setAttribute('data-text',t);
+  }
+})();
+</script></body></html>

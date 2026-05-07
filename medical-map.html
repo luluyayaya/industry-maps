@@ -1,0 +1,2178 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>医药行业 RPA+AI 自动化机会地图</title>
+<style>
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+    --bg: #f8fafc;
+    --panel: #ffffff;
+    --border: #e2e8f0;
+    --border-strong: #cbd5e1;
+    --text: #0f172a;
+    --text-mute: #64748b;
+    --text-soft: #94a3b8;
+    --primary: #1e3a8a;
+    --primary-hover: #1e40af;
+    --highlight: #fef08a;
+    --row-hover: #f1f5f9;
+    --row-stripe: #f8fafc;
+    --rpa: #2563eb;
+    --rpa-bg: #eff6ff;
+    --rpa-border: #bfdbfe;
+    --ai: #7c3aed;
+    --ai-bg: #f5f3ff;
+    --ai-border: #ddd6fe;
+    --mix: #059669;
+    --mix-bg: #ecfdf5;
+    --mix-border: #a7f3d0;
+    --shadow-sm: 0 1px 2px rgba(15,23,42,0.04);
+    --shadow-md: 0 4px 12px rgba(15,23,42,0.08);
+}
+html, body {
+    font-family: -apple-system, BlinkMacSystemFont, "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", "Helvetica Neue", Arial, sans-serif;
+    color: var(--text);
+    background: var(--bg);
+    font-size: 14px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* 顶部 Header */
+.header {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: var(--panel);
+    border-bottom: 1px solid var(--border);
+    padding: 14px 28px;
+    box-shadow: var(--shadow-sm);
+}
+.header-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 24px;
+    flex-wrap: wrap;
+}
+.brand { display: flex; align-items: center; gap: 14px; }
+.brand-mark {
+    width: 36px; height: 36px;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    color: #fff; font-weight: 700; font-size: 16px;
+    letter-spacing: 0.5px;
+}
+.brand-text h1 {
+    font-size: 17px; font-weight: 700; color: var(--text);
+    letter-spacing: 0.3px;
+}
+.brand-text p {
+    font-size: 12px; color: var(--text-mute);
+    margin-top: 2px;
+}
+.header-stats {
+    display: flex; gap: 22px;
+    font-size: 12px; color: var(--text-mute);
+}
+.header-stats strong { color: var(--text); font-size: 14px; font-weight: 600; }
+
+/* 筛选+搜索栏 */
+.toolbar {
+    display: flex; align-items: center; gap: 16px;
+    margin-top: 12px; flex-wrap: wrap;
+}
+.filter-group {
+    display: flex; align-items: center; gap: 8px;
+    font-size: 12px; color: var(--text-mute);
+}
+.filter-label { font-weight: 500; }
+.filter-chip {
+    padding: 5px 12px;
+    border: 1px solid var(--border-strong);
+    border-radius: 16px;
+    background: #fff;
+    font-size: 12px;
+    cursor: pointer;
+    color: var(--text-mute);
+    user-select: none;
+    transition: all 0.15s;
+}
+.filter-chip:hover { background: var(--row-hover); }
+.filter-chip.active {
+    background: var(--text); color: #fff; border-color: var(--text);
+}
+.filter-chip.active.cap-rpa { background: var(--rpa); border-color: var(--rpa); }
+.filter-chip.active.cap-ai  { background: var(--ai);  border-color: var(--ai); }
+.filter-chip.active.cap-mix { background: var(--mix); border-color: var(--mix); }
+.filter-chip .dot {
+    display: inline-block; width: 6px; height: 6px;
+    border-radius: 50%; margin-right: 6px; vertical-align: middle;
+}
+.filter-chip.cap-rpa .dot { background: var(--rpa); }
+.filter-chip.cap-ai  .dot { background: var(--ai); }
+.filter-chip.cap-mix .dot { background: var(--mix); }
+
+.search-box {
+    flex: 1; min-width: 240px; max-width: 420px;
+    position: relative;
+}
+.search-input {
+    width: 100%;
+    padding: 7px 32px 7px 32px;
+    border: 1px solid var(--border-strong);
+    border-radius: 6px;
+    font-size: 13px;
+    color: var(--text);
+    background: #fff;
+    outline: none;
+    transition: all 0.15s;
+    font-family: inherit;
+}
+.search-input:focus {
+    border-color: var(--primary);
+    box-shadow: 0 0 0 3px rgba(30,58,138,0.08);
+}
+.search-icon {
+    position: absolute; left: 10px; top: 50%; transform: translateY(-50%);
+    color: var(--text-soft); pointer-events: none;
+    font-size: 12px;
+}
+.search-clear {
+    position: absolute; right: 8px; top: 50%; transform: translateY(-50%);
+    background: var(--border); color: var(--text-mute);
+    width: 18px; height: 18px; border-radius: 50%;
+    border: none; cursor: pointer; font-size: 12px;
+    display: none; line-height: 1;
+}
+.search-clear.show { display: flex; align-items: center; justify-content: center; }
+.search-hint {
+    font-size: 11px; color: var(--text-soft);
+    white-space: nowrap;
+}
+.search-hint kbd {
+    padding: 1px 5px; border: 1px solid var(--border-strong);
+    border-radius: 3px; background: #fff;
+    font-size: 10px; font-family: ui-monospace, monospace;
+    color: var(--text-mute);
+}
+
+/* 主体布局 */
+.layout {
+    display: grid;
+    grid-template-columns: 240px 1fr;
+    min-height: calc(100vh - 130px);
+}
+
+/* 左侧岗位导航 */
+.sidebar {
+    border-right: 1px solid var(--border);
+    background: var(--panel);
+    padding: 16px 0;
+    position: sticky;
+    top: 130px;
+    align-self: flex-start;
+    height: calc(100vh - 130px);
+    overflow-y: auto;
+}
+.sidebar-title {
+    padding: 0 20px 12px;
+    font-size: 11px; font-weight: 600;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+.role-link {
+    display: block;
+    padding: 10px 20px;
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13px;
+    border-left: 3px solid transparent;
+    transition: all 0.15s;
+    cursor: pointer;
+}
+.role-link:hover { background: var(--row-hover); }
+.role-link.active {
+    background: #eff6ff;
+    border-left-color: var(--primary);
+    color: var(--primary);
+    font-weight: 600;
+}
+.role-link .role-name { display: block; }
+.role-link .role-tag {
+    display: block; font-size: 11px; color: var(--text-soft);
+    margin-top: 2px;
+}
+.role-link.active .role-tag { color: var(--primary); opacity: 0.7; }
+
+/* 右侧内容区 */
+.content {
+    padding: 24px 28px 60px;
+    max-width: 1280px;
+}
+.role-section { margin-bottom: 36px; scroll-margin-top: 150px; }
+.role-section.hidden { display: none; }
+.role-header {
+    display: flex; align-items: baseline; gap: 12px;
+    margin-bottom: 6px;
+    border-bottom: 2px solid var(--text);
+    padding-bottom: 10px;
+}
+.role-num {
+    font-size: 22px; font-weight: 700;
+    font-family: ui-monospace, monospace;
+    color: var(--text-soft);
+    letter-spacing: -0.5px;
+}
+.role-title { font-size: 19px; font-weight: 700; color: var(--text); }
+.role-tagline {
+    font-size: 13px; color: var(--text-mute);
+    margin-left: auto;
+}
+.role-desc {
+    font-size: 13px; color: var(--text-mute);
+    margin-bottom: 16px; padding: 10px 14px;
+    background: #f1f5f9; border-radius: 6px;
+    border-left: 3px solid var(--border-strong);
+}
+.role-mini-stats {
+    display: flex; gap: 14px; font-size: 11px;
+    color: var(--text-soft); margin-top: 4px;
+}
+.role-mini-stats span strong { color: var(--text); font-weight: 600; }
+
+/* 工作流块 */
+.workflow {
+    margin-top: 18px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--panel);
+    overflow: hidden;
+    box-shadow: var(--shadow-sm);
+}
+.workflow.hidden { display: none; }
+.workflow-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 16px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    user-select: none;
+}
+.workflow-header:hover { background: #eff6ff; }
+.workflow-title {
+    display: flex; align-items: center; gap: 10px;
+    font-size: 14px; font-weight: 600;
+}
+.wf-icon {
+    width: 22px; height: 22px;
+    background: #fff;
+    border: 1px solid var(--border-strong);
+    border-radius: 4px;
+    display: inline-flex; align-items: center; justify-content: center;
+    font-size: 11px; color: var(--text-mute);
+    font-family: ui-monospace, monospace;
+}
+.workflow-meta {
+    font-size: 11px; color: var(--text-soft);
+}
+.toggle-icon {
+    margin-left: 8px; transition: transform 0.2s;
+    color: var(--text-mute); font-size: 11px;
+}
+.workflow.collapsed .toggle-icon { transform: rotate(-90deg); }
+.workflow.collapsed .workflow-body { display: none; }
+
+/* 三列表头 */
+.workflow-body { padding: 0; }
+.node-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+.node-table thead th {
+    text-align: left;
+    padding: 10px 14px;
+    background: #fafbfc;
+    border-bottom: 1px solid var(--border);
+    font-size: 11px; font-weight: 600;
+    color: var(--text-soft);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+.node-table th.col-name { width: 22%; }
+.node-table th.col-opp  { width: 50%; }
+.node-table th.col-ben  { width: 28%; }
+
+.node-row {
+    border-bottom: 1px solid var(--border);
+    cursor: pointer;
+    transition: background 0.12s;
+}
+.node-row:last-child { border-bottom: none; }
+.node-row:nth-child(even) { background: var(--row-stripe); }
+.node-row:hover { background: #eff6ff !important; }
+.node-row.hidden { display: none; }
+.node-row td {
+    padding: 12px 14px;
+    vertical-align: top;
+    font-size: 13px;
+    line-height: 1.55;
+}
+.node-name {
+    display: flex; align-items: center; gap: 8px;
+    font-weight: 600; color: var(--text);
+}
+.node-name-text { flex: 1; }
+.cap-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    font-size: 10px; font-weight: 600;
+    border-radius: 3px;
+    border: 1px solid;
+    white-space: nowrap;
+    line-height: 1.5;
+}
+.cap-rpa { color: var(--rpa); background: var(--rpa-bg); border-color: var(--rpa-border); }
+.cap-ai  { color: var(--ai);  background: var(--ai-bg);  border-color: var(--ai-border); }
+.cap-mix { color: var(--mix); background: var(--mix-bg); border-color: var(--mix-border); }
+.node-opportunity { color: var(--text); }
+.node-benefit {
+    color: var(--text-mute); font-size: 12px;
+}
+.node-benefit strong { color: var(--text); font-weight: 600; }
+
+/* 节点详情面板(右滑入) */
+.detail-mask {
+    position: fixed; inset: 0;
+    background: rgba(15,23,42,0.32);
+    z-index: 200;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s;
+}
+.detail-mask.show { opacity: 1; pointer-events: auto; }
+.detail-panel {
+    position: fixed; top: 0; right: 0; bottom: 0;
+    width: 480px; max-width: 92vw;
+    background: var(--panel);
+    z-index: 201;
+    transform: translateX(100%);
+    transition: transform 0.25s ease-out;
+    box-shadow: -8px 0 24px rgba(15,23,42,0.12);
+    display: flex; flex-direction: column;
+}
+.detail-panel.show { transform: translateX(0); }
+.detail-header {
+    padding: 18px 22px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: flex-start; gap: 12px;
+}
+.detail-header-text { flex: 1; }
+.detail-eyebrow {
+    font-size: 11px; color: var(--text-soft);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin-bottom: 4px;
+}
+.detail-title {
+    font-size: 17px; font-weight: 700; color: var(--text);
+    line-height: 1.4;
+}
+.detail-close {
+    width: 28px; height: 28px;
+    background: var(--row-hover); border: none; border-radius: 4px;
+    cursor: pointer; color: var(--text-mute);
+    font-size: 16px; line-height: 1;
+}
+.detail-close:hover { background: var(--border); color: var(--text); }
+.detail-body { padding: 20px 22px; overflow-y: auto; flex: 1; }
+.detail-section { margin-bottom: 22px; }
+.detail-section:last-child { margin-bottom: 0; }
+.detail-section-label {
+    font-size: 11px; font-weight: 600; color: var(--text-soft);
+    text-transform: uppercase; letter-spacing: 0.8px;
+    margin-bottom: 8px;
+    display: flex; align-items: center; gap: 8px;
+}
+.detail-section-label::before {
+    content: ""; width: 3px; height: 12px;
+    background: var(--primary); border-radius: 2px;
+}
+.detail-section-content {
+    font-size: 14px; color: var(--text); line-height: 1.7;
+}
+.detail-cap-row { display: flex; gap: 10px; align-items: center; }
+.detail-foot {
+    padding: 14px 22px;
+    border-top: 1px solid var(--border);
+    background: #fafbfc;
+    font-size: 11px; color: var(--text-soft);
+}
+
+/* 搜索高亮 */
+.hl {
+    background: var(--highlight);
+    padding: 0 2px; border-radius: 2px;
+    color: var(--text); font-weight: 600;
+}
+
+/* 空状态 */
+.empty-state {
+    text-align: center; padding: 60px 20px;
+    color: var(--text-mute);
+}
+.empty-state-icon { font-size: 32px; opacity: 0.4; margin-bottom: 12px; }
+.empty-state-title { font-size: 15px; font-weight: 600; margin-bottom: 4px; }
+.empty-state-hint { font-size: 12px; }
+
+/* 底部 */
+.footer {
+    padding: 24px 28px;
+    text-align: center;
+    color: var(--text-soft);
+    font-size: 12px;
+    border-top: 1px solid var(--border);
+    background: var(--panel);
+}
+.footer .legend {
+    display: inline-flex; gap: 16px; margin-bottom: 8px;
+}
+.footer .legend span {
+    display: inline-flex; align-items: center; gap: 4px;
+}
+.footer .legend .dot {
+    width: 8px; height: 8px; border-radius: 2px; display: inline-block;
+}
+
+/* 响应式 */
+@media (max-width: 900px) {
+    .layout { grid-template-columns: 1fr; }
+    .sidebar {
+        position: relative; top: 0; height: auto;
+        border-right: none; border-bottom: 1px solid var(--border);
+        padding: 12px 0;
+    }
+    .role-link { padding: 8px 16px; }
+    .content { padding: 16px; }
+    .node-table th.col-ben, .node-table td:nth-child(3) { display: none; }
+    .node-table th.col-name { width: 35%; }
+    .node-table th.col-opp { width: 65%; }
+    .detail-panel { width: 100%; }
+}
+
+</style>
+</head>
+<body>
+<div class="header">
+<div class="header-row">
+<div class="brand">
+<div class="brand-mark">RX</div>
+<div class="brand-text">
+<h1>医药行业 RPA+AI 自动化机会地图</h1>
+<p>面向医药生产、流通、零售企业的岗位级自动化机会清单</p>
+</div></div>
+<div class="header-stats">
+<div><strong>10</strong> 个岗位</div>
+<div><strong>30</strong> 条工作流</div>
+<div><strong>90</strong> 个机会点</div>
+<div>RPA <strong>59</strong> · AI <strong>12</strong> · RPA+AI <strong>19</strong></div>
+</div></div>
+<div class="toolbar">
+<div class="filter-group">
+<span class="filter-label">能力类型</span>
+<span class="filter-chip cap-rpa active" data-cap="RPA"><span class="dot"></span>RPA</span>
+<span class="filter-chip cap-ai active" data-cap="AI"><span class="dot"></span>AI</span>
+<span class="filter-chip cap-mix active" data-cap="RPA+AI"><span class="dot"></span>RPA+AI</span>
+</div>
+<div class="search-box">
+<span class="search-icon">⌕</span>
+<input id="searchInput" class="search-input" type="text" placeholder="搜索节点 / 机会点 / 系统名 / 效能..." autocomplete="off">
+<button id="searchClear" class="search-clear" type="button" title="清除">×</button>
+</div>
+<div class="search-hint"><kbd>Ctrl</kbd>+<kbd>K</kbd> 聚焦 · <kbd>Esc</kbd> 清除</div>
+</div>
+</div>
+<div class="layout">
+<aside class="sidebar">
+<div class="sidebar-title">岗位导航</div>
+<a href="#role-rd" class="role-link active" data-role="rd">
+<span class="role-name">01. 研发与立项</span>
+<span class="role-tag">药物发现 / 文献情报 / 申报材料准备</span>
+</a>
+<a href="#role-pv" class="role-link" data-role="pv">
+<span class="role-name">02. 临床与药物警戒(PV)</span>
+<span class="role-tag">临床数据 / 不良反应录入 / 安全性报告</span>
+</a>
+<a href="#role-ra" class="role-link" data-role="ra">
+<span class="role-name">03. 注册合规事务</span>
+<span class="role-tag">申报材料 / 证照管理 / 监管信息监控</span>
+</a>
+<a href="#role-scm" class="role-link" data-role="scm">
+<span class="role-name">04. 采购供应链</span>
+<span class="role-tag">供应商资质 / 库存维护 / 物料计划</span>
+</a>
+<a href="#role-qa" class="role-link" data-role="qa">
+<span class="role-name">05. 生产与质量(GMP)</span>
+<span class="role-tag">生产批管理 / 批检报告 / GMP 合规</span>
+</a>
+<a href="#role-gdp" class="role-link" data-role="gdp">
+<span class="role-name">06. 仓储物流(GSP/GDP)</span>
+<span class="role-tag">温控管理 / 出入库台账 / 追溯码</span>
+</a>
+<a href="#role-sales" class="role-link" data-role="sales">
+<span class="role-name">07. 销售运营(医药代表/院内)</span>
+<span class="role-tag">代表合规 / 流向监管 / 医院准入</span>
+</a>
+<a href="#role-ec" class="role-link" data-role="ec">
+<span class="role-name">08. 渠道与电商运营</span>
+<span class="role-tag">电商订单 / 价格监控 / 平台合规</span>
+</a>
+<a href="#role-fin" class="role-link" data-role="fin">
+<span class="role-name">09. 财务结算</span>
+<span class="role-tag">开票 / 银行回单 / 多方对账</span>
+</a>
+<a href="#role-cs" class="role-link" data-role="cs">
+<span class="role-name">10. 客户成功&amp;运营支撑</span>
+<span class="role-tag">企微社群 / 客服交接 / 排班行政</span>
+</a>
+</aside>
+<main class="content">
+<div style="display:flex;align-items:center;gap:12px;padding:10px 14px;margin-bottom:20px;background:#eff6ff;border:1px solid #bfdbfe;border-radius:6px;font-size:12px;color:#1e40af;">
+<span style="font-weight:600;white-space:nowrap;">使用提示</span>
+<span style="color:#475569;">点击节点查看详情 · 顶部按能力类型筛选 · 搜索时所有匹配的工作流自动展开 · 左侧导航跳转岗位</span>
+</div>
+<div id="emptyState" class="empty-state" style="display:none;">
+<div class="empty-state-icon">⌕</div>
+<div class="empty-state-title">没有匹配的机会点</div>
+<div class="empty-state-hint">试试调整筛选条件或搜索关键词</div>
+</div>
+<section id="role-rd" class="role-section" data-role="rd">
+<div class="role-header">
+<span class="role-num">01</span>
+<span class="role-title">研发与立项</span>
+<span class="role-tagline">药物发现 / 文献情报 / 申报材料准备</span>
+</div>
+<div class="role-desc">面向新药研发、医疗器械研发的研发岗、情报岗、注册预研岗,典型痛点是文献和专利信息分散、生物信息检索跨多个平台、申报材料字段反复人工填写。</div>
+<div class="role-mini-stats">
+<span><strong>3</strong> 条工作流</span>
+<span><strong>9</strong> 个机会点</span>
+<span style="color:var(--rpa);">RPA <strong>4</strong></span>
+<span style="color:var(--ai);">AI <strong>2</strong></span>
+<span style="color:var(--mix);">RPA+AI <strong>3</strong></span>
+</div>
+<div class="workflow" data-wf="rd-w0" data-role="rd" data-first="1">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">1</span>
+靶点专利与文献情报
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n0" data-cap="RPA+AI" data-wf="rd-w0" data-search="专利数据库批量筛查 在 patsnap、incopat、google patents 等专利平台按关键词批量检索,rpa 翻页采集专利元数据,ai 解析专利全文判断涉及的分子类型与靶点,自动输出筛查结论表。 原 1 条专利人工 1 分钟,自动化后 15 条/10 秒,效率提升数十倍,每条处理成本可降至 0.3 元级别 立项前的靶点扫描、竞品专利监控、月度 1000+ 条专利筛查 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">专利数据库批量筛查</span></div></td>
+<td class="node-opportunity">在 PatSnap、Incopat、Google Patents 等专利平台按关键词批量检索,RPA 翻页采集专利元数据,AI 解析专利全文判断涉及的分子类型与靶点,自动输出筛查结论表。</td>
+<td class="node-benefit">原 1 条专利人工 1 分钟,自动化后 15 条/10 秒,效率提升数十倍,每条处理成本可降至 0.3 元级别</td>
+</tr>
+<tr class="node-row" data-nid="n1" data-cap="RPA" data-wf="rd-w0" data-search="pubmed/cnki 文献定题检索 rpa 按预设检索式定时登录 pubmed、cnki、万方、embase 等数据库,批量下载新增文献题录与全文 pdf,按主题词归档到研发情报库。 周期性文献跟踪从人工 1 天/次降至自动跑批,覆盖率从抽样升至 100% 研发情报周报、专家共识更新跟踪、竞品临床进展监控 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">PubMed/CNKI 文献定题检索</span></div></td>
+<td class="node-opportunity">RPA 按预设检索式定时登录 PubMed、CNKI、万方、Embase 等数据库,批量下载新增文献题录与全文 PDF,按主题词归档到研发情报库。</td>
+<td class="node-benefit">周期性文献跟踪从人工 1 天/次降至自动跑批,覆盖率从抽样升至 100%</td>
+</tr>
+<tr class="node-row" data-nid="n2" data-cap="RPA+AI" data-wf="rd-w0" data-search="生物信息同源性比对 rpa 自动登录 bio-techne、uniprot、ncbi 等数据库,ai 从抗体说明书 pdf 中识别免疫原序列填入比对表,自动完成跨种属同源性(&gt;90%)初筛。 相比人工搭建数据文件提速 90%+,每周节省约 12 小时,显著降低试错成本 抗体研发跨种属选型、动物实验前的同源性预判 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">生物信息同源性比对</span></div></td>
+<td class="node-opportunity">RPA 自动登录 Bio-Techne、UniProt、NCBI 等数据库,AI 从抗体说明书 PDF 中识别免疫原序列填入比对表,自动完成跨种属同源性(&gt;90%)初筛。</td>
+<td class="node-benefit">相比人工搭建数据文件提速 90%+,每周节省约 12 小时,显著降低试错成本</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="rd-w1" data-role="rd">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">2</span>
+研发档案与立项申报
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n3" data-cap="RPA+AI" data-wf="rd-w1" data-search="抗体说明书基础信息回填 rpa 循环 excel 中的 uniprot id 在官网自动检索,抓取序列号、分子别名、细胞定位等字段,自动写入 word 说明书模板。 单份说明书从人工 60 分钟降至 43 分钟,提效约 28%,每周节省约 8 小时 新抗体成品上架、产品入库前的资料整理 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">抗体说明书基础信息回填</span></div></td>
+<td class="node-opportunity">RPA 循环 Excel 中的 UniProt ID 在官网自动检索,抓取序列号、分子别名、细胞定位等字段,自动写入 Word 说明书模板。</td>
+<td class="node-benefit">单份说明书从人工 60 分钟降至 43 分钟,提效约 28%,每周节省约 8 小时</td>
+</tr>
+<tr class="node-row" data-nid="n4" data-cap="AI" data-wf="rd-w1" data-search="立项调研报告草稿生成 ai 基于已收集的文献摘要、专利清单、市场数据,按公司立项报告模板生成初稿(背景、靶点价值、竞品格局、技术路线),研发人员二次校对。 立项报告从 3-5 天缩至 1 天,文档结构和深度统一 新项目立项评审、产品线规划季度复盘 ai">
+<td><div class="node-name"><span class="cap-badge cap-ai">AI</span><span class="node-name-text">立项调研报告草稿生成</span></div></td>
+<td class="node-opportunity">AI 基于已收集的文献摘要、专利清单、市场数据,按公司立项报告模板生成初稿(背景、靶点价值、竞品格局、技术路线),研发人员二次校对。</td>
+<td class="node-benefit">立项报告从 3-5 天缩至 1 天,文档结构和深度统一</td>
+</tr>
+<tr class="node-row" data-nid="n5" data-cap="RPA" data-wf="rd-w1" data-search="研发档案归档合规检查 rpa 按 glp/gmp 档案目录扫描研发 nas 与 oa,核对必备文件清单完整性、命名规范、版本号一致性,缺失自动通知责任人。 档案完整性核查从季度抽查升至每周全量,审计准备时间压缩 60% 以上 迎接药监局现场检查、年度内审、项目阶段性结项 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">研发档案归档合规检查</span></div></td>
+<td class="node-opportunity">RPA 按 GLP/GMP 档案目录扫描研发 NAS 与 OA,核对必备文件清单完整性、命名规范、版本号一致性,缺失自动通知责任人。</td>
+<td class="node-benefit">档案完整性核查从季度抽查升至每周全量,审计准备时间压缩 60% 以上</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="rd-w2" data-role="rd">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">3</span>
+实验室数据与 BOM
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n6" data-cap="RPA" data-wf="rd-w2" data-search="实验室抽提平台 bom 提交 rpa 自动登录 nas 系统获取实验任务单,登录 oa 打开任务单填写 bom 数据并提交,完成后回写 excel 汇总并发企微通知。 替代纯人工填报,提交及时性、准确性、可追溯性同步提升 实验室完成实验后的物料登记、研发-生产衔接的物料交接 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">实验室抽提平台 BOM 提交</span></div></td>
+<td class="node-opportunity">RPA 自动登录 NAS 系统获取实验任务单,登录 OA 打开任务单填写 BOM 数据并提交,完成后回写 Excel 汇总并发企微通知。</td>
+<td class="node-benefit">替代纯人工填报,提交及时性、准确性、可追溯性同步提升</td>
+</tr>
+<tr class="node-row" data-nid="n7" data-cap="AI" data-wf="rd-w2" data-search="eln 实验记录结构化 ai 解析手写或自由文本的 eln 实验记录,提取关键参数(温度、时间、批号、试剂用量)并结构化入库,辅助跨实验对比分析。 非结构化实验数据可检索率从 0 提升至 100%,数据复用价值大幅释放 实验数据回顾、工艺参数优化、研发生产工艺转移 ai">
+<td><div class="node-name"><span class="cap-badge cap-ai">AI</span><span class="node-name-text">ELN 实验记录结构化</span></div></td>
+<td class="node-opportunity">AI 解析手写或自由文本的 ELN 实验记录,提取关键参数(温度、时间、批号、试剂用量)并结构化入库,辅助跨实验对比分析。</td>
+<td class="node-benefit">非结构化实验数据可检索率从 0 提升至 100%,数据复用价值大幅释放</td>
+</tr>
+<tr class="node-row" data-nid="n8" data-cap="RPA" data-wf="rd-w2" data-search="试剂耗材采购单生成 rpa 监测实验室物料库存,低于阈值自动按预设供应商生成采购申请单提交至 sap/用友 nc,附本期需求依据。 耗材断料事件下降,采购响应时效从 2-3 天缩至当天 高频耗材库存预警、研发项目集中用料期 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">试剂耗材采购单生成</span></div></td>
+<td class="node-opportunity">RPA 监测实验室物料库存,低于阈值自动按预设供应商生成采购申请单提交至 SAP/用友 NC,附本期需求依据。</td>
+<td class="node-benefit">耗材断料事件下降,采购响应时效从 2-3 天缩至当天</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</section>
+<section id="role-pv" class="role-section" data-role="pv">
+<div class="role-header">
+<span class="role-num">02</span>
+<span class="role-title">临床与药物警戒(PV)</span>
+<span class="role-tagline">临床数据 / 不良反应录入 / 安全性报告</span>
+</div>
+<div class="role-desc">面向临床运营、药物警戒(PV)、医学事务岗。强监管场景:不良反应(ADR)上报有时限要求、PSUR/PBRER 周期性报告依赖海量文献检索、Argus 系统数据录入工作量极大。</div>
+<div class="role-mini-stats">
+<span><strong>3</strong> 条工作流</span>
+<span><strong>9</strong> 个机会点</span>
+<span style="color:var(--rpa);">RPA <strong>5</strong></span>
+<span style="color:var(--ai);">AI <strong>1</strong></span>
+<span style="color:var(--mix);">RPA+AI <strong>3</strong></span>
+</div>
+<div class="workflow" data-wf="pv-w0" data-role="pv" data-first="1">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">1</span>
+不良反应(ADR)采集录入
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n9" data-cap="RPA+AI" data-wf="pv-w0" data-search="argus 系统不良反应录入 rpa 自动登录 oracle argus 系统,ai 将 pdf 格式的不良反应表单转为结构化数据(包括医院、就诊信息),逐条写入 argus,并调用高德地图 api 自动定位医院。 3 位同事每日各节省约 2 小时,合计每日 6 小时,准确性达 100%,相当于释放一名人工 adr 专员日常录入、报告周期前的集中补录 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">Argus 系统不良反应录入</span></div></td>
+<td class="node-opportunity">RPA 自动登录 Oracle Argus 系统,AI 将 PDF 格式的不良反应表单转为结构化数据(包括医院、就诊信息),逐条写入 Argus,并调用高德地图 API 自动定位医院。</td>
+<td class="node-benefit">3 位同事每日各节省约 2 小时,合计每日 6 小时,准确性达 100%,相当于释放一名人工</td>
+</tr>
+<tr class="node-row" data-nid="n10" data-cap="RPA" data-wf="pv-w0" data-search="adr 报告时限合规预警 rpa 监控 argus 与内部 pv 系统中待报告 adr 的剩余时限(严重 7 日、非严重 15 日),临近超期自动短信+企微催办,生成合规台账。 超期上报风险降至接近 0,监管检查时台账可一键导出 高风险品种集中上市期、迎检前的合规自查 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">ADR 报告时限合规预警</span></div></td>
+<td class="node-opportunity">RPA 监控 Argus 与内部 PV 系统中待报告 ADR 的剩余时限(严重 7 日、非严重 15 日),临近超期自动短信+企微催办,生成合规台账。</td>
+<td class="node-benefit">超期上报风险降至接近 0,监管检查时台账可一键导出</td>
+</tr>
+<tr class="node-row" data-nid="n11" data-cap="AI" data-wf="pv-w0" data-search="adr 表单 ocr 关键字段提取 ai 从扫描件、传真、word 等多版本个例安全性报表(icsr)中识别关键字段,精准识别特殊符号(如☒/✓),结构化输出供下游录入。 处理 1 份文件费用约 0.2 元,字段识别完整且结构化,人工二次核对工作量降低 70%+ 多渠道收集的 adr 报表批量入库、历史 adr 数据回溯 ai">
+<td><div class="node-name"><span class="cap-badge cap-ai">AI</span><span class="node-name-text">ADR 表单 OCR 关键字段提取</span></div></td>
+<td class="node-opportunity">AI 从扫描件、传真、Word 等多版本个例安全性报表(ICSR)中识别关键字段,精准识别特殊符号(如☒/✓),结构化输出供下游录入。</td>
+<td class="node-benefit">处理 1 份文件费用约 0.2 元,字段识别完整且结构化,人工二次核对工作量降低 70%+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="pv-w1" data-role="pv">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">2</span>
+文献监测与安全性报告
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n12" data-cap="RPA" data-wf="pv-w1" data-search="国内外文献库定期监测 rpa 循环登录 pubmed、embase、cnki 等国内外文献库,按品种关键词检索新增文献,批量导出筛选结果整理成标准 excel 提交 pv 部门。 原月均 4 人/天文献检索工作量,纯 rpa 操作无需人工,准确性 100%、及时性大幅提升 psur/pbrer 报告周期、新品种上市后强化监测期 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">国内外文献库定期监测</span></div></td>
+<td class="node-opportunity">RPA 循环登录 PubMed、Embase、CNKI 等国内外文献库,按品种关键词检索新增文献,批量导出筛选结果整理成标准 Excel 提交 PV 部门。</td>
+<td class="node-benefit">原月均 4 人/天文献检索工作量,纯 RPA 操作无需人工,准确性 100%、及时性大幅提升</td>
+</tr>
+<tr class="node-row" data-nid="n13" data-cap="RPA+AI" data-wf="pv-w1" data-search="psur 报告附件汇编 rpa 从 argus 导出统计表、从文献库导出筛选结果,ai 按 psur 模板章节自动汇编初稿(品种概述、暴露量、adr 统计、文献综述),专员二次审校。 psur 初稿汇编从 1-2 周缩至 2-3 天,模板格式合规性 100% 新品种 5 年内每半年 psur、上市超 5 年品种 5 年期 psur rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">PSUR 报告附件汇编</span></div></td>
+<td class="node-opportunity">RPA 从 Argus 导出统计表、从文献库导出筛选结果,AI 按 PSUR 模板章节自动汇编初稿(品种概述、暴露量、ADR 统计、文献综述),专员二次审校。</td>
+<td class="node-benefit">PSUR 初稿汇编从 1-2 周缩至 2-3 天,模板格式合规性 100%</td>
+</tr>
+<tr class="node-row" data-nid="n14" data-cap="RPA+AI" data-wf="pv-w1" data-search="药品说明书安全性变更追踪 rpa 监控国家药监局发布的说明书修订公告,ai 对比新旧说明书安全性章节(警告、禁忌、不良反应)差异,自动标红推送至 pv 与医学部。 说明书更新感知从月级别提升至 24 小时内,合规跟进无遗漏 在售品种说明书修订、同类竞品说明书变更比对 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">药品说明书安全性变更追踪</span></div></td>
+<td class="node-opportunity">RPA 监控国家药监局发布的说明书修订公告,AI 对比新旧说明书安全性章节(警告、禁忌、不良反应)差异,自动标红推送至 PV 与医学部。</td>
+<td class="node-benefit">说明书更新感知从月级别提升至 24 小时内,合规跟进无遗漏</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="pv-w2" data-role="pv">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">3</span>
+临床试验运营
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n15" data-cap="RPA" data-wf="pv-w2" data-search="edc 数据一致性核查 rpa 按预设逻辑规则比对 edc 录入数据与原始病历影印件 ocr 结果(crf 表),自动标记可疑数据点供 cra 复核。 数据清理周期从 sdv 现场核查依赖降至日常自动巡检,提升数据库锁定及时性 多中心临床试验数据清理、数据库锁库前合规自查 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">EDC 数据一致性核查</span></div></td>
+<td class="node-opportunity">RPA 按预设逻辑规则比对 EDC 录入数据与原始病历影印件 OCR 结果(CRF 表),自动标记可疑数据点供 CRA 复核。</td>
+<td class="node-benefit">数据清理周期从 SDV 现场核查依赖降至日常自动巡检,提升数据库锁定及时性</td>
+</tr>
+<tr class="node-row" data-nid="n16" data-cap="RPA" data-wf="pv-w2" data-search="受试者随访提醒触达 rpa 按访视计划自动触发短信、企微消息提醒 crc 联系受试者,记录回访结果回写 edc,失联自动升级。 随访脱落率下降,crc 重复性沟通工作量降低 50%+ 长周期研究的随访管理、依从性差的受试者群体跟进 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">受试者随访提醒触达</span></div></td>
+<td class="node-opportunity">RPA 按访视计划自动触发短信、企微消息提醒 CRC 联系受试者,记录回访结果回写 EDC,失联自动升级。</td>
+<td class="node-benefit">随访脱落率下降,CRC 重复性沟通工作量降低 50%+</td>
+</tr>
+<tr class="node-row" data-nid="n17" data-cap="RPA" data-wf="pv-w2" data-search="临床中心招募进度看板 rpa 每日从各中心 edc 抽取入组、筛选失败、脱落数据,自动生成进度看板邮件推送项目组与申办方。 入组进度感知从周报级提升至日报级,慢中心可及早干预 多中心试验运营周会、申办方项目监查会议 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">临床中心招募进度看板</span></div></td>
+<td class="node-opportunity">RPA 每日从各中心 EDC 抽取入组、筛选失败、脱落数据,自动生成进度看板邮件推送项目组与申办方。</td>
+<td class="node-benefit">入组进度感知从周报级提升至日报级,慢中心可及早干预</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</section>
+<section id="role-ra" class="role-section" data-role="ra">
+<div class="role-header">
+<span class="role-num">03</span>
+<span class="role-title">注册合规事务</span>
+<span class="role-tagline">申报材料 / 证照管理 / 监管信息监控</span>
+</div>
+<div class="role-desc">面向注册经理、合规专员、QP/质量受权人。强监管场景:药品/医疗器械注册申报材料量大字段多、GSP/GMP 证照到期管理、国家及地方药监局公告需逐日跟踪。</div>
+<div class="role-mini-stats">
+<span><strong>3</strong> 条工作流</span>
+<span><strong>9</strong> 个机会点</span>
+<span style="color:var(--rpa);">RPA <strong>7</strong></span>
+<span style="color:var(--ai);">AI <strong>1</strong></span>
+<span style="color:var(--mix);">RPA+AI <strong>1</strong></span>
+</div>
+<div class="workflow" data-wf="ra-w0" data-role="ra" data-first="1">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">1</span>
+申报材料整理与提交
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n18" data-cap="RPA+AI" data-wf="ra-w0" data-search="注册申报清单字段填充 ai 从研发档案、生产工艺、质量标准等源文档中识别申报材料所需字段(规格、剂型、原辅料供应商等),rpa 自动填入药监局申报模板。 材料整理周期从 1-2 周降至 2-3 天,字段一致性核查自动化 新药 ind/nda 申报、仿制药一致性评价、医疗器械注册申报 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">注册申报清单字段填充</span></div></td>
+<td class="node-opportunity">AI 从研发档案、生产工艺、质量标准等源文档中识别申报材料所需字段(规格、剂型、原辅料供应商等),RPA 自动填入药监局申报模板。</td>
+<td class="node-benefit">材料整理周期从 1-2 周降至 2-3 天,字段一致性核查自动化</td>
+</tr>
+<tr class="node-row" data-nid="n19" data-cap="RPA" data-wf="ra-w0" data-search="药监局网上办事大厅提交 rpa 自动登录国家药监局或省级药监局网上办事大厅,按申报事项类型上传材料、填写表单字段、跟踪受理状态变更并通知责任人。 提交动作从人工守屏改为定时跑批,受理状态查询从天级提升至小时级 批件年度更新、变更补充申请、生产许可证延续 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">药监局网上办事大厅提交</span></div></td>
+<td class="node-opportunity">RPA 自动登录国家药监局或省级药监局网上办事大厅,按申报事项类型上传材料、填写表单字段、跟踪受理状态变更并通知责任人。</td>
+<td class="node-benefit">提交动作从人工守屏改为定时跑批,受理状态查询从天级提升至小时级</td>
+</tr>
+<tr class="node-row" data-nid="n20" data-cap="AI" data-wf="ra-w0" data-search="申报材料合规预审 ai 按药典、cde 技术指南、申报指南等知识库,对申报材料草稿做合规性预检(必填项、术语规范、附件齐全),输出问题清单。 形式审查通过率提升,因材料缺漏导致的退审次数下降 首次提交前的内部预审、cde 沟通会前的材料整理 ai">
+<td><div class="node-name"><span class="cap-badge cap-ai">AI</span><span class="node-name-text">申报材料合规预审</span></div></td>
+<td class="node-opportunity">AI 按药典、CDE 技术指南、申报指南等知识库,对申报材料草稿做合规性预检(必填项、术语规范、附件齐全),输出问题清单。</td>
+<td class="node-benefit">形式审查通过率提升,因材料缺漏导致的退审次数下降</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="ra-w1" data-role="ra">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">2</span>
+证照与资质管理
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n21" data-cap="RPA" data-wf="ra-w1" data-search="gmp/gsp 证照到期预警 rpa 维护证照台账(药品生产许可证、gmp 证书、gsp 证书、医疗器械注册证、营业执照),按到期日提前 90/60/30 天分级预警,推送续证经办人。 证照过期触雷风险降至 0,续证流程提前启动 30 天以上 公司持证类目多、跨省经营、控股子公司证照统一管控 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">GMP/GSP 证照到期预警</span></div></td>
+<td class="node-opportunity">RPA 维护证照台账(药品生产许可证、GMP 证书、GSP 证书、医疗器械注册证、营业执照),按到期日提前 90/60/30 天分级预警,推送续证经办人。</td>
+<td class="node-benefit">证照过期触雷风险降至 0,续证流程提前启动 30 天以上</td>
+</tr>
+<tr class="node-row" data-nid="n22" data-cap="RPA" data-wf="ra-w1" data-search="供应商资质药监局核验 rpa 进入药监局药品/器械/化妆品查询界面,循环搜索供应商企业名称,抓取生产许可、产品注册、行政处罚等资质信息,回写 erp 供应商档案。 单条核验从人工 5 分钟降至 1 分钟(5 倍提效),数据采集准确率达 100% 首营资质审查、合作供应商年度复审、新供应商准入 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">供应商资质药监局核验</span></div></td>
+<td class="node-opportunity">RPA 进入药监局药品/器械/化妆品查询界面,循环搜索供应商企业名称,抓取生产许可、产品注册、行政处罚等资质信息,回写 ERP 供应商档案。</td>
+<td class="node-benefit">单条核验从人工 5 分钟降至 1 分钟(5 倍提效),数据采集准确率达 100%</td>
+</tr>
+<tr class="node-row" data-nid="n23" data-cap="RPA" data-wf="ra-w1" data-search="委托书/授权书续期维护 rpa 登录药师帮 scm 等 b2b 平台,逐订单查询客户委托书有效期,过期自动发短信/在线消息提醒,已重新上传则登记到在线表格。 原 20 个店铺需 5 人操作,自动化后 1 人即可,每天节省每人 6 小时工作量 b2b 平台高频小额订单、客户分散的批发渠道 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">委托书/授权书续期维护</span></div></td>
+<td class="node-opportunity">RPA 登录药师帮 SCM 等 B2B 平台,逐订单查询客户委托书有效期,过期自动发短信/在线消息提醒,已重新上传则登记到在线表格。</td>
+<td class="node-benefit">原 20 个店铺需 5 人操作,自动化后 1 人即可,每天节省每人 6 小时工作量</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="ra-w2" data-role="ra">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">3</span>
+监管信息与政策跟踪
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n24" data-cap="RPA" data-wf="ra-w2" data-search="国家及地方药监局公告抓取 rpa 定期登录国家药监局及各省局官网,按截止日期循环抓取公告通告(质量不合格、抽检不合格、说明书修订、召回等),下载附件归档并推送质量部。 信息收集从人工 28 小时/次降至 2 小时/次(14 倍提效),采集准确率 100%、零遗漏 月度合规简报、突发监管事件应急响应、迎接 gmp/gsp 飞检 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">国家及地方药监局公告抓取</span></div></td>
+<td class="node-opportunity">RPA 定期登录国家药监局及各省局官网,按截止日期循环抓取公告通告(质量不合格、抽检不合格、说明书修订、召回等),下载附件归档并推送质量部。</td>
+<td class="node-benefit">信息收集从人工 28 小时/次降至 2 小时/次(14 倍提效),采集准确率 100%、零遗漏</td>
+</tr>
+<tr class="node-row" data-nid="n25" data-cap="RPA" data-wf="ra-w2" data-search="集采中标结果监控 rpa 监控国家及省级药品集采平台,新批次中标结果发布后自动抓取本公司及竞品价格、中选企业、约定采购量,生成对比报告。 中标信息从人工天级延迟提升至发布当日触达商务、价格、市场部 集采开标周、价格策略复盘、竞品动态跟踪 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">集采中标结果监控</span></div></td>
+<td class="node-opportunity">RPA 监控国家及省级药品集采平台,新批次中标结果发布后自动抓取本公司及竞品价格、中选企业、约定采购量,生成对比报告。</td>
+<td class="node-benefit">中标信息从人工天级延迟提升至发布当日触达商务、价格、市场部</td>
+</tr>
+<tr class="node-row" data-nid="n26" data-cap="RPA" data-wf="ra-w2" data-search="医院招标信息监控 rpa 定期扫描各省药械集采平台、医院官网、第三方招标网站,按品种关键词抓取招标公告与中标公示,推送给区域销售。 招标信息覆盖从重点医院抽样升至全量监控,商机响应提前数天 医院年度招标季、新品准入推广、区域市场拓展 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">医院招标信息监控</span></div></td>
+<td class="node-opportunity">RPA 定期扫描各省药械集采平台、医院官网、第三方招标网站,按品种关键词抓取招标公告与中标公示,推送给区域销售。</td>
+<td class="node-benefit">招标信息覆盖从重点医院抽样升至全量监控,商机响应提前数天</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</section>
+<section id="role-scm" class="role-section" data-role="scm">
+<div class="role-header">
+<span class="role-num">04</span>
+<span class="role-title">采购供应链</span>
+<span class="role-tagline">供应商资质 / 库存维护 / 物料计划</span>
+</div>
+<div class="role-desc">面向采购、供应链计划、SQE 岗。医药采购涉及原料药、辅料、包材的 GMP 合规审查,跨多分仓库存协同,以及在 SAP/用友 NC、MES 等多系统间维护物料属性。</div>
+<div class="role-mini-stats">
+<span><strong>3</strong> 条工作流</span>
+<span><strong>9</strong> 个机会点</span>
+<span style="color:var(--rpa);">RPA <strong>7</strong></span>
+<span style="color:var(--ai);">AI <strong>0</strong></span>
+<span style="color:var(--mix);">RPA+AI <strong>2</strong></span>
+</div>
+<div class="workflow" data-wf="scm-w0" data-role="scm" data-first="1">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">1</span>
+供应商管理
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n27" data-cap="RPA+AI" data-wf="scm-w0" data-search="供应商资质自动化审查 rpa 进入药监局-药品查询界面,按供应商批量抓取生产许可证、gmp 证书、产品注册证等资质,ai 比对证照与合同台账一致性,异常推送 sqe。 单家审查从 5 分钟降至 1 分钟(5 倍提效),数据准确率 100% 首营资质审查、合作供应商年度复审、合规飞检前自查 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">供应商资质自动化审查</span></div></td>
+<td class="node-opportunity">RPA 进入药监局-药品查询界面,按供应商批量抓取生产许可证、GMP 证书、产品注册证等资质,AI 比对证照与合同台账一致性,异常推送 SQE。</td>
+<td class="node-benefit">单家审查从 5 分钟降至 1 分钟(5 倍提效),数据准确率 100%</td>
+</tr>
+<tr class="node-row" data-nid="n28" data-cap="RPA" data-wf="scm-w0" data-search="供应商证照到期续证管理 rpa 维护供应商证照台账,提前 90/60/30 天预警即将过期证照,自动发邮件请供应商上传新版,未及时上传冻结其新订单。 因证照过期导致的采购合规风险接近 0,续证沟通效率提升 原料药 gmp 证书到期、辅料供应商资质年审 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">供应商证照到期续证管理</span></div></td>
+<td class="node-opportunity">RPA 维护供应商证照台账,提前 90/60/30 天预警即将过期证照,自动发邮件请供应商上传新版,未及时上传冻结其新订单。</td>
+<td class="node-benefit">因证照过期导致的采购合规风险接近 0,续证沟通效率提升</td>
+</tr>
+<tr class="node-row" data-nid="n29" data-cap="RPA" data-wf="scm-w0" data-search="供应商绩效定期对账 rpa 从 erp 抽取供应商交付准时率、合格率、退货率,按月生成绩效卡推送 sqe 与采购,异常供应商触发约谈流程。 绩效评估从季度抽样升至月度全量,问题供应商识别提前 供应商月度绩效会、年度供应商分级评估 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">供应商绩效定期对账</span></div></td>
+<td class="node-opportunity">RPA 从 ERP 抽取供应商交付准时率、合格率、退货率,按月生成绩效卡推送 SQE 与采购,异常供应商触发约谈流程。</td>
+<td class="node-benefit">绩效评估从季度抽样升至月度全量,问题供应商识别提前</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="scm-w1" data-role="scm">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">2</span>
+库存与计划维护
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n30" data-cap="RPA" data-wf="scm-w1" data-search="全国分仓安全库存维护 rpa 自动登录用友 nc 物料集团板块,按 excel 货品物料逐条选择对应组织(仓库)输入安全库存,自动循环至所有 sku 维护完毕。 单条从 2-3 分钟降至 0.5 分钟(400% 提效),日均节省约 2 小时 月度安全库存调整、新品上架库存策略设置、仓库新增 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">全国分仓安全库存维护</span></div></td>
+<td class="node-opportunity">RPA 自动登录用友 NC 物料集团板块,按 Excel 货品物料逐条选择对应组织(仓库)输入安全库存,自动循环至所有 SKU 维护完毕。</td>
+<td class="node-benefit">单条从 2-3 分钟降至 0.5 分钟(400% 提效),日均节省约 2 小时</td>
+</tr>
+<tr class="node-row" data-nid="n31" data-cap="RPA" data-wf="scm-w1" data-search="物料计划属性批量维护 rpa 在 nc 系统物料集团板块按 excel 当前行物料计划属性,自动选择组织并输入计划属性,跨多系统切换零出错。 单条 2-3 分钟降至 0.5 分钟(400% 提效),计划属性维护准确性 100% 物料主数据治理、季度计划参数复盘、产品线调整 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">物料计划属性批量维护</span></div></td>
+<td class="node-opportunity">RPA 在 NC 系统物料集团板块按 Excel 当前行物料计划属性,自动选择组织并输入计划属性,跨多系统切换零出错。</td>
+<td class="node-benefit">单条 2-3 分钟降至 0.5 分钟(400% 提效),计划属性维护准确性 100%</td>
+</tr>
+<tr class="node-row" data-nid="n32" data-cap="RPA" data-wf="scm-w1" data-search="mrp 物料需求计划核对 rpa 从 mes 与 erp 分别抽取生产计划与物料需求,自动比对差异并按超阈值规则触发计划员复核。 mrp 异常发现时效从次日提升至当班,缺料停产风险下降 周计划下达、月度滚动计划、跨厂区物料调拨 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">MRP 物料需求计划核对</span></div></td>
+<td class="node-opportunity">RPA 从 MES 与 ERP 分别抽取生产计划与物料需求,自动比对差异并按超阈值规则触发计划员复核。</td>
+<td class="node-benefit">MRP 异常发现时效从次日提升至当班,缺料停产风险下降</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="scm-w2" data-role="scm">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">3</span>
+采购执行与对账
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n33" data-cap="RPA" data-wf="scm-w2" data-search="采购订单创建与跟单 rpa 接收来自 mrp 的采购建议,自动在 erp 生成采购订单并发送供应商,定时回查交期与发货状态,异常推送采购员。 采购员从订单录入解放出来,跟单覆盖率从抽样升至全量 高频小额采购、长尾辅料包材订单 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">采购订单创建与跟单</span></div></td>
+<td class="node-opportunity">RPA 接收来自 MRP 的采购建议,自动在 ERP 生成采购订单并发送供应商,定时回查交期与发货状态,异常推送采购员。</td>
+<td class="node-benefit">采购员从订单录入解放出来,跟单覆盖率从抽样升至全量</td>
+</tr>
+<tr class="node-row" data-nid="n34" data-cap="RPA+AI" data-wf="scm-w2" data-search="供应商发票三单匹配 ai 识别供应商发票关键字段(开票方、品名、金额、税额),rpa 与 erp 中的采购订单、入库单做三单匹配,差异自动挂账供应商对接人。 对账周期从月底集中处理改为日清,差错率显著下降 月底集中开票、年终供应商对账 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">供应商发票三单匹配</span></div></td>
+<td class="node-opportunity">AI 识别供应商发票关键字段(开票方、品名、金额、税额),RPA 与 ERP 中的采购订单、入库单做三单匹配,差异自动挂账供应商对接人。</td>
+<td class="node-benefit">对账周期从月底集中处理改为日清,差错率显著下降</td>
+</tr>
+<tr class="node-row" data-nid="n35" data-cap="RPA" data-wf="scm-w2" data-search="应付账款付款审批流转 rpa 接收审核通过的应付清单,按账期、付款条件自动在 erp 发起付款申请,推送至 oa 审批节点并跟踪流转。 付款流转时效从 3-5 天缩至 1-2 天,逾期付款风险下降 月度付款集中审批、大额付款审批跟催 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">应付账款付款审批流转</span></div></td>
+<td class="node-opportunity">RPA 接收审核通过的应付清单,按账期、付款条件自动在 ERP 发起付款申请,推送至 OA 审批节点并跟踪流转。</td>
+<td class="node-benefit">付款流转时效从 3-5 天缩至 1-2 天,逾期付款风险下降</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</section>
+<section id="role-qa" class="role-section" data-role="qa">
+<div class="role-header">
+<span class="role-num">05</span>
+<span class="role-title">生产与质量(GMP)</span>
+<span class="role-tagline">生产批管理 / 批检报告 / GMP 合规</span>
+</div>
+<div class="role-desc">面向生产计划、QA、QC、QP 岗。GMP 强监管场景:生产批下达流程多、批记录手工誊写、QC 检验报告格式固定但量大、合规信息需多方监管对照。</div>
+<div class="role-mini-stats">
+<span><strong>3</strong> 条工作流</span>
+<span><strong>9</strong> 个机会点</span>
+<span style="color:var(--rpa);">RPA <strong>7</strong></span>
+<span style="color:var(--ai);">AI <strong>2</strong></span>
+<span style="color:var(--mix);">RPA+AI <strong>0</strong></span>
+</div>
+<div class="workflow" data-wf="qa-w0" data-role="qa" data-first="1">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">1</span>
+生产批与领料
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n36" data-cap="RPA" data-wf="qa-w0" data-search="下达生产批+打印领料单 帆软填报系统录入生产批需求,rpa 自动读取后在 ebs 创建生产批、赋批号、发放、校验,异常自动通知各 ou 计划员;后续读取仓库待打印领料单批量打印。 可释放约 2 个人力,年累计节约 330 人天;生产操作从 12 小时/天降至 2 小时/天(600% 提效) 日常生产批下达、跨车间领料协同 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">下达生产批+打印领料单</span></div></td>
+<td class="node-opportunity">帆软填报系统录入生产批需求,RPA 自动读取后在 EBS 创建生产批、赋批号、发放、校验,异常自动通知各 OU 计划员;后续读取仓库待打印领料单批量打印。</td>
+<td class="node-benefit">可释放约 2 个人力,年累计节约 330 人天;生产操作从 12 小时/天降至 2 小时/天(600% 提效)</td>
+</tr>
+<tr class="node-row" data-nid="n37" data-cap="RPA" data-wf="qa-w0" data-search="mes 生产订单同步 rpa 把 erp 中已审核的生产订单按车间维度同步至 mes,异常订单自动回写 erp 标记并通知计划员。 erp-mes 同步从次日批跑改为分钟级,车间开工等待时间下降 多车间多产线协同、紧急插单 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">MES 生产订单同步</span></div></td>
+<td class="node-opportunity">RPA 把 ERP 中已审核的生产订单按车间维度同步至 MES,异常订单自动回写 ERP 标记并通知计划员。</td>
+<td class="node-benefit">ERP-MES 同步从次日批跑改为分钟级,车间开工等待时间下降</td>
+</tr>
+<tr class="node-row" data-nid="n38" data-cap="AI" data-wf="qa-w0" data-search="批生产记录电子化复核 ai 识别车间手工填写的批记录扫描件,提取关键参数(温度、时间、压差、人员签名),与 mes/scada 数据自动比对差异,推送 qa 复核。 批记录复核覆盖从抽查升至 100% 全量,数据完整性合规风险下降 gmp 内审、迎接药监局飞检、批次放行前合规自查 ai">
+<td><div class="node-name"><span class="cap-badge cap-ai">AI</span><span class="node-name-text">批生产记录电子化复核</span></div></td>
+<td class="node-opportunity">AI 识别车间手工填写的批记录扫描件,提取关键参数(温度、时间、压差、人员签名),与 MES/SCADA 数据自动比对差异,推送 QA 复核。</td>
+<td class="node-benefit">批记录复核覆盖从抽查升至 100% 全量,数据完整性合规风险下降</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="qa-w1" data-role="qa">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">2</span>
+QC 检验与放行
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n39" data-cap="RPA" data-wf="qa-w1" data-search="lims 检验数据采集与录入 rpa 从仪器(hplc、gc、uv 等)的导出文件中读取检验结果,自动录入 lims 对应检验单,完成单位换算与限度判定。 qc 录入工作量降低 70%+,检验结果可追溯性显著提升 高频次小批量检验、多仪器并行检验 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">LIMS 检验数据采集与录入</span></div></td>
+<td class="node-opportunity">RPA 从仪器(HPLC、GC、UV 等)的导出文件中读取检验结果,自动录入 LIMS 对应检验单,完成单位换算与限度判定。</td>
+<td class="node-benefit">QC 录入工作量降低 70%+,检验结果可追溯性显著提升</td>
+</tr>
+<tr class="node-row" data-nid="n40" data-cap="RPA" data-wf="qa-w1" data-search="批检报告(coa)自动生成 lims 检验完成后,rpa 按客户/批号取检验数据填入 coa 模板(中文/英文版本),自动生成 pdf 并归档到出货档案。 coa 出具从人工 30 分钟/份降至 2-3 分钟,出货前文件齐套率 100% 出货前 coa 准备、客户索要历史 coa rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">批检报告(COA)自动生成</span></div></td>
+<td class="node-opportunity">LIMS 检验完成后,RPA 按客户/批号取检验数据填入 COA 模板(中文/英文版本),自动生成 PDF 并归档到出货档案。</td>
+<td class="node-benefit">COA 出具从人工 30 分钟/份降至 2-3 分钟,出货前文件齐套率 100%</td>
+</tr>
+<tr class="node-row" data-nid="n41" data-cap="AI" data-wf="qa-w1" data-search="oos/oot 偏差初判 ai 监控 lims 检验结果,对偏离规格(oos)或偏离趋势(oot)的数据自动初判触发偏差调查流程,推送 qa 经理。 oos 识别从人工巡检改为实时,偏差调查启动时效提前数小时至数天 稳定性研究监测、高风险关键参数实时监控 ai">
+<td><div class="node-name"><span class="cap-badge cap-ai">AI</span><span class="node-name-text">OOS/OOT 偏差初判</span></div></td>
+<td class="node-opportunity">AI 监控 LIMS 检验结果,对偏离规格(OOS)或偏离趋势(OOT)的数据自动初判触发偏差调查流程,推送 QA 经理。</td>
+<td class="node-benefit">OOS 识别从人工巡检改为实时,偏差调查启动时效提前数小时至数天</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="qa-w2" data-role="qa">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">3</span>
+GMP 合规监管
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n42" data-cap="RPA" data-wf="qa-w2" data-search="药监局公告通告下载归档 rpa 登录国家及地方药监局官网,按截止日期循环下载公告附件(质量不合格、抽检不合格、说明书修订、召回等),命名归档并推送质量部。 信息收集从 28 小时/次降至 2 小时/次(14 倍提效),零遗漏 月度合规简报、突发监管事件、gmp 飞检前自查 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">药监局公告通告下载归档</span></div></td>
+<td class="node-opportunity">RPA 登录国家及地方药监局官网,按截止日期循环下载公告附件(质量不合格、抽检不合格、说明书修订、召回等),命名归档并推送质量部。</td>
+<td class="node-benefit">信息收集从 28 小时/次降至 2 小时/次(14 倍提效),零遗漏</td>
+</tr>
+<tr class="node-row" data-nid="n43" data-cap="RPA" data-wf="qa-w2" data-search="供应商质量信息追踪 rpa 监控经销商及供货商相关质量信息(监督检查结果、资质更新、行政处罚),按供应商建立质量档案,异常自动告警。 供应商质量风险感知从季度复盘提升至实时,合规失分风险下降 供应商月度评估、sqe 现场审计前的资料准备 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">供应商质量信息追踪</span></div></td>
+<td class="node-opportunity">RPA 监控经销商及供货商相关质量信息(监督检查结果、资质更新、行政处罚),按供应商建立质量档案,异常自动告警。</td>
+<td class="node-benefit">供应商质量风险感知从季度复盘提升至实时,合规失分风险下降</td>
+</tr>
+<tr class="node-row" data-nid="n44" data-cap="RPA" data-wf="qa-w2" data-search="经营品种质量信息汇总 rpa 按经营品种关键词监控说明书修订、市场抽检、adr、召回等信息,生成品种质量月报推送质量负责人。 品种维度的质量风险图谱可视化,响应链条更短 品种月度质量例会、年度质量回顾分析 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">经营品种质量信息汇总</span></div></td>
+<td class="node-opportunity">RPA 按经营品种关键词监控说明书修订、市场抽检、ADR、召回等信息,生成品种质量月报推送质量负责人。</td>
+<td class="node-benefit">品种维度的质量风险图谱可视化,响应链条更短</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</section>
+<section id="role-gdp" class="role-section" data-role="gdp">
+<div class="role-header">
+<span class="role-num">06</span>
+<span class="role-title">仓储物流(GSP/GDP)</span>
+<span class="role-tagline">温控管理 / 出入库台账 / 追溯码</span>
+</div>
+<div class="role-desc">面向仓储管理、物流运营、QA(GSP/GDP)岗。冷链药品温度全程监控、温度计回执单完整性核查、药品追溯码上传码上放心平台等强合规场景。</div>
+<div class="role-mini-stats">
+<span><strong>3</strong> 条工作流</span>
+<span><strong>9</strong> 个机会点</span>
+<span style="color:var(--rpa);">RPA <strong>6</strong></span>
+<span style="color:var(--ai);">AI <strong>0</strong></span>
+<span style="color:var(--mix);">RPA+AI <strong>3</strong></span>
+</div>
+<div class="workflow" data-wf="gdp-w0" data-role="gdp" data-first="1">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">1</span>
+冷链温控管理
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n45" data-cap="RPA+AI" data-wf="gdp-w0" data-search="手写温度回执单完整性检查 rpa 在 tms 系统抓取前一天温度计回执单图片,批量裁剪保留校验区,ai 识别每行是否有手写内容,缺失则记录交货单号邮件通知相关方。 检查方式从抽查升至全量(月均 3000 单),时长从 1500 分钟/月降至 30 分钟,效率提升 500 倍 冷链月度合规自查、客户投诉追溯、gsp 飞检 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">手写温度回执单完整性检查</span></div></td>
+<td class="node-opportunity">RPA 在 TMS 系统抓取前一天温度计回执单图片,批量裁剪保留校验区,AI 识别每行是否有手写内容,缺失则记录交货单号邮件通知相关方。</td>
+<td class="node-benefit">检查方式从抽查升至全量(月均 3000 单),时长从 1500 分钟/月降至 30 分钟,效率提升 500 倍</td>
+</tr>
+<tr class="node-row" data-nid="n46" data-cap="RPA" data-wf="gdp-w0" data-search="温度计数据 gdp 数智化管理 rpa 完成温度计登记表清洗,打开温度计读取并下载温度数据,自动检查超温状态、上传至 tms 并发邮件反馈温度计执行报告。 原 8 小时/天人工降至 10 分钟/天,单单从 5 分钟降至 2 分钟(60% 提效),节省一名人工 日常冷链药品出库、新冠疫苗等高敏品温控 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">温度计数据 GDP 数智化管理</span></div></td>
+<td class="node-opportunity">RPA 完成温度计登记表清洗,打开温度计读取并下载温度数据,自动检查超温状态、上传至 TMS 并发邮件反馈温度计执行报告。</td>
+<td class="node-benefit">原 8 小时/天人工降至 10 分钟/天,单单从 5 分钟降至 2 分钟(60% 提效),节省一名人工</td>
+</tr>
+<tr class="node-row" data-nid="n47" data-cap="RPA+AI" data-wf="gdp-w0" data-search="运输偏差温控应急响应 ai 实时分析温度数据流,检测到超温偏差立即触发应急流程:rpa 自动通知 qa、车队、客户,生成偏差初步评估报告。 温控偏差响应从小时级提升至分钟级,药品安全风险显著下降 夏季高温运输、长途跨省冷链、疫苗等关键品种 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">运输偏差温控应急响应</span></div></td>
+<td class="node-opportunity">AI 实时分析温度数据流,检测到超温偏差立即触发应急流程:RPA 自动通知 QA、车队、客户,生成偏差初步评估报告。</td>
+<td class="node-benefit">温控偏差响应从小时级提升至分钟级,药品安全风险显著下降</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="gdp-w1" data-role="gdp">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">2</span>
+出入库与台账
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n48" data-cap="RPA" data-wf="gdp-w1" data-search="京东/菜鸟出入库流水台账 rpa 自动登录京东、菜鸟、bms/gos/eas 等平台,抓取每日出入库流水,合并去重后回写 erp 形成统一台账。 (汤臣倍健案例)累计运行 63000+ 小时,相当于节省人力 39895 天 电商业务跨平台运营、月度库存对账 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">京东/菜鸟出入库流水台账</span></div></td>
+<td class="node-opportunity">RPA 自动登录京东、菜鸟、BMS/GOS/EAS 等平台,抓取每日出入库流水,合并去重后回写 ERP 形成统一台账。</td>
+<td class="node-benefit">(汤臣倍健案例)累计运行 63000+ 小时,相当于节省人力 39895 天</td>
+</tr>
+<tr class="node-row" data-nid="n49" data-cap="RPA" data-wf="gdp-w1" data-search="菜鸟退换货管理 rpa 监控菜鸟仓退换货订单,自动同步至 oms/erp,关联原订单做财务退款挂账,异常订单转人工。 退换货处理从 t+2 提升至 t+0,客户体验改善 电商退换货高峰、大促后退货潮 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">菜鸟退换货管理</span></div></td>
+<td class="node-opportunity">RPA 监控菜鸟仓退换货订单,自动同步至 OMS/ERP,关联原订单做财务退款挂账,异常订单转人工。</td>
+<td class="node-benefit">退换货处理从 T+2 提升至 T+0,客户体验改善</td>
+</tr>
+<tr class="node-row" data-nid="n50" data-cap="RPA" data-wf="gdp-w1" data-search="效期与近效期预警 rpa 扫描 wms/erp 库存效期数据,按品种特性分级预警(如 6 个月内、3 个月内),推送销售运营加快动销。 近效期产品损耗下降,清库决策提前 1-3 个月 月度效期盘点、临期品促销策划 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">效期与近效期预警</span></div></td>
+<td class="node-opportunity">RPA 扫描 WMS/ERP 库存效期数据,按品种特性分级预警(如 6 个月内、3 个月内),推送销售运营加快动销。</td>
+<td class="node-benefit">近效期产品损耗下降,清库决策提前 1-3 个月</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="gdp-w2" data-role="gdp">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">3</span>
+追溯与流向管理
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n51" data-cap="RPA" data-wf="gdp-w2" data-search="药品追溯码上传码上放心 rpa 从 wms/mes 抓取入库、出库、销售关联的追溯码,按规则上传国家药监局认可的追溯平台(如阿里健康码上放心)。 追溯码上传准确率接近 100%,逾期未上传风险下降 国家药品追溯码强制上线品种、监管检查 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">药品追溯码上传码上放心</span></div></td>
+<td class="node-opportunity">RPA 从 WMS/MES 抓取入库、出库、销售关联的追溯码,按规则上传国家药监局认可的追溯平台(如阿里健康码上放心)。</td>
+<td class="node-benefit">追溯码上传准确率接近 100%,逾期未上传风险下降</td>
+</tr>
+<tr class="node-row" data-nid="n52" data-cap="RPA" data-wf="gdp-w2" data-search="经销商流向数据采集 rpa 自动登录 180+ 商业公司网站采集流向数据,导入数据中台清洗后形成销售/库存视图,为不同部门提供定制化报告。 (cso 案例)每年节省近 2000 个人天,解决 500+ 同事的低效重复工作 cso 业务多商业公司协同、窜货乱价稽查 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">经销商流向数据采集</span></div></td>
+<td class="node-opportunity">RPA 自动登录 180+ 商业公司网站采集流向数据,导入数据中台清洗后形成销售/库存视图,为不同部门提供定制化报告。</td>
+<td class="node-benefit">(CSO 案例)每年节省近 2000 个人天,解决 500+ 同事的低效重复工作</td>
+</tr>
+<tr class="node-row" data-nid="n53" data-cap="RPA+AI" data-wf="gdp-w2" data-search="窜货乱价异常监控 rpa 汇集流向数据,ai 比对销售区域、价格、客户结构异常模式(同一批号跨区流转、价格远低于指导价),自动生成稽查线索。 窜货识别从月度复盘提升至每周自动巡检,稽查响应提前 招商会后的渠道管控、举报投诉调查、价格保护期 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">窜货乱价异常监控</span></div></td>
+<td class="node-opportunity">RPA 汇集流向数据,AI 比对销售区域、价格、客户结构异常模式(同一批号跨区流转、价格远低于指导价),自动生成稽查线索。</td>
+<td class="node-benefit">窜货识别从月度复盘提升至每周自动巡检,稽查响应提前</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</section>
+<section id="role-sales" class="role-section" data-role="sales">
+<div class="role-header">
+<span class="role-num">07</span>
+<span class="role-title">销售运营(医药代表/院内)</span>
+<span class="role-tagline">代表合规 / 流向监管 / 医院准入</span>
+</div>
+<div class="role-desc">面向医药代表、KA、商务岗。两票制后强监管场景:医药代表合规备案、推广会议留痕、医院准入跟进、医生执业信息核查、医保结算对账。</div>
+<div class="role-mini-stats">
+<span><strong>3</strong> 条工作流</span>
+<span><strong>9</strong> 个机会点</span>
+<span style="color:var(--rpa);">RPA <strong>5</strong></span>
+<span style="color:var(--ai);">AI <strong>2</strong></span>
+<span style="color:var(--mix);">RPA+AI <strong>2</strong></span>
+</div>
+<div class="workflow" data-wf="sales-w0" data-role="sales" data-first="1">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">1</span>
+医药代表合规与拜访
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n54" data-cap="RPA+AI" data-wf="sales-w0" data-search="代表合规会议抽检 rpa 登录会议系统导出当天申请会议数据,ai 按预设约 10 个指标对每场会议风险评估打分,自动抽取风险高者推送合规同事;会议中 rpa 加入会议录屏,ai 识别违禁词。 24 小时自动监控,合规抽检质量与效率显著提升,医生敏感度问题(手机录屏替代会议软件)同步缓解 代表线上推广会高频期、合规飞检前的留痕检查 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">代表合规会议抽检</span></div></td>
+<td class="node-opportunity">RPA 登录会议系统导出当天申请会议数据,AI 按预设约 10 个指标对每场会议风险评估打分,自动抽取风险高者推送合规同事;会议中 RPA 加入会议录屏,AI 识别违禁词。</td>
+<td class="node-benefit">24 小时自动监控,合规抽检质量与效率显著提升,医生敏感度问题(手机录屏替代会议软件)同步缓解</td>
+</tr>
+<tr class="node-row" data-nid="n55" data-cap="AI" data-wf="sales-w0" data-search="拜访日报智能汇总 ai 解析代表语音/文字版拜访日报,提取拜访医院、医生、产品、拜访目的、医生反馈等结构化字段,自动入 crm 并生成区域/品种维度汇总。 代表填写日报时间从 30 分钟降至 5 分钟,ka 看板从周更提升至日更 代表月度业绩复盘、大区季度业务回顾 ai">
+<td><div class="node-name"><span class="cap-badge cap-ai">AI</span><span class="node-name-text">拜访日报智能汇总</span></div></td>
+<td class="node-opportunity">AI 解析代表语音/文字版拜访日报,提取拜访医院、医生、产品、拜访目的、医生反馈等结构化字段,自动入 CRM 并生成区域/品种维度汇总。</td>
+<td class="node-benefit">代表填写日报时间从 30 分钟降至 5 分钟,KA 看板从周更提升至日更</td>
+</tr>
+<tr class="node-row" data-nid="n56" data-cap="RPA" data-wf="sales-w0" data-search="医生执业信息卫健委查询 rpa 提前准备查询信息表,循环打开卫健委官网查询医生执业资质,查询结果截图并写入表格;通过切换浏览器规避 60 秒查询间隔。 节省约 1 人天工作量,效率比人工高 1-2 倍 互联网诊疗平台医生准入、网院多点执业月度核查、竞品网院医生合规监控 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">医生执业信息卫健委查询</span></div></td>
+<td class="node-opportunity">RPA 提前准备查询信息表,循环打开卫健委官网查询医生执业资质,查询结果截图并写入表格;通过切换浏览器规避 60 秒查询间隔。</td>
+<td class="node-benefit">节省约 1 人天工作量,效率比人工高 1-2 倍</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="sales-w1" data-role="sales">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">2</span>
+院内准入与中标管理
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n57" data-cap="RPA" data-wf="sales-w1" data-search="医院招标信息监控 rpa 定期扫描省级集采平台、医院官网、第三方招标平台,按品种关键词抓取招标公告与中标公示,推送区域销售。 招标信息覆盖从抽样升至全量,商机响应提前数天 医院年度招标季、新品准入、区域市场拓展 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">医院招标信息监控</span></div></td>
+<td class="node-opportunity">RPA 定期扫描省级集采平台、医院官网、第三方招标平台,按品种关键词抓取招标公告与中标公示,推送区域销售。</td>
+<td class="node-benefit">招标信息覆盖从抽样升至全量,商机响应提前数天</td>
+</tr>
+<tr class="node-row" data-nid="n58" data-cap="RPA" data-wf="sales-w1" data-search="集采中标价格执行核查 rpa 比对集采中标价与各渠道实际成交价,偏离自动告警销售经理与商务,生成价格执行台账留作合规备查。 集采价格执行偏差识别从月度提升至每日,合规风险下降 新中标周期切换、跨省集采价格联动 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">集采中标价格执行核查</span></div></td>
+<td class="node-opportunity">RPA 比对集采中标价与各渠道实际成交价,偏离自动告警销售经理与商务,生成价格执行台账留作合规备查。</td>
+<td class="node-benefit">集采价格执行偏差识别从月度提升至每日,合规风险下降</td>
+</tr>
+<tr class="node-row" data-nid="n59" data-cap="AI" data-wf="sales-w1" data-search="医院准入跟进表自动汇报 ai 解析代表填写的医院准入跟进表(目标医院、关键人物、进度阶段、下一步动作),自动汇总成大区准入看板并标记停滞项。 区域准入进度透明化,ka/大区经理决策依据更及时 新品上市铺货期、年度准入冲刺、品种区域复盘 ai">
+<td><div class="node-name"><span class="cap-badge cap-ai">AI</span><span class="node-name-text">医院准入跟进表自动汇报</span></div></td>
+<td class="node-opportunity">AI 解析代表填写的医院准入跟进表(目标医院、关键人物、进度阶段、下一步动作),自动汇总成大区准入看板并标记停滞项。</td>
+<td class="node-benefit">区域准入进度透明化,KA/大区经理决策依据更及时</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="sales-w2" data-role="sales">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">3</span>
+商务回款与合同
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n60" data-cap="RPA" data-wf="sales-w2" data-search="商务回款邮件整合校验 rpa 监控商务负责人邮箱,获取销售提报的回款信息表附件,按月回款汇总表核对,异常数据整理成单独表格邮件回复销售并同步商务负责人。 回款数据核对准确性 100%,日均节省约 4 小时人工核对 月底集中回款、季度商务结算 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">商务回款邮件整合校验</span></div></td>
+<td class="node-opportunity">RPA 监控商务负责人邮箱,获取销售提报的回款信息表附件,按月回款汇总表核对,异常数据整理成单独表格邮件回复销售并同步商务负责人。</td>
+<td class="node-benefit">回款数据核对准确性 100%,日均节省约 4 小时人工核对</td>
+</tr>
+<tr class="node-row" data-nid="n61" data-cap="RPA" data-wf="sales-w2" data-search="采购药品交易结算合同批量签章 rpa 打开医药平台批量下载/打开合同,完成签章后上传,平均 2 分钟完成一份,典型集采场景单次几千份合同。 至少节省 4 人天/年,从专人专项处理 1 个月降至机器人后台跑批 集采签约期、医保挂网协议批量签订 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">采购药品交易结算合同批量签章</span></div></td>
+<td class="node-opportunity">RPA 打开医药平台批量下载/打开合同,完成签章后上传,平均 2 分钟完成一份,典型集采场景单次几千份合同。</td>
+<td class="node-benefit">至少节省 4 人天/年,从专人专项处理 1 个月降至机器人后台跑批</td>
+</tr>
+<tr class="node-row" data-nid="n62" data-cap="RPA+AI" data-wf="sales-w2" data-search="经销商对账明细生成 rpa 从 erp 抽销售/退货/返利数据,ai 比对经销商提供的对账单,差异点自动标红并附差异原因初判,推送商务对接人。 对账周期从月底集中处理改为周级,差错沟通成本下降 月度/季度经销商对账、年终结账 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">经销商对账明细生成</span></div></td>
+<td class="node-opportunity">RPA 从 ERP 抽销售/退货/返利数据,AI 比对经销商提供的对账单,差异点自动标红并附差异原因初判,推送商务对接人。</td>
+<td class="node-benefit">对账周期从月底集中处理改为周级,差错沟通成本下降</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</section>
+<section id="role-ec" class="role-section" data-role="ec">
+<div class="role-header">
+<span class="role-num">08</span>
+<span class="role-title">渠道与电商运营</span>
+<span class="role-tagline">电商订单 / 价格监控 / 平台合规</span>
+</div>
+<div class="role-desc">面向电商运营、连锁药店运营、第三方平台运营岗。覆盖阿里健康、京东健康、美团买药、拼多多、药师帮等平台,处方药审核、价格监控、店铺合规高频高密。</div>
+<div class="role-mini-stats">
+<span><strong>3</strong> 条工作流</span>
+<span><strong>9</strong> 个机会点</span>
+<span style="color:var(--rpa);">RPA <strong>6</strong></span>
+<span style="color:var(--ai);">AI <strong>1</strong></span>
+<span style="color:var(--mix);">RPA+AI <strong>2</strong></span>
+</div>
+<div class="workflow" data-wf="ec-w0" data-role="ec" data-first="1">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">1</span>
+多平台订单与处方审核
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n63" data-cap="RPA" data-wf="ec-w0" data-search="拼多多/天猫处方单审核 rpa 通过火豹浏览器在多店铺间切换(避免平台频繁短信验证),进入后台筛选待审核处方订单,按规则自动审核常规单据,特殊订单转人工。 丝滑切换多店铺,常规处方审核效率提升 10 倍,店铺评分提升 拼多多 200+ 店铺日常运营、大促处方单激增 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">拼多多/天猫处方单审核</span></div></td>
+<td class="node-opportunity">RPA 通过火豹浏览器在多店铺间切换(避免平台频繁短信验证),进入后台筛选待审核处方订单,按规则自动审核常规单据,特殊订单转人工。</td>
+<td class="node-benefit">丝滑切换多店铺,常规处方审核效率提升 10 倍,店铺评分提升</td>
+</tr>
+<tr class="node-row" data-nid="n64" data-cap="RPA" data-wf="ec-w0" data-search="天猫/京东订单批量处理 rpa 在天猫、京东商家后台批量处理订单(确认、改地址、合并、审单),与 oms 无缝对接,自动同步退货入库。 (上元堂案例)累计运行 46000+ 小时,节省人力 29000+ 天,1 个应用减少 3 个人力 电商日常订单处理、大促洪峰、退货高峰 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">天猫/京东订单批量处理</span></div></td>
+<td class="node-opportunity">RPA 在天猫、京东商家后台批量处理订单(确认、改地址、合并、审单),与 OMS 无缝对接,自动同步退货入库。</td>
+<td class="node-benefit">(上元堂案例)累计运行 46000+ 小时,节省人力 29000+ 天,1 个应用减少 3 个人力</td>
+</tr>
+<tr class="node-row" data-nid="n65" data-cap="RPA" data-wf="ec-w0" data-search="药师帮 scm 首营资质审核 rpa 登录 oms/scm 下载订单表,循环每个订单查询委托书有效期,过期发短信通知,已上传则登记在线表格;按店铺自动分配。 原 5 人操作 20 个店铺,自动化后 1 人即可,每天节省每人 6 小时 b2b 平台日均高频订单、月底集中审核 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">药师帮 SCM 首营资质审核</span></div></td>
+<td class="node-opportunity">RPA 登录 OMS/SCM 下载订单表,循环每个订单查询委托书有效期,过期发短信通知,已上传则登记在线表格;按店铺自动分配。</td>
+<td class="node-benefit">原 5 人操作 20 个店铺,自动化后 1 人即可,每天节省每人 6 小时</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="ec-w1" data-role="ec">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">2</span>
+价格与商品力
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n66" data-cap="RPA+AI" data-wf="ec-w1" data-search="多平台药物价格监控 rpa 登录各电商平台搜索药物名称,循环抓取价格、店铺,ai(ocr)识别乱价店铺营业执照抬头;输出比价表标红问题项,按控价函模板生成函件发送商家。 工作效率提升 50%+,每日节省约 4 小时(0.5 人工);从平台多难监管到自动化全覆盖 新品上市价格保护期、双 11/618 大促控价、举报投诉调查 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">多平台药物价格监控</span></div></td>
+<td class="node-opportunity">RPA 登录各电商平台搜索药物名称,循环抓取价格、店铺,AI(OCR)识别乱价店铺营业执照抬头;输出比价表标红问题项,按控价函模板生成函件发送商家。</td>
+<td class="node-benefit">工作效率提升 50%+,每日节省约 4 小时(0.5 人工);从平台多难监管到自动化全覆盖</td>
+</tr>
+<tr class="node-row" data-nid="n67" data-cap="RPA" data-wf="ec-w1" data-search="竞品价格走势分析 rpa 定时抓取竞品在阿里健康、京东健康、美团买药的价格、销量、评价,生成走势图与对比报告推送品牌经理。 竞品动态从抽样调研升至每日全量,定价策略响应更快 新品定价决策、季度竞品分析、营销活动预判 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">竞品价格走势分析</span></div></td>
+<td class="node-opportunity">RPA 定时抓取竞品在阿里健康、京东健康、美团买药的价格、销量、评价,生成走势图与对比报告推送品牌经理。</td>
+<td class="node-benefit">竞品动态从抽样调研升至每日全量,定价策略响应更快</td>
+</tr>
+<tr class="node-row" data-nid="n68" data-cap="AI" data-wf="ec-w1" data-search="商品热力洞察与运营建议 ai 综合销量、评价、搜索词、店铺活动数据,识别热品上升信号,生成爆品候选与运营动作建议(选品、备货、广告)。 热品识别从周复盘升至每日,机会捕捉提前 电商运营日会、季节性品类备货、新品测试 ai">
+<td><div class="node-name"><span class="cap-badge cap-ai">AI</span><span class="node-name-text">商品热力洞察与运营建议</span></div></td>
+<td class="node-opportunity">AI 综合销量、评价、搜索词、店铺活动数据,识别热品上升信号,生成爆品候选与运营动作建议(选品、备货、广告)。</td>
+<td class="node-benefit">热品识别从周复盘升至每日,机会捕捉提前</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="ec-w2" data-role="ec">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">3</span>
+店铺合规与运营
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n69" data-cap="RPA+AI" data-wf="ec-w2" data-search="店铺评价与差评处理 rpa 监控阿里健康、京东健康、美团买药评价,ai 分析差评内容定级(物流/质量/服务/产品),生成回复初稿并推送客服审核。 差评响应时效从 24 小时缩至 2 小时内,店铺评分维护更及时 新品上市口碑维护、店铺评分波动应急 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">店铺评价与差评处理</span></div></td>
+<td class="node-opportunity">RPA 监控阿里健康、京东健康、美团买药评价,AI 分析差评内容定级(物流/质量/服务/产品),生成回复初稿并推送客服审核。</td>
+<td class="node-benefit">差评响应时效从 24 小时缩至 2 小时内,店铺评分维护更及时</td>
+</tr>
+<tr class="node-row" data-nid="n70" data-cap="RPA" data-wf="ec-w2" data-search="营业执照/资质年审上传 rpa 在多个电商商家后台批量更新即将到期的营业执照、《互联网药品信息服务资格证书》、gsp 证等资质文件。 证照更新一次性完成,跨平台店铺合规风险下降 证照年审、新证书发放后的统一更新 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">营业执照/资质年审上传</span></div></td>
+<td class="node-opportunity">RPA 在多个电商商家后台批量更新即将到期的营业执照、《互联网药品信息服务资格证书》、GSP 证等资质文件。</td>
+<td class="node-benefit">证照更新一次性完成,跨平台店铺合规风险下降</td>
+</tr>
+<tr class="node-row" data-nid="n71" data-cap="RPA" data-wf="ec-w2" data-search="活动报名与素材分发 rpa 监控各平台 b 端活动通知,按预设规则报名,完成后回写活动台账;同步分发主图、详情页素材至各店铺。 活动覆盖率提升,大促筹备工作量降低 50%+ 双 11/618 大促筹备、品牌日报名、季节性活动 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">活动报名与素材分发</span></div></td>
+<td class="node-opportunity">RPA 监控各平台 B 端活动通知,按预设规则报名,完成后回写活动台账;同步分发主图、详情页素材至各店铺。</td>
+<td class="node-benefit">活动覆盖率提升,大促筹备工作量降低 50%+</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</section>
+<section id="role-fin" class="role-section" data-role="fin">
+<div class="role-header">
+<span class="role-num">09</span>
+<span class="role-title">财务结算</span>
+<span class="role-tagline">开票 / 银行回单 / 多方对账</span>
+</div>
+<div class="role-desc">面向财务、税务、应收应付岗。医药行业特有:数电开票量大且时效要求高、多银行 U 盾管理、医保结算对账复杂、经销商多方对账逻辑繁琐。</div>
+<div class="role-mini-stats">
+<span><strong>3</strong> 条工作流</span>
+<span><strong>9</strong> 个机会点</span>
+<span style="color:var(--rpa);">RPA <strong>7</strong></span>
+<span style="color:var(--ai);">AI <strong>0</strong></span>
+<span style="color:var(--mix);">RPA+AI <strong>2</strong></span>
+</div>
+<div class="workflow" data-wf="fin-w0" data-role="fin" data-first="1">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">1</span>
+开票与税务
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n72" data-cap="RPA" data-wf="fin-w0" data-search="数电开票自动化 rpa 自动登录 nc 销售发票维护查询待开票据,导出整理后登录电子税务局填写开票信息,导出已开发票回传 nc 留档,循环至全部完成。 开票从 5 分钟/票降至 2 分钟/票(250% 提效),三台电脑定时跑替代财务老师 24 小时守屏 日均 300+ 张发票场景、大客户大单集中开票 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">数电开票自动化</span></div></td>
+<td class="node-opportunity">RPA 自动登录 NC 销售发票维护查询待开票据,导出整理后登录电子税务局填写开票信息,导出已开发票回传 NC 留档,循环至全部完成。</td>
+<td class="node-benefit">开票从 5 分钟/票降至 2 分钟/票(250% 提效),三台电脑定时跑替代财务老师 24 小时守屏</td>
+</tr>
+<tr class="node-row" data-nid="n73" data-cap="RPA+AI" data-wf="fin-w0" data-search="进项发票自动认证 ai 识别进项发票关键字段,rpa 在电子税务局批量勾选认证,异常发票(虚开风险、抬头错误)自动挂账推送税务专员。 进项认证从月底集中处理改为日清,认证错误率下降 月度进项认证截止前、专项税务检查 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">进项发票自动认证</span></div></td>
+<td class="node-opportunity">AI 识别进项发票关键字段,RPA 在电子税务局批量勾选认证,异常发票(虚开风险、抬头错误)自动挂账推送税务专员。</td>
+<td class="node-benefit">进项认证从月底集中处理改为日清,认证错误率下降</td>
+</tr>
+<tr class="node-row" data-nid="n74" data-cap="RPA" data-wf="fin-w0" data-search="纳税申报数据准备 rpa 从 erp 抽销项、进项、收入、成本数据,按申报表格式整理成预填表推送税务会计审核,缩短申报准备时间。 纳税申报准备从 1-2 天缩至半天,数据一致性自动核验 月度增值税申报、季度企业所得税预缴 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">纳税申报数据准备</span></div></td>
+<td class="node-opportunity">RPA 从 ERP 抽销项、进项、收入、成本数据,按申报表格式整理成预填表推送税务会计审核,缩短申报准备时间。</td>
+<td class="node-benefit">纳税申报准备从 1-2 天缩至半天,数据一致性自动核验</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="fin-w1" data-role="fin">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">2</span>
+资金与银行管理
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n75" data-cap="RPA" data-wf="fin-w1" data-search="银行明细回单下载归档 rpa 调用 usbhub 硬件指定启动对应 u 盾,自动登录网银下载余额、交易清单、电子回单,按指定路径归档。 效率提升 200%(从每周 2-3 次人工 2-3 小时,到每日 1-2 小时自动采集 7 家银行 13 个账号),实时性大幅提升 多银行多账号集团企业、月度银企对账 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">银行明细回单下载归档</span></div></td>
+<td class="node-opportunity">RPA 调用 UsbHub 硬件指定启动对应 U 盾,自动登录网银下载余额、交易清单、电子回单,按指定路径归档。</td>
+<td class="node-benefit">效率提升 200%(从每周 2-3 次人工 2-3 小时,到每日 1-2 小时自动采集 7 家银行 13 个账号),实时性大幅提升</td>
+</tr>
+<tr class="node-row" data-nid="n76" data-cap="RPA" data-wf="fin-w1" data-search="付款单 eas 录制 rpa 按审批通过的付款清单在 eas/nc 系统批量录制付款单,按付款条件、币种自动分组提交。 (汤臣倍健案例)eas 付款单录制自动化,财务对账与日均运行 120+ 小时一并构建 月度集中付款日、大额付款集中处理 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">付款单 EAS 录制</span></div></td>
+<td class="node-opportunity">RPA 按审批通过的付款清单在 EAS/NC 系统批量录制付款单,按付款条件、币种自动分组提交。</td>
+<td class="node-benefit">(汤臣倍健案例)EAS 付款单录制自动化,财务对账与日均运行 120+ 小时一并构建</td>
+</tr>
+<tr class="node-row" data-nid="n77" data-cap="RPA" data-wf="fin-w1" data-search="银企对账差异核对 rpa 比对 erp 银行账与网银流水,差异自动按规则归类(在途、漏录、错记),生成对账差异表推送出纳。 银企对账从月底 1-2 天集中处理降至每日自动巡检,长悬挂项识别提前 月底银企对账、年末审计盘点 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">银企对账差异核对</span></div></td>
+<td class="node-opportunity">RPA 比对 ERP 银行账与网银流水,差异自动按规则归类(在途、漏录、错记),生成对账差异表推送出纳。</td>
+<td class="node-benefit">银企对账从月底 1-2 天集中处理降至每日自动巡检,长悬挂项识别提前</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="fin-w2" data-role="fin">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">3</span>
+应收对账与回款
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n78" data-cap="RPA" data-wf="fin-w2" data-search="经销商/客户对账单生成 rpa 从 erp 抽销售/退货/已收款数据,按经销商生成对账单 pdf/excel,自动推送至客户邮箱并跟踪签收。 对账单出具从财务集中编制升至按需自动生成,口径统一 月底集中对账、季度结算、年终关账 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">经销商/客户对账单生成</span></div></td>
+<td class="node-opportunity">RPA 从 ERP 抽销售/退货/已收款数据,按经销商生成对账单 PDF/Excel,自动推送至客户邮箱并跟踪签收。</td>
+<td class="node-benefit">对账单出具从财务集中编制升至按需自动生成,口径统一</td>
+</tr>
+<tr class="node-row" data-nid="n79" data-cap="RPA+AI" data-wf="fin-w2" data-search="医保结算对账 ai 解析医保结算单(纸质或电子)关键字段,rpa 与 erp/his/药店 pos 数据三方比对,差异自动挂账推送医保专员。 医保对账周期从月度抽样核对升至每日全量比对,挂账金额下降 连锁药店医保结算、医院 drg/dip 结算对账 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">医保结算对账</span></div></td>
+<td class="node-opportunity">AI 解析医保结算单(纸质或电子)关键字段,RPA 与 ERP/HIS/药店 POS 数据三方比对,差异自动挂账推送医保专员。</td>
+<td class="node-benefit">医保对账周期从月度抽样核对升至每日全量比对,挂账金额下降</td>
+</tr>
+<tr class="node-row" data-nid="n80" data-cap="RPA" data-wf="fin-w2" data-search="应收账龄预警 rpa 按账期段(&lt;30 天/30-60 天/60-90 天/&gt;90 天)生成应收账龄表,超账期自动推送销售经理与商务催收。 逾期应收识别从月度报表升至每日,坏账风险敞口下降 月度应收复盘、年末催收冲刺 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">应收账龄预警</span></div></td>
+<td class="node-opportunity">RPA 按账期段(&lt;30 天/30-60 天/60-90 天/&gt;90 天)生成应收账龄表,超账期自动推送销售经理与商务催收。</td>
+<td class="node-benefit">逾期应收识别从月度报表升至每日,坏账风险敞口下降</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</section>
+<section id="role-cs" class="role-section" data-role="cs">
+<div class="role-header">
+<span class="role-num">10</span>
+<span class="role-title">客户成功&amp;运营支撑</span>
+<span class="role-tagline">企微社群 / 客服交接 / 排班行政</span>
+</div>
+<div class="role-desc">面向客户成功、客服、HR、行政支撑岗。医药企业特有:经销商/医生/诊所企微群数量庞大、客服销售人员流动需快速交接、连锁药店/医院护理排班复杂。</div>
+<div class="role-mini-stats">
+<span><strong>3</strong> 条工作流</span>
+<span><strong>9</strong> 个机会点</span>
+<span style="color:var(--rpa);">RPA <strong>5</strong></span>
+<span style="color:var(--ai);">AI <strong>3</strong></span>
+<span style="color:var(--mix);">RPA+AI <strong>1</strong></span>
+</div>
+<div class="workflow" data-wf="cs-w0" data-role="cs" data-first="1">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">1</span>
+企微社群运维
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n81" data-cap="RPA" data-wf="cs-w0" data-search="客服销售员变更入群与转主 rpa 读取客服交替信息 excel,登录企业微信工作台循环执行新人入群与群主转移,完成后保存记录反馈相关人。 原 1 周完成简化为 1 天(5 倍提速),准确率达 99%,杜绝人工疏漏 上万个经销商/医生诊所企微群、客服团队人员高流动率 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">客服销售员变更入群与转主</span></div></td>
+<td class="node-opportunity">RPA 读取客服交替信息 Excel,登录企业微信工作台循环执行新人入群与群主转移,完成后保存记录反馈相关人。</td>
+<td class="node-benefit">原 1 周完成简化为 1 天(5 倍提速),准确率达 99%,杜绝人工疏漏</td>
+</tr>
+<tr class="node-row" data-nid="n82" data-cap="RPA" data-wf="cs-w0" data-search="社群消息/公告群发 rpa 按客户分群标签批量发送品种通知、政策宣贯、活动邀约,记录送达与已读情况。 群发覆盖从抽样升至全量,消息触达率与一致性同步提升 新品上市宣贯、政策更新通知、季度活动招募 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">社群消息/公告群发</span></div></td>
+<td class="node-opportunity">RPA 按客户分群标签批量发送品种通知、政策宣贯、活动邀约,记录送达与已读情况。</td>
+<td class="node-benefit">群发覆盖从抽样升至全量,消息触达率与一致性同步提升</td>
+</tr>
+<tr class="node-row" data-nid="n83" data-cap="AI" data-wf="cs-w0" data-search="群内异常言论实时监测 ai 监控企微群消息,识别违规推广话术、价格泄露、医患纠纷等敏感内容,自动告警合规与客服。 合规风险事件从事后追溯升至实时干预,声誉风险下降 代表企微群合规监管、医生群言论敏感期 ai">
+<td><div class="node-name"><span class="cap-badge cap-ai">AI</span><span class="node-name-text">群内异常言论实时监测</span></div></td>
+<td class="node-opportunity">AI 监控企微群消息,识别违规推广话术、价格泄露、医患纠纷等敏感内容,自动告警合规与客服。</td>
+<td class="node-benefit">合规风险事件从事后追溯升至实时干预,声誉风险下降</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="cs-w1" data-role="cs">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">2</span>
+客户服务与回访
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n84" data-cap="AI" data-wf="cs-w1" data-search="客服工单自动分派 ai 解析进线工单内容(咨询/投诉/退货/不良反应),按优先级、品种、地区自动分派至对应客服小组并生成回复初稿。 工单首次响应时效从 4 小时缩至 30 分钟以内,客户满意度提升 客服日常进线、节假日客诉激增 ai">
+<td><div class="node-name"><span class="cap-badge cap-ai">AI</span><span class="node-name-text">客服工单自动分派</span></div></td>
+<td class="node-opportunity">AI 解析进线工单内容(咨询/投诉/退货/不良反应),按优先级、品种、地区自动分派至对应客服小组并生成回复初稿。</td>
+<td class="node-benefit">工单首次响应时效从 4 小时缩至 30 分钟以内,客户满意度提升</td>
+</tr>
+<tr class="node-row" data-nid="n85" data-cap="RPA+AI" data-wf="cs-w1" data-search="客户回访智能拨打 rpa 按回访清单触发外呼,ai 完成开场白与基础问题问答,转人工节点保留语音留存,结果回写 crm。 客户回访覆盖率从抽样升至 80%+,人工回访集中在高价值客户 新品试用回访、慢病患者依从性回访 rpa+ai">
+<td><div class="node-name"><span class="cap-badge cap-mix">RPA+AI</span><span class="node-name-text">客户回访智能拨打</span></div></td>
+<td class="node-opportunity">RPA 按回访清单触发外呼,AI 完成开场白与基础问题问答,转人工节点保留语音留存,结果回写 CRM。</td>
+<td class="node-benefit">客户回访覆盖率从抽样升至 80%+,人工回访集中在高价值客户</td>
+</tr>
+<tr class="node-row" data-nid="n86" data-cap="AI" data-wf="cs-w1" data-search="客户反馈情感分析与归类 ai 对客户反馈做情感打分与主题归类(物流/质量/服务/疗效/价格),生成月度客户洞察报告。 客户声音从被动响应升至主动洞察,产品与服务改进有据可循 月度 nps 复盘、季度客户体验回顾 ai">
+<td><div class="node-name"><span class="cap-badge cap-ai">AI</span><span class="node-name-text">客户反馈情感分析与归类</span></div></td>
+<td class="node-opportunity">AI 对客户反馈做情感打分与主题归类(物流/质量/服务/疗效/价格),生成月度客户洞察报告。</td>
+<td class="node-benefit">客户声音从被动响应升至主动洞察,产品与服务改进有据可循</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+<div class="workflow" data-wf="cs-w2" data-role="cs">
+<div class="workflow-header">
+<div class="workflow-title">
+<span class="wf-icon">3</span>
+排班与行政支撑
+</div>
+<div style="display:flex;align-items:center;gap:8px;">
+<span class="workflow-meta" data-total="3">3 个机会点</span>
+<span class="toggle-icon">▼</span>
+</div>
+</div>
+<div class="workflow-body">
+<table class="node-table">
+<thead><tr>
+<th class="col-name">流程节点 / 能力</th>
+<th class="col-opp">自动化机会点</th>
+<th class="col-ben">效能提升</th>
+</tr></thead>
+<tbody>
+<tr class="node-row" data-nid="n87" data-cap="RPA" data-wf="cs-w2" data-search="门店/医院排班自动化 rpa 登录排班系统(护理管理/hr),按员工技能、空闲状态、客户需求自动匹配排班并提交,循环完成批量排班。 (护理排班案例)实现自动排班,效率提升 50%+,资源闲置与匹配错误下降 连锁药店多门店排班、医院护理人员调度、dtp 药房值班 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">门店/医院排班自动化</span></div></td>
+<td class="node-opportunity">RPA 登录排班系统(护理管理/HR),按员工技能、空闲状态、客户需求自动匹配排班并提交,循环完成批量排班。</td>
+<td class="node-benefit">(护理排班案例)实现自动排班,效率提升 50%+,资源闲置与匹配错误下降</td>
+</tr>
+<tr class="node-row" data-nid="n88" data-cap="RPA" data-wf="cs-w2" data-search="员工考勤与工时核算 rpa 抓取门店/办公地考勤打卡数据,按出勤、加班、调休规则自动核算工时,异常推送 hr 复核。 考勤核算从月底 2-3 天集中处理压缩至日清,薪酬异常风险下降 月底考勤结算、节假日加班核算 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">员工考勤与工时核算</span></div></td>
+<td class="node-opportunity">RPA 抓取门店/办公地考勤打卡数据,按出勤、加班、调休规则自动核算工时,异常推送 HR 复核。</td>
+<td class="node-benefit">考勤核算从月底 2-3 天集中处理压缩至日清,薪酬异常风险下降</td>
+</tr>
+<tr class="node-row" data-nid="n89" data-cap="RPA" data-wf="cs-w2" data-search="新员工入职资料自动归档 rpa 接收新员工提交的资料(身份证、学历、健康证、执业证),按 hr 档案规范命名归档至 oa/hris,缺失项自动催办。 入职档案完整率从抽样合格升至 100%,gsp/gmp 人员资质合规风险下降 批量入职、hr 档案治理、迎接劳动监察或合规检查 rpa">
+<td><div class="node-name"><span class="cap-badge cap-rpa">RPA</span><span class="node-name-text">新员工入职资料自动归档</span></div></td>
+<td class="node-opportunity">RPA 接收新员工提交的资料(身份证、学历、健康证、执业证),按 HR 档案规范命名归档至 OA/HRIS,缺失项自动催办。</td>
+<td class="node-benefit">入职档案完整率从抽样合格升至 100%,GSP/GMP 人员资质合规风险下降</td>
+</tr>
+</tbody></table>
+</div>
+</div>
+</section>
+</main>
+</div>
+<div id="detailMask" class="detail-mask"></div>
+<aside id="detailPanel" class="detail-panel">
+<div class="detail-header">
+<div class="detail-header-text">
+<div id="detailRoleTag" class="detail-eyebrow">岗位 · 工作流</div>
+<div id="detailTitle" class="detail-title">节点名称</div>
+</div>
+<button id="detailClose" class="detail-close" type="button" title="关闭 (Esc)">×</button>
+</div>
+<div class="detail-body">
+<div class="detail-section">
+<div class="detail-section-label">能力类型</div>
+<div class="detail-cap-row">
+<span id="detailCap" class="cap-badge"></span>
+<span style="font-size:12px;color:var(--text-mute);">能否实施需结合企业现有系统对接情况评估</span>
+</div></div>
+<div class="detail-section">
+<div class="detail-section-label">自动化机会点</div>
+<div id="detailOpp" class="detail-section-content"></div>
+</div>
+<div class="detail-section">
+<div class="detail-section-label">效能提升</div>
+<div id="detailBenefit" class="detail-section-content"></div>
+</div>
+<div class="detail-section">
+<div class="detail-section-label">典型触发场景</div>
+<div id="detailTrigger" class="detail-section-content"></div>
+</div>
+</div>
+<div class="detail-foot">说明:效能提升数字部分参考行业实际项目案例,部分为合理估算区间。落地需结合客户现场系统、流程标准化程度评估。</div>
+</aside>
+<footer class="footer">
+<div class="legend">
+<span><span class="dot" style="background:#2563eb;"></span>RPA · 流程自动化(确定性规则、跨系统搬运)</span>
+<span><span class="dot" style="background:#7c3aed;"></span>AI · 智能增强(非结构化文本/图像/语音处理)</span>
+<span><span class="dot" style="background:#059669;"></span>RPA+AI · 组合方案(感知+执行)</span>
+</div>
+<div>共 10 个岗位 / 30 条工作流 / 90 个自动化机会点 · 行业通用版,适用于医药生产企业、医药流通批发企业、连锁药店集团</div>
+</footer>
+<script>
+window.__NODE_DETAILS__ = {"n0": {"role": "研发与立项", "workflow": "靶点专利与文献情报", "name": "专利数据库批量筛查", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "在 PatSnap、Incopat、Google Patents 等专利平台按关键词批量检索,RPA 翻页采集专利元数据,AI 解析专利全文判断涉及的分子类型与靶点,自动输出筛查结论表。", "benefit": "原 1 条专利人工 1 分钟,自动化后 15 条/10 秒,效率提升数十倍,每条处理成本可降至 0.3 元级别", "trigger": "立项前的靶点扫描、竞品专利监控、月度 1000+ 条专利筛查"}, "n1": {"role": "研发与立项", "workflow": "靶点专利与文献情报", "name": "PubMed/CNKI 文献定题检索", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 按预设检索式定时登录 PubMed、CNKI、万方、Embase 等数据库,批量下载新增文献题录与全文 PDF,按主题词归档到研发情报库。", "benefit": "周期性文献跟踪从人工 1 天/次降至自动跑批,覆盖率从抽样升至 100%", "trigger": "研发情报周报、专家共识更新跟踪、竞品临床进展监控"}, "n2": {"role": "研发与立项", "workflow": "靶点专利与文献情报", "name": "生物信息同源性比对", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 自动登录 Bio-Techne、UniProt、NCBI 等数据库,AI 从抗体说明书 PDF 中识别免疫原序列填入比对表,自动完成跨种属同源性(>90%)初筛。", "benefit": "相比人工搭建数据文件提速 90%+,每周节省约 12 小时,显著降低试错成本", "trigger": "抗体研发跨种属选型、动物实验前的同源性预判"}, "n3": {"role": "研发与立项", "workflow": "研发档案与立项申报", "name": "抗体说明书基础信息回填", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 循环 Excel 中的 UniProt ID 在官网自动检索,抓取序列号、分子别名、细胞定位等字段,自动写入 Word 说明书模板。", "benefit": "单份说明书从人工 60 分钟降至 43 分钟,提效约 28%,每周节省约 8 小时", "trigger": "新抗体成品上架、产品入库前的资料整理"}, "n4": {"role": "研发与立项", "workflow": "研发档案与立项申报", "name": "立项调研报告草稿生成", "cap": "AI", "capClass": "cap-ai", "opportunity": "AI 基于已收集的文献摘要、专利清单、市场数据,按公司立项报告模板生成初稿(背景、靶点价值、竞品格局、技术路线),研发人员二次校对。", "benefit": "立项报告从 3-5 天缩至 1 天,文档结构和深度统一", "trigger": "新项目立项评审、产品线规划季度复盘"}, "n5": {"role": "研发与立项", "workflow": "研发档案与立项申报", "name": "研发档案归档合规检查", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 按 GLP/GMP 档案目录扫描研发 NAS 与 OA,核对必备文件清单完整性、命名规范、版本号一致性,缺失自动通知责任人。", "benefit": "档案完整性核查从季度抽查升至每周全量,审计准备时间压缩 60% 以上", "trigger": "迎接药监局现场检查、年度内审、项目阶段性结项"}, "n6": {"role": "研发与立项", "workflow": "实验室数据与 BOM", "name": "实验室抽提平台 BOM 提交", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 自动登录 NAS 系统获取实验任务单,登录 OA 打开任务单填写 BOM 数据并提交,完成后回写 Excel 汇总并发企微通知。", "benefit": "替代纯人工填报,提交及时性、准确性、可追溯性同步提升", "trigger": "实验室完成实验后的物料登记、研发-生产衔接的物料交接"}, "n7": {"role": "研发与立项", "workflow": "实验室数据与 BOM", "name": "ELN 实验记录结构化", "cap": "AI", "capClass": "cap-ai", "opportunity": "AI 解析手写或自由文本的 ELN 实验记录,提取关键参数(温度、时间、批号、试剂用量)并结构化入库,辅助跨实验对比分析。", "benefit": "非结构化实验数据可检索率从 0 提升至 100%,数据复用价值大幅释放", "trigger": "实验数据回顾、工艺参数优化、研发生产工艺转移"}, "n8": {"role": "研发与立项", "workflow": "实验室数据与 BOM", "name": "试剂耗材采购单生成", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 监测实验室物料库存,低于阈值自动按预设供应商生成采购申请单提交至 SAP/用友 NC,附本期需求依据。", "benefit": "耗材断料事件下降,采购响应时效从 2-3 天缩至当天", "trigger": "高频耗材库存预警、研发项目集中用料期"}, "n9": {"role": "临床与药物警戒(PV)", "workflow": "不良反应(ADR)采集录入", "name": "Argus 系统不良反应录入", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 自动登录 Oracle Argus 系统,AI 将 PDF 格式的不良反应表单转为结构化数据(包括医院、就诊信息),逐条写入 Argus,并调用高德地图 API 自动定位医院。", "benefit": "3 位同事每日各节省约 2 小时,合计每日 6 小时,准确性达 100%,相当于释放一名人工", "trigger": "ADR 专员日常录入、报告周期前的集中补录"}, "n10": {"role": "临床与药物警戒(PV)", "workflow": "不良反应(ADR)采集录入", "name": "ADR 报告时限合规预警", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 监控 Argus 与内部 PV 系统中待报告 ADR 的剩余时限(严重 7 日、非严重 15 日),临近超期自动短信+企微催办,生成合规台账。", "benefit": "超期上报风险降至接近 0,监管检查时台账可一键导出", "trigger": "高风险品种集中上市期、迎检前的合规自查"}, "n11": {"role": "临床与药物警戒(PV)", "workflow": "不良反应(ADR)采集录入", "name": "ADR 表单 OCR 关键字段提取", "cap": "AI", "capClass": "cap-ai", "opportunity": "AI 从扫描件、传真、Word 等多版本个例安全性报表(ICSR)中识别关键字段,精准识别特殊符号(如☒/✓),结构化输出供下游录入。", "benefit": "处理 1 份文件费用约 0.2 元,字段识别完整且结构化,人工二次核对工作量降低 70%+", "trigger": "多渠道收集的 ADR 报表批量入库、历史 ADR 数据回溯"}, "n12": {"role": "临床与药物警戒(PV)", "workflow": "文献监测与安全性报告", "name": "国内外文献库定期监测", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 循环登录 PubMed、Embase、CNKI 等国内外文献库,按品种关键词检索新增文献,批量导出筛选结果整理成标准 Excel 提交 PV 部门。", "benefit": "原月均 4 人/天文献检索工作量,纯 RPA 操作无需人工,准确性 100%、及时性大幅提升", "trigger": "PSUR/PBRER 报告周期、新品种上市后强化监测期"}, "n13": {"role": "临床与药物警戒(PV)", "workflow": "文献监测与安全性报告", "name": "PSUR 报告附件汇编", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 从 Argus 导出统计表、从文献库导出筛选结果,AI 按 PSUR 模板章节自动汇编初稿(品种概述、暴露量、ADR 统计、文献综述),专员二次审校。", "benefit": "PSUR 初稿汇编从 1-2 周缩至 2-3 天,模板格式合规性 100%", "trigger": "新品种 5 年内每半年 PSUR、上市超 5 年品种 5 年期 PSUR"}, "n14": {"role": "临床与药物警戒(PV)", "workflow": "文献监测与安全性报告", "name": "药品说明书安全性变更追踪", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 监控国家药监局发布的说明书修订公告,AI 对比新旧说明书安全性章节(警告、禁忌、不良反应)差异,自动标红推送至 PV 与医学部。", "benefit": "说明书更新感知从月级别提升至 24 小时内,合规跟进无遗漏", "trigger": "在售品种说明书修订、同类竞品说明书变更比对"}, "n15": {"role": "临床与药物警戒(PV)", "workflow": "临床试验运营", "name": "EDC 数据一致性核查", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 按预设逻辑规则比对 EDC 录入数据与原始病历影印件 OCR 结果(CRF 表),自动标记可疑数据点供 CRA 复核。", "benefit": "数据清理周期从 SDV 现场核查依赖降至日常自动巡检,提升数据库锁定及时性", "trigger": "多中心临床试验数据清理、数据库锁库前合规自查"}, "n16": {"role": "临床与药物警戒(PV)", "workflow": "临床试验运营", "name": "受试者随访提醒触达", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 按访视计划自动触发短信、企微消息提醒 CRC 联系受试者,记录回访结果回写 EDC,失联自动升级。", "benefit": "随访脱落率下降,CRC 重复性沟通工作量降低 50%+", "trigger": "长周期研究的随访管理、依从性差的受试者群体跟进"}, "n17": {"role": "临床与药物警戒(PV)", "workflow": "临床试验运营", "name": "临床中心招募进度看板", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 每日从各中心 EDC 抽取入组、筛选失败、脱落数据,自动生成进度看板邮件推送项目组与申办方。", "benefit": "入组进度感知从周报级提升至日报级,慢中心可及早干预", "trigger": "多中心试验运营周会、申办方项目监查会议"}, "n18": {"role": "注册合规事务", "workflow": "申报材料整理与提交", "name": "注册申报清单字段填充", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "AI 从研发档案、生产工艺、质量标准等源文档中识别申报材料所需字段(规格、剂型、原辅料供应商等),RPA 自动填入药监局申报模板。", "benefit": "材料整理周期从 1-2 周降至 2-3 天,字段一致性核查自动化", "trigger": "新药 IND/NDA 申报、仿制药一致性评价、医疗器械注册申报"}, "n19": {"role": "注册合规事务", "workflow": "申报材料整理与提交", "name": "药监局网上办事大厅提交", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 自动登录国家药监局或省级药监局网上办事大厅,按申报事项类型上传材料、填写表单字段、跟踪受理状态变更并通知责任人。", "benefit": "提交动作从人工守屏改为定时跑批,受理状态查询从天级提升至小时级", "trigger": "批件年度更新、变更补充申请、生产许可证延续"}, "n20": {"role": "注册合规事务", "workflow": "申报材料整理与提交", "name": "申报材料合规预审", "cap": "AI", "capClass": "cap-ai", "opportunity": "AI 按药典、CDE 技术指南、申报指南等知识库,对申报材料草稿做合规性预检(必填项、术语规范、附件齐全),输出问题清单。", "benefit": "形式审查通过率提升,因材料缺漏导致的退审次数下降", "trigger": "首次提交前的内部预审、CDE 沟通会前的材料整理"}, "n21": {"role": "注册合规事务", "workflow": "证照与资质管理", "name": "GMP/GSP 证照到期预警", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 维护证照台账(药品生产许可证、GMP 证书、GSP 证书、医疗器械注册证、营业执照),按到期日提前 90/60/30 天分级预警,推送续证经办人。", "benefit": "证照过期触雷风险降至 0,续证流程提前启动 30 天以上", "trigger": "公司持证类目多、跨省经营、控股子公司证照统一管控"}, "n22": {"role": "注册合规事务", "workflow": "证照与资质管理", "name": "供应商资质药监局核验", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 进入药监局药品/器械/化妆品查询界面,循环搜索供应商企业名称,抓取生产许可、产品注册、行政处罚等资质信息,回写 ERP 供应商档案。", "benefit": "单条核验从人工 5 分钟降至 1 分钟(5 倍提效),数据采集准确率达 100%", "trigger": "首营资质审查、合作供应商年度复审、新供应商准入"}, "n23": {"role": "注册合规事务", "workflow": "证照与资质管理", "name": "委托书/授权书续期维护", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 登录药师帮 SCM 等 B2B 平台,逐订单查询客户委托书有效期,过期自动发短信/在线消息提醒,已重新上传则登记到在线表格。", "benefit": "原 20 个店铺需 5 人操作,自动化后 1 人即可,每天节省每人 6 小时工作量", "trigger": "B2B 平台高频小额订单、客户分散的批发渠道"}, "n24": {"role": "注册合规事务", "workflow": "监管信息与政策跟踪", "name": "国家及地方药监局公告抓取", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 定期登录国家药监局及各省局官网,按截止日期循环抓取公告通告(质量不合格、抽检不合格、说明书修订、召回等),下载附件归档并推送质量部。", "benefit": "信息收集从人工 28 小时/次降至 2 小时/次(14 倍提效),采集准确率 100%、零遗漏", "trigger": "月度合规简报、突发监管事件应急响应、迎接 GMP/GSP 飞检"}, "n25": {"role": "注册合规事务", "workflow": "监管信息与政策跟踪", "name": "集采中标结果监控", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 监控国家及省级药品集采平台,新批次中标结果发布后自动抓取本公司及竞品价格、中选企业、约定采购量,生成对比报告。", "benefit": "中标信息从人工天级延迟提升至发布当日触达商务、价格、市场部", "trigger": "集采开标周、价格策略复盘、竞品动态跟踪"}, "n26": {"role": "注册合规事务", "workflow": "监管信息与政策跟踪", "name": "医院招标信息监控", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 定期扫描各省药械集采平台、医院官网、第三方招标网站,按品种关键词抓取招标公告与中标公示,推送给区域销售。", "benefit": "招标信息覆盖从重点医院抽样升至全量监控,商机响应提前数天", "trigger": "医院年度招标季、新品准入推广、区域市场拓展"}, "n27": {"role": "采购供应链", "workflow": "供应商管理", "name": "供应商资质自动化审查", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 进入药监局-药品查询界面,按供应商批量抓取生产许可证、GMP 证书、产品注册证等资质,AI 比对证照与合同台账一致性,异常推送 SQE。", "benefit": "单家审查从 5 分钟降至 1 分钟(5 倍提效),数据准确率 100%", "trigger": "首营资质审查、合作供应商年度复审、合规飞检前自查"}, "n28": {"role": "采购供应链", "workflow": "供应商管理", "name": "供应商证照到期续证管理", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 维护供应商证照台账,提前 90/60/30 天预警即将过期证照,自动发邮件请供应商上传新版,未及时上传冻结其新订单。", "benefit": "因证照过期导致的采购合规风险接近 0,续证沟通效率提升", "trigger": "原料药 GMP 证书到期、辅料供应商资质年审"}, "n29": {"role": "采购供应链", "workflow": "供应商管理", "name": "供应商绩效定期对账", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 从 ERP 抽取供应商交付准时率、合格率、退货率,按月生成绩效卡推送 SQE 与采购,异常供应商触发约谈流程。", "benefit": "绩效评估从季度抽样升至月度全量,问题供应商识别提前", "trigger": "供应商月度绩效会、年度供应商分级评估"}, "n30": {"role": "采购供应链", "workflow": "库存与计划维护", "name": "全国分仓安全库存维护", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 自动登录用友 NC 物料集团板块,按 Excel 货品物料逐条选择对应组织(仓库)输入安全库存,自动循环至所有 SKU 维护完毕。", "benefit": "单条从 2-3 分钟降至 0.5 分钟(400% 提效),日均节省约 2 小时", "trigger": "月度安全库存调整、新品上架库存策略设置、仓库新增"}, "n31": {"role": "采购供应链", "workflow": "库存与计划维护", "name": "物料计划属性批量维护", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 在 NC 系统物料集团板块按 Excel 当前行物料计划属性,自动选择组织并输入计划属性,跨多系统切换零出错。", "benefit": "单条 2-3 分钟降至 0.5 分钟(400% 提效),计划属性维护准确性 100%", "trigger": "物料主数据治理、季度计划参数复盘、产品线调整"}, "n32": {"role": "采购供应链", "workflow": "库存与计划维护", "name": "MRP 物料需求计划核对", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 从 MES 与 ERP 分别抽取生产计划与物料需求,自动比对差异并按超阈值规则触发计划员复核。", "benefit": "MRP 异常发现时效从次日提升至当班,缺料停产风险下降", "trigger": "周计划下达、月度滚动计划、跨厂区物料调拨"}, "n33": {"role": "采购供应链", "workflow": "采购执行与对账", "name": "采购订单创建与跟单", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 接收来自 MRP 的采购建议,自动在 ERP 生成采购订单并发送供应商,定时回查交期与发货状态,异常推送采购员。", "benefit": "采购员从订单录入解放出来,跟单覆盖率从抽样升至全量", "trigger": "高频小额采购、长尾辅料包材订单"}, "n34": {"role": "采购供应链", "workflow": "采购执行与对账", "name": "供应商发票三单匹配", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "AI 识别供应商发票关键字段(开票方、品名、金额、税额),RPA 与 ERP 中的采购订单、入库单做三单匹配,差异自动挂账供应商对接人。", "benefit": "对账周期从月底集中处理改为日清,差错率显著下降", "trigger": "月底集中开票、年终供应商对账"}, "n35": {"role": "采购供应链", "workflow": "采购执行与对账", "name": "应付账款付款审批流转", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 接收审核通过的应付清单,按账期、付款条件自动在 ERP 发起付款申请,推送至 OA 审批节点并跟踪流转。", "benefit": "付款流转时效从 3-5 天缩至 1-2 天,逾期付款风险下降", "trigger": "月度付款集中审批、大额付款审批跟催"}, "n36": {"role": "生产与质量(GMP)", "workflow": "生产批与领料", "name": "下达生产批+打印领料单", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "帆软填报系统录入生产批需求,RPA 自动读取后在 EBS 创建生产批、赋批号、发放、校验,异常自动通知各 OU 计划员;后续读取仓库待打印领料单批量打印。", "benefit": "可释放约 2 个人力,年累计节约 330 人天;生产操作从 12 小时/天降至 2 小时/天(600% 提效)", "trigger": "日常生产批下达、跨车间领料协同"}, "n37": {"role": "生产与质量(GMP)", "workflow": "生产批与领料", "name": "MES 生产订单同步", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 把 ERP 中已审核的生产订单按车间维度同步至 MES,异常订单自动回写 ERP 标记并通知计划员。", "benefit": "ERP-MES 同步从次日批跑改为分钟级,车间开工等待时间下降", "trigger": "多车间多产线协同、紧急插单"}, "n38": {"role": "生产与质量(GMP)", "workflow": "生产批与领料", "name": "批生产记录电子化复核", "cap": "AI", "capClass": "cap-ai", "opportunity": "AI 识别车间手工填写的批记录扫描件,提取关键参数(温度、时间、压差、人员签名),与 MES/SCADA 数据自动比对差异,推送 QA 复核。", "benefit": "批记录复核覆盖从抽查升至 100% 全量,数据完整性合规风险下降", "trigger": "GMP 内审、迎接药监局飞检、批次放行前合规自查"}, "n39": {"role": "生产与质量(GMP)", "workflow": "QC 检验与放行", "name": "LIMS 检验数据采集与录入", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 从仪器(HPLC、GC、UV 等)的导出文件中读取检验结果,自动录入 LIMS 对应检验单,完成单位换算与限度判定。", "benefit": "QC 录入工作量降低 70%+,检验结果可追溯性显著提升", "trigger": "高频次小批量检验、多仪器并行检验"}, "n40": {"role": "生产与质量(GMP)", "workflow": "QC 检验与放行", "name": "批检报告(COA)自动生成", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "LIMS 检验完成后,RPA 按客户/批号取检验数据填入 COA 模板(中文/英文版本),自动生成 PDF 并归档到出货档案。", "benefit": "COA 出具从人工 30 分钟/份降至 2-3 分钟,出货前文件齐套率 100%", "trigger": "出货前 COA 准备、客户索要历史 COA"}, "n41": {"role": "生产与质量(GMP)", "workflow": "QC 检验与放行", "name": "OOS/OOT 偏差初判", "cap": "AI", "capClass": "cap-ai", "opportunity": "AI 监控 LIMS 检验结果,对偏离规格(OOS)或偏离趋势(OOT)的数据自动初判触发偏差调查流程,推送 QA 经理。", "benefit": "OOS 识别从人工巡检改为实时,偏差调查启动时效提前数小时至数天", "trigger": "稳定性研究监测、高风险关键参数实时监控"}, "n42": {"role": "生产与质量(GMP)", "workflow": "GMP 合规监管", "name": "药监局公告通告下载归档", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 登录国家及地方药监局官网,按截止日期循环下载公告附件(质量不合格、抽检不合格、说明书修订、召回等),命名归档并推送质量部。", "benefit": "信息收集从 28 小时/次降至 2 小时/次(14 倍提效),零遗漏", "trigger": "月度合规简报、突发监管事件、GMP 飞检前自查"}, "n43": {"role": "生产与质量(GMP)", "workflow": "GMP 合规监管", "name": "供应商质量信息追踪", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 监控经销商及供货商相关质量信息(监督检查结果、资质更新、行政处罚),按供应商建立质量档案,异常自动告警。", "benefit": "供应商质量风险感知从季度复盘提升至实时,合规失分风险下降", "trigger": "供应商月度评估、SQE 现场审计前的资料准备"}, "n44": {"role": "生产与质量(GMP)", "workflow": "GMP 合规监管", "name": "经营品种质量信息汇总", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 按经营品种关键词监控说明书修订、市场抽检、ADR、召回等信息,生成品种质量月报推送质量负责人。", "benefit": "品种维度的质量风险图谱可视化,响应链条更短", "trigger": "品种月度质量例会、年度质量回顾分析"}, "n45": {"role": "仓储物流(GSP/GDP)", "workflow": "冷链温控管理", "name": "手写温度回执单完整性检查", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 在 TMS 系统抓取前一天温度计回执单图片,批量裁剪保留校验区,AI 识别每行是否有手写内容,缺失则记录交货单号邮件通知相关方。", "benefit": "检查方式从抽查升至全量(月均 3000 单),时长从 1500 分钟/月降至 30 分钟,效率提升 500 倍", "trigger": "冷链月度合规自查、客户投诉追溯、GSP 飞检"}, "n46": {"role": "仓储物流(GSP/GDP)", "workflow": "冷链温控管理", "name": "温度计数据 GDP 数智化管理", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 完成温度计登记表清洗,打开温度计读取并下载温度数据,自动检查超温状态、上传至 TMS 并发邮件反馈温度计执行报告。", "benefit": "原 8 小时/天人工降至 10 分钟/天,单单从 5 分钟降至 2 分钟(60% 提效),节省一名人工", "trigger": "日常冷链药品出库、新冠疫苗等高敏品温控"}, "n47": {"role": "仓储物流(GSP/GDP)", "workflow": "冷链温控管理", "name": "运输偏差温控应急响应", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "AI 实时分析温度数据流,检测到超温偏差立即触发应急流程:RPA 自动通知 QA、车队、客户,生成偏差初步评估报告。", "benefit": "温控偏差响应从小时级提升至分钟级,药品安全风险显著下降", "trigger": "夏季高温运输、长途跨省冷链、疫苗等关键品种"}, "n48": {"role": "仓储物流(GSP/GDP)", "workflow": "出入库与台账", "name": "京东/菜鸟出入库流水台账", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 自动登录京东、菜鸟、BMS/GOS/EAS 等平台,抓取每日出入库流水,合并去重后回写 ERP 形成统一台账。", "benefit": "(汤臣倍健案例)累计运行 63000+ 小时,相当于节省人力 39895 天", "trigger": "电商业务跨平台运营、月度库存对账"}, "n49": {"role": "仓储物流(GSP/GDP)", "workflow": "出入库与台账", "name": "菜鸟退换货管理", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 监控菜鸟仓退换货订单,自动同步至 OMS/ERP,关联原订单做财务退款挂账,异常订单转人工。", "benefit": "退换货处理从 T+2 提升至 T+0,客户体验改善", "trigger": "电商退换货高峰、大促后退货潮"}, "n50": {"role": "仓储物流(GSP/GDP)", "workflow": "出入库与台账", "name": "效期与近效期预警", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 扫描 WMS/ERP 库存效期数据,按品种特性分级预警(如 6 个月内、3 个月内),推送销售运营加快动销。", "benefit": "近效期产品损耗下降,清库决策提前 1-3 个月", "trigger": "月度效期盘点、临期品促销策划"}, "n51": {"role": "仓储物流(GSP/GDP)", "workflow": "追溯与流向管理", "name": "药品追溯码上传码上放心", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 从 WMS/MES 抓取入库、出库、销售关联的追溯码,按规则上传国家药监局认可的追溯平台(如阿里健康码上放心)。", "benefit": "追溯码上传准确率接近 100%,逾期未上传风险下降", "trigger": "国家药品追溯码强制上线品种、监管检查"}, "n52": {"role": "仓储物流(GSP/GDP)", "workflow": "追溯与流向管理", "name": "经销商流向数据采集", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 自动登录 180+ 商业公司网站采集流向数据,导入数据中台清洗后形成销售/库存视图,为不同部门提供定制化报告。", "benefit": "(CSO 案例)每年节省近 2000 个人天,解决 500+ 同事的低效重复工作", "trigger": "CSO 业务多商业公司协同、窜货乱价稽查"}, "n53": {"role": "仓储物流(GSP/GDP)", "workflow": "追溯与流向管理", "name": "窜货乱价异常监控", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 汇集流向数据,AI 比对销售区域、价格、客户结构异常模式(同一批号跨区流转、价格远低于指导价),自动生成稽查线索。", "benefit": "窜货识别从月度复盘提升至每周自动巡检,稽查响应提前", "trigger": "招商会后的渠道管控、举报投诉调查、价格保护期"}, "n54": {"role": "销售运营(医药代表/院内)", "workflow": "医药代表合规与拜访", "name": "代表合规会议抽检", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 登录会议系统导出当天申请会议数据,AI 按预设约 10 个指标对每场会议风险评估打分,自动抽取风险高者推送合规同事;会议中 RPA 加入会议录屏,AI 识别违禁词。", "benefit": "24 小时自动监控,合规抽检质量与效率显著提升,医生敏感度问题(手机录屏替代会议软件)同步缓解", "trigger": "代表线上推广会高频期、合规飞检前的留痕检查"}, "n55": {"role": "销售运营(医药代表/院内)", "workflow": "医药代表合规与拜访", "name": "拜访日报智能汇总", "cap": "AI", "capClass": "cap-ai", "opportunity": "AI 解析代表语音/文字版拜访日报,提取拜访医院、医生、产品、拜访目的、医生反馈等结构化字段,自动入 CRM 并生成区域/品种维度汇总。", "benefit": "代表填写日报时间从 30 分钟降至 5 分钟,KA 看板从周更提升至日更", "trigger": "代表月度业绩复盘、大区季度业务回顾"}, "n56": {"role": "销售运营(医药代表/院内)", "workflow": "医药代表合规与拜访", "name": "医生执业信息卫健委查询", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 提前准备查询信息表,循环打开卫健委官网查询医生执业资质,查询结果截图并写入表格;通过切换浏览器规避 60 秒查询间隔。", "benefit": "节省约 1 人天工作量,效率比人工高 1-2 倍", "trigger": "互联网诊疗平台医生准入、网院多点执业月度核查、竞品网院医生合规监控"}, "n57": {"role": "销售运营(医药代表/院内)", "workflow": "院内准入与中标管理", "name": "医院招标信息监控", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 定期扫描省级集采平台、医院官网、第三方招标平台,按品种关键词抓取招标公告与中标公示,推送区域销售。", "benefit": "招标信息覆盖从抽样升至全量,商机响应提前数天", "trigger": "医院年度招标季、新品准入、区域市场拓展"}, "n58": {"role": "销售运营(医药代表/院内)", "workflow": "院内准入与中标管理", "name": "集采中标价格执行核查", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 比对集采中标价与各渠道实际成交价,偏离自动告警销售经理与商务,生成价格执行台账留作合规备查。", "benefit": "集采价格执行偏差识别从月度提升至每日,合规风险下降", "trigger": "新中标周期切换、跨省集采价格联动"}, "n59": {"role": "销售运营(医药代表/院内)", "workflow": "院内准入与中标管理", "name": "医院准入跟进表自动汇报", "cap": "AI", "capClass": "cap-ai", "opportunity": "AI 解析代表填写的医院准入跟进表(目标医院、关键人物、进度阶段、下一步动作),自动汇总成大区准入看板并标记停滞项。", "benefit": "区域准入进度透明化,KA/大区经理决策依据更及时", "trigger": "新品上市铺货期、年度准入冲刺、品种区域复盘"}, "n60": {"role": "销售运营(医药代表/院内)", "workflow": "商务回款与合同", "name": "商务回款邮件整合校验", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 监控商务负责人邮箱,获取销售提报的回款信息表附件,按月回款汇总表核对,异常数据整理成单独表格邮件回复销售并同步商务负责人。", "benefit": "回款数据核对准确性 100%,日均节省约 4 小时人工核对", "trigger": "月底集中回款、季度商务结算"}, "n61": {"role": "销售运营(医药代表/院内)", "workflow": "商务回款与合同", "name": "采购药品交易结算合同批量签章", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 打开医药平台批量下载/打开合同,完成签章后上传,平均 2 分钟完成一份,典型集采场景单次几千份合同。", "benefit": "至少节省 4 人天/年,从专人专项处理 1 个月降至机器人后台跑批", "trigger": "集采签约期、医保挂网协议批量签订"}, "n62": {"role": "销售运营(医药代表/院内)", "workflow": "商务回款与合同", "name": "经销商对账明细生成", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 从 ERP 抽销售/退货/返利数据,AI 比对经销商提供的对账单,差异点自动标红并附差异原因初判,推送商务对接人。", "benefit": "对账周期从月底集中处理改为周级,差错沟通成本下降", "trigger": "月度/季度经销商对账、年终结账"}, "n63": {"role": "渠道与电商运营", "workflow": "多平台订单与处方审核", "name": "拼多多/天猫处方单审核", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 通过火豹浏览器在多店铺间切换(避免平台频繁短信验证),进入后台筛选待审核处方订单,按规则自动审核常规单据,特殊订单转人工。", "benefit": "丝滑切换多店铺,常规处方审核效率提升 10 倍,店铺评分提升", "trigger": "拼多多 200+ 店铺日常运营、大促处方单激增"}, "n64": {"role": "渠道与电商运营", "workflow": "多平台订单与处方审核", "name": "天猫/京东订单批量处理", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 在天猫、京东商家后台批量处理订单(确认、改地址、合并、审单),与 OMS 无缝对接,自动同步退货入库。", "benefit": "(上元堂案例)累计运行 46000+ 小时,节省人力 29000+ 天,1 个应用减少 3 个人力", "trigger": "电商日常订单处理、大促洪峰、退货高峰"}, "n65": {"role": "渠道与电商运营", "workflow": "多平台订单与处方审核", "name": "药师帮 SCM 首营资质审核", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 登录 OMS/SCM 下载订单表,循环每个订单查询委托书有效期,过期发短信通知,已上传则登记在线表格;按店铺自动分配。", "benefit": "原 5 人操作 20 个店铺,自动化后 1 人即可,每天节省每人 6 小时", "trigger": "B2B 平台日均高频订单、月底集中审核"}, "n66": {"role": "渠道与电商运营", "workflow": "价格与商品力", "name": "多平台药物价格监控", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 登录各电商平台搜索药物名称,循环抓取价格、店铺,AI(OCR)识别乱价店铺营业执照抬头;输出比价表标红问题项,按控价函模板生成函件发送商家。", "benefit": "工作效率提升 50%+,每日节省约 4 小时(0.5 人工);从平台多难监管到自动化全覆盖", "trigger": "新品上市价格保护期、双 11/618 大促控价、举报投诉调查"}, "n67": {"role": "渠道与电商运营", "workflow": "价格与商品力", "name": "竞品价格走势分析", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 定时抓取竞品在阿里健康、京东健康、美团买药的价格、销量、评价,生成走势图与对比报告推送品牌经理。", "benefit": "竞品动态从抽样调研升至每日全量,定价策略响应更快", "trigger": "新品定价决策、季度竞品分析、营销活动预判"}, "n68": {"role": "渠道与电商运营", "workflow": "价格与商品力", "name": "商品热力洞察与运营建议", "cap": "AI", "capClass": "cap-ai", "opportunity": "AI 综合销量、评价、搜索词、店铺活动数据,识别热品上升信号,生成爆品候选与运营动作建议(选品、备货、广告)。", "benefit": "热品识别从周复盘升至每日,机会捕捉提前", "trigger": "电商运营日会、季节性品类备货、新品测试"}, "n69": {"role": "渠道与电商运营", "workflow": "店铺合规与运营", "name": "店铺评价与差评处理", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 监控阿里健康、京东健康、美团买药评价,AI 分析差评内容定级(物流/质量/服务/产品),生成回复初稿并推送客服审核。", "benefit": "差评响应时效从 24 小时缩至 2 小时内,店铺评分维护更及时", "trigger": "新品上市口碑维护、店铺评分波动应急"}, "n70": {"role": "渠道与电商运营", "workflow": "店铺合规与运营", "name": "营业执照/资质年审上传", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 在多个电商商家后台批量更新即将到期的营业执照、《互联网药品信息服务资格证书》、GSP 证等资质文件。", "benefit": "证照更新一次性完成,跨平台店铺合规风险下降", "trigger": "证照年审、新证书发放后的统一更新"}, "n71": {"role": "渠道与电商运营", "workflow": "店铺合规与运营", "name": "活动报名与素材分发", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 监控各平台 B 端活动通知,按预设规则报名,完成后回写活动台账;同步分发主图、详情页素材至各店铺。", "benefit": "活动覆盖率提升,大促筹备工作量降低 50%+", "trigger": "双 11/618 大促筹备、品牌日报名、季节性活动"}, "n72": {"role": "财务结算", "workflow": "开票与税务", "name": "数电开票自动化", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 自动登录 NC 销售发票维护查询待开票据,导出整理后登录电子税务局填写开票信息,导出已开发票回传 NC 留档,循环至全部完成。", "benefit": "开票从 5 分钟/票降至 2 分钟/票(250% 提效),三台电脑定时跑替代财务老师 24 小时守屏", "trigger": "日均 300+ 张发票场景、大客户大单集中开票"}, "n73": {"role": "财务结算", "workflow": "开票与税务", "name": "进项发票自动认证", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "AI 识别进项发票关键字段,RPA 在电子税务局批量勾选认证,异常发票(虚开风险、抬头错误)自动挂账推送税务专员。", "benefit": "进项认证从月底集中处理改为日清,认证错误率下降", "trigger": "月度进项认证截止前、专项税务检查"}, "n74": {"role": "财务结算", "workflow": "开票与税务", "name": "纳税申报数据准备", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 从 ERP 抽销项、进项、收入、成本数据,按申报表格式整理成预填表推送税务会计审核,缩短申报准备时间。", "benefit": "纳税申报准备从 1-2 天缩至半天,数据一致性自动核验", "trigger": "月度增值税申报、季度企业所得税预缴"}, "n75": {"role": "财务结算", "workflow": "资金与银行管理", "name": "银行明细回单下载归档", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 调用 UsbHub 硬件指定启动对应 U 盾,自动登录网银下载余额、交易清单、电子回单,按指定路径归档。", "benefit": "效率提升 200%(从每周 2-3 次人工 2-3 小时,到每日 1-2 小时自动采集 7 家银行 13 个账号),实时性大幅提升", "trigger": "多银行多账号集团企业、月度银企对账"}, "n76": {"role": "财务结算", "workflow": "资金与银行管理", "name": "付款单 EAS 录制", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 按审批通过的付款清单在 EAS/NC 系统批量录制付款单,按付款条件、币种自动分组提交。", "benefit": "(汤臣倍健案例)EAS 付款单录制自动化,财务对账与日均运行 120+ 小时一并构建", "trigger": "月度集中付款日、大额付款集中处理"}, "n77": {"role": "财务结算", "workflow": "资金与银行管理", "name": "银企对账差异核对", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 比对 ERP 银行账与网银流水,差异自动按规则归类(在途、漏录、错记),生成对账差异表推送出纳。", "benefit": "银企对账从月底 1-2 天集中处理降至每日自动巡检,长悬挂项识别提前", "trigger": "月底银企对账、年末审计盘点"}, "n78": {"role": "财务结算", "workflow": "应收对账与回款", "name": "经销商/客户对账单生成", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 从 ERP 抽销售/退货/已收款数据,按经销商生成对账单 PDF/Excel,自动推送至客户邮箱并跟踪签收。", "benefit": "对账单出具从财务集中编制升至按需自动生成,口径统一", "trigger": "月底集中对账、季度结算、年终关账"}, "n79": {"role": "财务结算", "workflow": "应收对账与回款", "name": "医保结算对账", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "AI 解析医保结算单(纸质或电子)关键字段,RPA 与 ERP/HIS/药店 POS 数据三方比对,差异自动挂账推送医保专员。", "benefit": "医保对账周期从月度抽样核对升至每日全量比对,挂账金额下降", "trigger": "连锁药店医保结算、医院 DRG/DIP 结算对账"}, "n80": {"role": "财务结算", "workflow": "应收对账与回款", "name": "应收账龄预警", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 按账期段(<30 天/30-60 天/60-90 天/>90 天)生成应收账龄表,超账期自动推送销售经理与商务催收。", "benefit": "逾期应收识别从月度报表升至每日,坏账风险敞口下降", "trigger": "月度应收复盘、年末催收冲刺"}, "n81": {"role": "客户成功&运营支撑", "workflow": "企微社群运维", "name": "客服销售员变更入群与转主", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 读取客服交替信息 Excel,登录企业微信工作台循环执行新人入群与群主转移,完成后保存记录反馈相关人。", "benefit": "原 1 周完成简化为 1 天(5 倍提速),准确率达 99%,杜绝人工疏漏", "trigger": "上万个经销商/医生诊所企微群、客服团队人员高流动率"}, "n82": {"role": "客户成功&运营支撑", "workflow": "企微社群运维", "name": "社群消息/公告群发", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 按客户分群标签批量发送品种通知、政策宣贯、活动邀约,记录送达与已读情况。", "benefit": "群发覆盖从抽样升至全量,消息触达率与一致性同步提升", "trigger": "新品上市宣贯、政策更新通知、季度活动招募"}, "n83": {"role": "客户成功&运营支撑", "workflow": "企微社群运维", "name": "群内异常言论实时监测", "cap": "AI", "capClass": "cap-ai", "opportunity": "AI 监控企微群消息,识别违规推广话术、价格泄露、医患纠纷等敏感内容,自动告警合规与客服。", "benefit": "合规风险事件从事后追溯升至实时干预,声誉风险下降", "trigger": "代表企微群合规监管、医生群言论敏感期"}, "n84": {"role": "客户成功&运营支撑", "workflow": "客户服务与回访", "name": "客服工单自动分派", "cap": "AI", "capClass": "cap-ai", "opportunity": "AI 解析进线工单内容(咨询/投诉/退货/不良反应),按优先级、品种、地区自动分派至对应客服小组并生成回复初稿。", "benefit": "工单首次响应时效从 4 小时缩至 30 分钟以内,客户满意度提升", "trigger": "客服日常进线、节假日客诉激增"}, "n85": {"role": "客户成功&运营支撑", "workflow": "客户服务与回访", "name": "客户回访智能拨打", "cap": "RPA+AI", "capClass": "cap-mix", "opportunity": "RPA 按回访清单触发外呼,AI 完成开场白与基础问题问答,转人工节点保留语音留存,结果回写 CRM。", "benefit": "客户回访覆盖率从抽样升至 80%+,人工回访集中在高价值客户", "trigger": "新品试用回访、慢病患者依从性回访"}, "n86": {"role": "客户成功&运营支撑", "workflow": "客户服务与回访", "name": "客户反馈情感分析与归类", "cap": "AI", "capClass": "cap-ai", "opportunity": "AI 对客户反馈做情感打分与主题归类(物流/质量/服务/疗效/价格),生成月度客户洞察报告。", "benefit": "客户声音从被动响应升至主动洞察,产品与服务改进有据可循", "trigger": "月度 NPS 复盘、季度客户体验回顾"}, "n87": {"role": "客户成功&运营支撑", "workflow": "排班与行政支撑", "name": "门店/医院排班自动化", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 登录排班系统(护理管理/HR),按员工技能、空闲状态、客户需求自动匹配排班并提交,循环完成批量排班。", "benefit": "(护理排班案例)实现自动排班,效率提升 50%+,资源闲置与匹配错误下降", "trigger": "连锁药店多门店排班、医院护理人员调度、DTP 药房值班"}, "n88": {"role": "客户成功&运营支撑", "workflow": "排班与行政支撑", "name": "员工考勤与工时核算", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 抓取门店/办公地考勤打卡数据,按出勤、加班、调休规则自动核算工时,异常推送 HR 复核。", "benefit": "考勤核算从月底 2-3 天集中处理压缩至日清,薪酬异常风险下降", "trigger": "月底考勤结算、节假日加班核算"}, "n89": {"role": "客户成功&运营支撑", "workflow": "排班与行政支撑", "name": "新员工入职资料自动归档", "cap": "RPA", "capClass": "cap-rpa", "opportunity": "RPA 接收新员工提交的资料(身份证、学历、健康证、执业证),按 HR 档案规范命名归档至 OA/HRIS,缺失项自动催办。", "benefit": "入职档案完整率从抽样合格升至 100%,GSP/GMP 人员资质合规风险下降", "trigger": "批量入职、HR 档案治理、迎接劳动监察或合规检查"}};
+
+(function() {
+    'use strict';
+
+    // 状态
+    var activeCaps = { 'RPA': true, 'AI': true, 'RPA+AI': true };
+    var keyword = '';
+
+    // DOM 引用
+    var searchInput = document.getElementById('searchInput');
+    var searchClear = document.getElementById('searchClear');
+    var detailMask = document.getElementById('detailMask');
+    var detailPanel = document.getElementById('detailPanel');
+
+    // ---- 筛选切换 ----
+    var chips = document.querySelectorAll('.filter-chip');
+    for (var i = 0; i < chips.length; i++) {
+        chips[i].addEventListener('click', function(ev) {
+            var cap = this.getAttribute('data-cap');
+            activeCaps[cap] = !activeCaps[cap];
+            // 全部都关掉就把刚点的再打开,避免空过滤
+            var anyOn = false;
+            for (var k in activeCaps) { if (activeCaps[k]) anyOn = true; }
+            if (!anyOn) { activeCaps[cap] = true; }
+            // 更新视觉
+            updateChips();
+            applyFilter();
+        });
+    }
+    function updateChips() {
+        for (var i = 0; i < chips.length; i++) {
+            var cap = chips[i].getAttribute('data-cap');
+            if (activeCaps[cap]) {
+                chips[i].classList.add('active');
+            } else {
+                chips[i].classList.remove('active');
+            }
+        }
+    }
+    updateChips();
+
+    // ---- 搜索 ----
+    searchInput.addEventListener('input', function() {
+        keyword = (this.value || '').trim().toLowerCase();
+        searchClear.classList.toggle('show', keyword.length > 0);
+        applyFilter();
+    });
+    searchInput.addEventListener('keydown', function(ev) {
+        if (ev.key === 'Escape') {
+            this.value = '';
+            keyword = '';
+            searchClear.classList.remove('show');
+            applyFilter();
+            this.blur();
+        }
+    });
+    searchClear.addEventListener('click', function() {
+        searchInput.value = '';
+        keyword = '';
+        this.classList.remove('show');
+        applyFilter();
+        searchInput.focus();
+    });
+
+    // 全局 Esc 也清搜索
+    document.addEventListener('keydown', function(ev) {
+        if (ev.key === 'Escape') {
+            // 优先关详情面板
+            if (detailPanel.classList.contains('show')) {
+                hideDetail();
+                return;
+            }
+            if (keyword) {
+                searchInput.value = '';
+                keyword = '';
+                searchClear.classList.remove('show');
+                applyFilter();
+            }
+        }
+    });
+
+    // ---- 关键词高亮 ----
+    function escapeRegex(s) {
+        return s.replace(/[-\/\\^$*+?.()|[\]{}]/g, '\\$&');
+    }
+    function highlight(text, kw) {
+        if (!kw) return text;
+        var re = new RegExp('(' + escapeRegex(kw) + ')', 'gi');
+        return text.replace(re, '<span class="hl">$1</span>');
+    }
+
+    // 缓存每个 cell 原文(首次 applyFilter 时建立)
+    var cellCache = null;
+    function buildCache() {
+        cellCache = [];
+        var rows = document.querySelectorAll('.node-row');
+        for (var i = 0; i < rows.length; i++) {
+            var row = rows[i];
+            var cells = row.querySelectorAll('td');
+            // 0: 节点名 1: 机会点 2: 效能
+            cellCache.push({
+                row: row,
+                cap: row.getAttribute('data-cap'),
+                searchText: row.getAttribute('data-search') || '',
+                originals: [
+                    cells[0].querySelector('.node-name-text').innerHTML,
+                    cells[1].innerHTML,
+                    cells[2].innerHTML
+                ],
+                cells: [
+                    cells[0].querySelector('.node-name-text'),
+                    cells[1],
+                    cells[2]
+                ]
+            });
+        }
+    }
+
+    // ---- 过滤 + 高亮 主逻辑 ----
+    function applyFilter() {
+        if (!cellCache) buildCache();
+        var kw = keyword;
+        var hasKw = kw.length > 0;
+
+        // 行级显隐
+        var rowCounts = {}; // workflow id -> visible count
+        for (var i = 0; i < cellCache.length; i++) {
+            var item = cellCache[i];
+            var capOk = activeCaps[item.cap] === true;
+            var kwOk = !hasKw || item.searchText.indexOf(kw) >= 0;
+            var visible = capOk && kwOk;
+
+            if (visible) {
+                item.row.classList.remove('hidden');
+                // 高亮
+                if (hasKw) {
+                    item.cells[0].innerHTML = highlight(item.originals[0], kw);
+                    item.cells[1].innerHTML = highlight(item.originals[1], kw);
+                    item.cells[2].innerHTML = highlight(item.originals[2], kw);
+                } else {
+                    item.cells[0].innerHTML = item.originals[0];
+                    item.cells[1].innerHTML = item.originals[1];
+                    item.cells[2].innerHTML = item.originals[2];
+                }
+            } else {
+                item.row.classList.add('hidden');
+            }
+
+            var wfId = item.row.getAttribute('data-wf');
+            if (!rowCounts[wfId]) rowCounts[wfId] = 0;
+            if (visible) rowCounts[wfId] += 1;
+        }
+
+        // 工作流级显隐(无可见行就隐藏整个工作流)
+        var workflows = document.querySelectorAll('.workflow');
+        var visibleWfPerRole = {};
+        for (var j = 0; j < workflows.length; j++) {
+            var wf = workflows[j];
+            var wfId = wf.getAttribute('data-wf');
+            var roleId = wf.getAttribute('data-role');
+            var cnt = rowCounts[wfId] || 0;
+            if (cnt > 0) {
+                wf.classList.remove('hidden');
+                // 搜索时自动展开
+                if (hasKw) wf.classList.remove('collapsed');
+                if (!visibleWfPerRole[roleId]) visibleWfPerRole[roleId] = 0;
+                visibleWfPerRole[roleId] += 1;
+            } else {
+                wf.classList.add('hidden');
+            }
+            // 工作流头里的可见数
+            var meta = wf.querySelector('.workflow-meta');
+            if (meta) {
+                var total = meta.getAttribute('data-total');
+                if (hasKw && cnt !== parseInt(total, 10)) {
+                    meta.textContent = cnt + ' / ' + total + ' 个机会点';
+                } else {
+                    meta.textContent = total + ' 个机会点';
+                }
+            }
+        }
+
+        // 岗位级显隐
+        var roles = document.querySelectorAll('.role-section');
+        var anyVisible = false;
+        for (var k = 0; k < roles.length; k++) {
+            var role = roles[k];
+            var rid = role.getAttribute('data-role');
+            if ((visibleWfPerRole[rid] || 0) > 0) {
+                role.classList.remove('hidden');
+                anyVisible = true;
+            } else {
+                role.classList.add('hidden');
+            }
+        }
+
+        // 空状态
+        var empty = document.getElementById('emptyState');
+        if (anyVisible) {
+            empty.style.display = 'none';
+        } else {
+            empty.style.display = 'block';
+        }
+
+        // 左导航联动
+        var roleLinks = document.querySelectorAll('.role-link');
+        for (var m = 0; m < roleLinks.length; m++) {
+            var link = roleLinks[m];
+            var rid2 = link.getAttribute('data-role');
+            link.style.opacity = (visibleWfPerRole[rid2] || 0) > 0 ? '1' : '0.4';
+        }
+    }
+
+    // ---- 工作流折叠 ----
+    var wfHeaders = document.querySelectorAll('.workflow-header');
+    for (var w = 0; w < wfHeaders.length; w++) {
+        wfHeaders[w].addEventListener('click', function() {
+            this.parentElement.classList.toggle('collapsed');
+        });
+    }
+
+    // ---- 节点详情面板 ----
+    var detailData = window.__NODE_DETAILS__ || {};
+    var rows = document.querySelectorAll('.node-row');
+    for (var r = 0; r < rows.length; r++) {
+        rows[r].addEventListener('click', function(ev) {
+            // 防止点到链接时也触发(预留)
+            if (ev.target.tagName === 'A') return;
+            var nid = this.getAttribute('data-nid');
+            var d = detailData[nid];
+            if (!d) return;
+            showDetail(d);
+        });
+    }
+    function showDetail(d) {
+        document.getElementById('detailRoleTag').textContent = d.role + ' · ' + d.workflow;
+        document.getElementById('detailTitle').textContent = d.name;
+        document.getElementById('detailCap').className = 'cap-badge ' + d.capClass;
+        document.getElementById('detailCap').textContent = d.cap;
+        document.getElementById('detailOpp').textContent = d.opportunity;
+        document.getElementById('detailBenefit').textContent = d.benefit;
+        document.getElementById('detailTrigger').textContent = d.trigger;
+        detailMask.classList.add('show');
+        detailPanel.classList.add('show');
+    }
+    function hideDetail() {
+        detailMask.classList.remove('show');
+        detailPanel.classList.remove('show');
+    }
+    detailMask.addEventListener('click', hideDetail);
+    document.getElementById('detailClose').addEventListener('click', hideDetail);
+
+    // ---- 左侧岗位导航点击平滑滚动 ----
+    var navLinks = document.querySelectorAll('.role-link');
+    for (var n = 0; n < navLinks.length; n++) {
+        navLinks[n].addEventListener('click', function(ev) {
+            ev.preventDefault();
+            var rid = this.getAttribute('data-role');
+            var target = document.getElementById('role-' + rid);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+            // active 切换
+            for (var i = 0; i < navLinks.length; i++) {
+                navLinks[i].classList.remove('active');
+            }
+            this.classList.add('active');
+        });
+    }
+
+    // 滚动时同步左侧 active
+    var roleSections = document.querySelectorAll('.role-section');
+    var ticking = false;
+    window.addEventListener('scroll', function() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(function() {
+            var scrollTop = window.scrollY + 200;
+            var current = null;
+            for (var i = 0; i < roleSections.length; i++) {
+                var sec = roleSections[i];
+                if (sec.classList.contains('hidden')) continue;
+                if (sec.offsetTop <= scrollTop) current = sec.getAttribute('data-role');
+            }
+            if (current) {
+                for (var j = 0; j < navLinks.length; j++) {
+                    var rid = navLinks[j].getAttribute('data-role');
+                    if (rid === current) {
+                        navLinks[j].classList.add('active');
+                    } else {
+                        navLinks[j].classList.remove('active');
+                    }
+                }
+            }
+            ticking = false;
+        });
+    });
+
+    // 默认折叠所有工作流(每个岗位下首个工作流默认展开)
+    var allWf = document.querySelectorAll('.workflow');
+    for (var x = 0; x < allWf.length; x++) {
+        if (allWf[x].getAttribute('data-first') !== '1') {
+            allWf[x].classList.add('collapsed');
+        }
+    }
+
+    // 首次填好 chip 与缓存
+    applyFilter();
+
+    // 焦点 / 提示
+    document.addEventListener('keydown', function(ev) {
+        // Cmd/Ctrl+K 聚焦搜索
+        if ((ev.metaKey || ev.ctrlKey) && ev.key === 'k') {
+            ev.preventDefault();
+            searchInput.focus();
+            searchInput.select();
+        }
+    });
+})();
+
+</script>
+</body></html>

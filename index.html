@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPA+AI 自动化机会地图</title>
+<link href="https://fonts.googleapis.com/css2?family=ZCOOL+KuaiLe&family=DM+Mono&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  font-family: 'ZCOOL KuaiLe', cursive;
+  background: #28102a;
+  min-height: 100vh;
+  display: flex; flex-direction: column; align-items: center;
+  padding: 48px 20px 60px;
+  background-image:
+    radial-gradient(ellipse at 20% 20%, rgba(140,80,180,0.2) 0%, transparent 55%),
+    radial-gradient(ellipse at 80% 75%, rgba(100,50,150,0.16) 0%, transparent 50%);
+}
+
+.header { text-align: center; margin-bottom: 48px; }
+
+.logo-en {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: rgba(232,200,120,0.65);
+  letter-spacing: 3px; margin-bottom: 10px; display: block;
+}
+
+.title {
+  font-size: 32px; letter-spacing: 4px;
+  color: #f0e4f8;
+  text-shadow: 0 0 24px rgba(200,160,240,0.35);
+  margin-bottom: 6px;
+}
+
+.subtitle {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: rgba(200,160,230,0.45);
+  letter-spacing: 2px;
+}
+
+/* 金色分隔 */
+.divider {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 36px; width: 100%; max-width: 560px;
+  opacity: 0.4;
+}
+.divider::before, .divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(232,200,120,0.8));
+}
+.divider::after { background: linear-gradient(90deg, rgba(232,200,120,0.8), transparent); }
+.divider-sym { font-size: 11px; color: rgba(232,200,120,0.9); letter-spacing: 4px; }
+
+/* 卡片网格 */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: 16px;
+  width: 100%; max-width: 820px;
+}
+
+.card {
+  background: rgba(255,240,255,0.07);
+  border: 1px solid rgba(220,190,230,0.18);
+  border-radius: 18px;
+  padding: 24px 20px 20px;
+  text-decoration: none;
+  display: flex; flex-direction: column; gap: 10px;
+  transition: all 0.22s;
+  backdrop-filter: blur(12px);
+  position: relative; overflow: hidden;
+}
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 15%; right: 15%; height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(232,200,120,0.4), transparent);
+}
+.card:hover {
+  background: rgba(255,240,255,0.13);
+  border-color: rgba(220,190,230,0.35);
+  transform: translateY(-3px);
+  box-shadow: 0 8px 28px rgba(20,8,28,0.4), 0 0 16px rgba(180,120,210,0.1);
+}
+
+.card-icon {
+  font-size: 28px; line-height: 1;
+  color: rgba(232,200,120,0.75);
+  text-shadow: 0 0 12px rgba(232,200,120,0.4);
+}
+
+.card-title {
+  font-size: 18px; color: #f0e4f8;
+  letter-spacing: 1px; line-height: 1.4;
+}
+
+.card-desc {
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: rgba(200,160,230,0.5);
+  letter-spacing: 0.5px; line-height: 1.6;
+}
+
+.card-arrow {
+  font-size: 12px; color: rgba(232,200,120,0.4);
+  font-family: 'DM Mono', monospace;
+  margin-top: 4px; letter-spacing: 1px;
+  transition: color 0.2s, letter-spacing 0.2s;
+}
+.card:hover .card-arrow {
+  color: rgba(232,200,120,0.8);
+  letter-spacing: 3px;
+}
+
+.footer {
+  margin-top: 52px;
+  font-family: 'DM Mono', monospace;
+  font-size: 11px; color: rgba(180,140,200,0.3);
+  letter-spacing: 2px; text-align: center;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <span class="logo-en">RPA + AI · AUTOMATION</span>
+  <div class="title">行业机会地图</div>
+  <div class="subtitle">选择行业，开始探索</div>
+</div>
+
+<div class="divider"><span class="divider-sym">· ✦ ·</span></div>
+
+<div class="grid">
+
+  <a class="card" href="medical-map.html">
+    <div class="card-icon">⚕</div>
+    <div class="card-title">医药行业</div>
+    <div class="card-desc">RPA+AI 自动化机会地图<br>不良反应录入 · 合规报告 · 数据处理</div>
+    <div class="card-arrow">查看地图 →</div>
+  </a>
+
+  <a class="card" href="catering-map.html">
+    <div class="card-icon">◍</div>
+    <div class="card-title">餐饮行业</div>
+    <div class="card-desc">RPA+AI 自动化机会地图<br>供应链 · 门店管理 · 财务对账</div>
+    <div class="card-arrow">查看地图 →</div>
+  </a>
+
+  <a class="card" href="domestic-ec.html">
+    <div class="card-icon">◈</div>
+    <div class="card-title">国内电商</div>
+    <div class="card-desc">RPA+AI 自动化机会地图<br>订单处理 · 客服 · 数据分析</div>
+    <div class="card-arrow">查看地图 →</div>
+  </a>
+
+  <a class="card" href="cross-border.html">
+    <div class="card-icon">⋆</div>
+    <div class="card-title">跨境电商</div>
+    <div class="card-desc">RPA+AI 自动化机会地图<br>物流追踪 · 多平台运营 · 合规</div>
+    <div class="card-arrow">查看地图 →</div>
+  </a>
+
+  <a class="card" href="manufacturing.html">
+    <div class="card-icon">☽</div>
+    <div class="card-title">制造业</div>
+    <div class="card-desc">RPA+AI 自动化机会地图<br>生产排程 · 质检 · ERP对接</div>
+    <div class="card-arrow">查看地图 →</div>
+  </a>
+
+</div>
+
+<div class="footer">· 影刀 RPA · 自动化解决方案 ·</div>
+
+</body>
+</html>

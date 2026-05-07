@@ -1,0 +1,1528 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>餐饮行业 RPA+AI 自动化机会地图</title>
+<style>
+
+:root{
+  --bg:#f5f6f8;--surf:#fff;--surf2:#f9fafb;
+  --bd:#e5e7eb;--bd2:#f0f2f5;
+  --t1:#111827;--t2:#4b5563;--t3:#9ca3af;
+  --acc:#1d4ed8;--acc-l:#eff6ff;
+  --rpa-bg:#dbeafe;--rpa-fg:#1e40af;--rpa-bd:#93c5fd;
+  --ai-bg:#ede9fe;--ai-fg:#6d28d9;--ai-bd:#c4b5fd;
+  --ri-bg:#dcfce7;--ri-fg:#15803d;--ri-bd:#86efac;
+  --nav:228px;--hdr:56px;--flt:48px;
+  --r:8px;--r2:5px;
+  --s1:0 1px 3px rgba(0,0,0,.06),0 1px 2px rgba(0,0,0,.04);
+  --s2:0 4px 14px rgba(0,0,0,.09),0 2px 4px rgba(0,0,0,.05);
+  --s3:0 20px 48px rgba(0,0,0,.13),0 4px 8px rgba(0,0,0,.06);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;background:var(--bg);color:var(--t1);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+#hdr{height:var(--hdr);background:var(--surf);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 20px;gap:14px;flex-shrink:0;box-shadow:var(--s1);z-index:100}
+.hlogo{display:flex;align-items:center;gap:9px}
+.hlogo b{font-size:15px;font-weight:700;color:var(--t1);letter-spacing:-.3px;white-space:nowrap}
+#hmeta{font-size:11.5px;color:var(--t3);white-space:nowrap}
+.tag{font-size:11px;font-weight:600;padding:2px 8px;border-radius:20px;letter-spacing:.2px;border:1px solid}
+.trpa{background:var(--rpa-bg);color:var(--rpa-fg);border-color:var(--rpa-bd)}
+.tai{background:var(--ai-bg);color:var(--ai-fg);border-color:var(--ai-bd)}
+.tri{background:var(--ri-bg);color:var(--ri-fg);border-color:var(--ri-bd)}
+#flt{height:var(--flt);background:var(--surf);border-bottom:1px solid var(--bd);display:flex;align-items:center;padding:0 18px;gap:9px;flex-shrink:0}
+.fl{font-size:11px;color:var(--t3);margin-right:2px}
+.fb{padding:5px 12px;border-radius:20px;border:1px solid var(--bd);background:transparent;font-size:12px;font-weight:500;cursor:pointer;color:var(--t2);transition:all .13s;font-family:inherit;line-height:1}
+.fb:hover{border-color:var(--acc);color:var(--acc)}
+.fall{background:var(--acc);color:#fff;border-color:var(--acc)}
+.frpa{background:var(--rpa-fg);color:#fff;border-color:var(--rpa-fg)}
+.fai{background:var(--ai-fg);color:#fff;border-color:var(--ai-fg)}
+.fri{background:var(--ri-fg);color:#fff;border-color:var(--ri-fg)}
+.fdiv{width:1px;height:18px;background:var(--bd);flex-shrink:0}
+.sw{margin-left:auto;position:relative;display:flex;align-items:center;gap:8px}
+.sic{position:absolute;left:9px;color:var(--t3);font-size:13px;pointer-events:none;line-height:1;top:50%;transform:translateY(-50%)}
+#sinp{width:210px;padding:6px 30px 6px 30px;border:1px solid var(--bd);border-radius:var(--r);font-size:12.5px;font-family:inherit;color:var(--t1);background:var(--bg);outline:none;transition:all .13s}
+#sinp:focus{border-color:var(--acc);background:var(--surf);box-shadow:0 0 0 3px rgba(29,78,216,.1)}
+#sclr{position:absolute;right:7px;cursor:pointer;color:var(--t3);font-size:15px;display:none;line-height:1;padding:2px;top:50%;transform:translateY(-50%)}
+#sclr:hover{color:var(--t1)}
+#scnt{font-size:11.5px;color:var(--t3);min-width:54px;white-space:nowrap}
+#bdy{display:flex;flex:1;overflow:hidden}
+#nav{width:var(--nav);background:var(--surf);border-right:1px solid var(--bd);overflow-y:auto;flex-shrink:0;padding:10px 8px}
+#nav::-webkit-scrollbar{width:3px}
+#nav::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+.nlbl{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;padding:4px 10px 8px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r2);cursor:pointer;transition:background .11s;margin-bottom:1px;text-decoration:none}
+.ni:hover{background:var(--bg)}
+.ni.act{background:var(--acc-l)}
+.ni.act .nn{color:var(--acc);font-weight:600}
+.niic{flex-shrink:0;opacity:.65;display:flex;align-items:center}
+.ni.act .niic{opacity:1}
+.ntx{flex:1;min-width:0}
+.nn{font-size:12.5px;color:var(--t1);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nd{font-size:10.5px;color:var(--t3)}
+.nc{font-size:11px;color:var(--t3);background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:0 6px;line-height:18px;flex-shrink:0;font-variant-numeric:tabular-nums}
+.ni.act .nc{background:var(--acc-l);border-color:var(--rpa-bd);color:var(--acc)}
+#cnt{flex:1;overflow-y:auto;padding:20px 22px}
+#cnt::-webkit-scrollbar{width:5px}
+#cnt::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+.ds{display:none}
+.ds.vis{display:block}
+.dh{display:flex;align-items:center;gap:11px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--acc)}
+.dic{flex-shrink:0;display:flex;align-items:center;background:var(--acc-l);padding:8px;border-radius:var(--r)}
+.dtx{flex:1}
+.dt{font-size:17px;font-weight:700;color:var(--t1)}
+.dd{font-size:12px;color:var(--t3);margin-top:2px}
+.dsts{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.wb{background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:10px;overflow:hidden;box-shadow:var(--s1);transition:box-shadow .13s}
+.wb:hover{box-shadow:var(--s2)}
+.wh{display:flex;align-items:center;padding:10px 15px;cursor:pointer;user-select:none;gap:9px;transition:background .1s;border-bottom:1px solid transparent}
+.wh:hover{background:var(--surf2)}
+.wh.op{background:var(--surf2);border-bottom-color:var(--bd)}
+.wa{color:var(--t3);transition:transform .18s;flex-shrink:0;font-size:11px;line-height:1}
+.wa.op{transform:rotate(90deg)}
+.wn{font-size:13.5px;font-weight:600;color:var(--t1);flex:1}
+.wi2{font-size:11.5px;color:var(--t3)}
+.wbod{display:none}
+.wbod.op{display:block}
+.nt{width:100%;border-collapse:collapse}
+.nt th{padding:7px 13px;text-align:left;font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.6px;background:var(--bd2);border-bottom:1px solid var(--bd)}
+.nt th:nth-child(1){width:19%}
+.nt th:nth-child(2){width:11%}
+.nt th:nth-child(3){width:41%}
+.nt th:nth-child(4){width:29%}
+.nr{border-bottom:1px solid var(--bd2);cursor:pointer;transition:background .09s}
+.nr:last-child{border-bottom:none}
+.nr:hover{background:#f0f7ff}
+.nr.act{background:var(--acc-l)}
+.nr.hid{display:none}
+.nr td{padding:10px 13px;vertical-align:top}
+.nm{font-size:12.5px;font-weight:600;color:var(--t1);line-height:1.4}
+.tb{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px;border:1px solid;white-space:nowrap}
+.trpa2{background:var(--rpa-bg);color:var(--rpa-fg);border-color:var(--rpa-bd)}
+.tai2{background:var(--ai-bg);color:var(--ai-fg);border-color:var(--ai-bd)}
+.tri2{background:var(--ri-bg);color:var(--ri-fg);border-color:var(--ri-bd)}
+.ot,.et{font-size:12px;color:var(--t2);line-height:1.65}
+mark.hl{background:#fde68a;color:var(--t1);border-radius:2px;padding:0 1px}
+#dp{position:fixed;right:-390px;top:calc(var(--hdr) + var(--flt));width:376px;height:calc(100vh - var(--hdr) - var(--flt));background:var(--surf);border-left:1px solid var(--bd);box-shadow:var(--s3);overflow:hidden;transition:right .24s cubic-bezier(.4,0,.2,1);z-index:200;display:flex;flex-direction:column}
+#dp.op{right:0}
+#dphdr{padding:16px 18px 12px;border-bottom:1px solid var(--bd2);flex-shrink:0;position:relative}
+#dpcls{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;border:1px solid var(--bd);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--t3);transition:all .12s;line-height:1}
+#dpcls:hover{background:var(--bd);color:var(--t1)}
+#dpbod{flex:1;overflow-y:auto;padding:16px 18px 20px}
+#dpbod::-webkit-scrollbar{width:3px}
+#dpbod::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+.dpwf{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.dpnm{font-size:16px;font-weight:700;color:var(--t1);line-height:1.4;margin-bottom:10px}
+.dptype{margin-bottom:16px}
+.dpsec{margin-bottom:14px}
+.dplbl{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px;display:flex;align-items:center;gap:6px}
+.dplbl::after{content:"";flex:1;height:1px;background:var(--bd)}
+.dpbox{font-size:13px;color:var(--t2);line-height:1.75;background:var(--surf2);border-radius:var(--r2);padding:10px 12px;border:1px solid var(--bd2)}
+.dpref{font-size:11.5px;color:#92400e;margin-top:8px;padding:8px 10px;background:#fffbeb;border:1px solid #fde68a;border-radius:var(--r2);line-height:1.6}
+.ag{display:grid;grid-template-columns:repeat(auto-fill,minmax(264px,1fr));gap:10px;margin-bottom:18px}
+.ac{background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);padding:14px 15px;cursor:pointer;transition:all .13s;box-shadow:var(--s1)}
+.ac:hover{box-shadow:var(--s2);border-color:var(--acc)}
+.achdr{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.acic{display:flex;align-items:center;background:var(--acc-l);padding:6px;border-radius:6px}
+.acnm{font-size:13.5px;font-weight:700}
+.acd{font-size:11.5px;color:var(--t3);line-height:1.5;margin-bottom:9px}
+.actags{display:flex;gap:5px;flex-wrap:wrap}
+#empty{display:none;flex-direction:column;align-items:center;justify-content:center;height:260px;color:var(--t3);gap:8px}
+#empty.vis{display:flex}
+
+</style>
+</head><body>
+<div id="hdr">
+<div class="hlogo">
+<svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/></svg>
+<b>餐饮行业 RPA+AI 自动化机会地图</b>
+</div>
+<span id="hmeta"></span>
+<div style="margin-left:auto;display:flex;gap:6px;align-items:center">
+<span class="tag trpa">RPA 流程自动化</span>
+<span class="tag tai">AI 智能增强</span>
+<span class="tag tri">RPA+AI 组合方案</span>
+</div>
+</div>
+<div id="flt">
+<span class="fl">能力类型</span>
+<button class="fb fall" id="ball" onclick="setF(0)">全部</button>
+<button class="fb" id="brpa" onclick="setF(1)">RPA</button>
+<button class="fb" id="bai"  onclick="setF(2)">AI</button>
+<button class="fb" id="bri"  onclick="setF(3)">RPA+AI</button>
+<div class="fdiv"></div>
+<div class="sw">
+<span class="sic">&#128269;</span>
+<input id="sinp" type="text" placeholder="搜索节点、机会点或效能..." autocomplete="off">
+<span id="sclr" onclick="clrS()">&#215;</span>
+</div>
+<span id="scnt"></span>
+</div>
+<div id="bdy">
+<div id="nav">
+<div class="nlbl">岗位导航</div>
+<div class="ni act" id="nav-all" onclick="showD(-1)">
+<span class="niic"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/></svg></span>
+<div class="ntx"><div class="nn">全部岗位</div></div>
+<span class="nc" id="nc-all">-</span>
+</div>
+<div class="ni" id="nav-0" onclick="showD(0)">
+<span class="niic"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#6b7280" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5.6v.99m0 0v.384m0-.384A2.25 2.25 0 015.25 8.25h13.5A2.25 2.25 0 0121 10.5v.6M3 21V10.5m0 0A2.25 2.25 0 015.25 8.25M3 10.5l.75-4.5A2.25 2.25 0 016 4.5h12a2.25 2.25 0 012.25 1.75L21 10.5"/></svg></span>
+<div class="ntx"><div class="nn">门店运营</div></div>
+<span class="nc" id="nc-0">-</span>
+</div>
+<div class="ni" id="nav-1" onclick="showD(1)">
+<span class="niic"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#6b7280" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg></span>
+<div class="ntx"><div class="nn">外卖运营</div></div>
+<span class="nc" id="nc-1">-</span>
+</div>
+<div class="ni" id="nav-2" onclick="showD(2)">
+<span class="niic"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#6b7280" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg></span>
+<div class="ntx"><div class="nn">财务结算</div></div>
+<span class="nc" id="nc-2">-</span>
+</div>
+<div class="ni" id="nav-3" onclick="showD(3)">
+<span class="niic"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#6b7280" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg></span>
+<div class="ntx"><div class="nn">人事行政</div></div>
+<span class="nc" id="nc-3">-</span>
+</div>
+<div class="ni" id="nav-4" onclick="showD(4)">
+<span class="niic"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#6b7280" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg></span>
+<div class="ntx"><div class="nn">供应链采购</div></div>
+<span class="nc" id="nc-4">-</span>
+</div>
+<div class="ni" id="nav-5" onclick="showD(5)">
+<span class="niic"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#6b7280" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span>
+<div class="ntx"><div class="nn">会员运营</div></div>
+<span class="nc" id="nc-5">-</span>
+</div>
+<div class="ni" id="nav-6" onclick="showD(6)">
+<span class="niic"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#6b7280" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46"/></svg></span>
+<div class="ntx"><div class="nn">营销活动</div></div>
+<span class="nc" id="nc-6">-</span>
+</div>
+<div class="ni" id="nav-7" onclick="showD(7)">
+<span class="niic"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#6b7280" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/></svg></span>
+<div class="ntx"><div class="nn">品控质检</div></div>
+<span class="nc" id="nc-7">-</span>
+</div>
+<div class="ni" id="nav-8" onclick="showD(8)">
+<span class="niic"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#6b7280" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"/></svg></span>
+<div class="ntx"><div class="nn">仓储物流</div></div>
+<span class="nc" id="nc-8">-</span>
+</div>
+<div class="ni" id="nav-9" onclick="showD(9)">
+<span class="niic"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#6b7280" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/></svg></span>
+<div class="ntx"><div class="nn">连锁管理（总部）</div></div>
+<span class="nc" id="nc-9">-</span>
+</div>
+</div>
+<div id="cnt">
+<div id="av">
+<div class="ag">
+<div class="ac" onclick="showD(0)">
+<div class="achdr"><span class="acic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5.6v.99m0 0v.384m0-.384A2.25 2.25 0 015.25 8.25h13.5A2.25 2.25 0 0121 10.5v.6M3 21V10.5m0 0A2.25 2.25 0 015.25 8.25M3 10.5l.75-4.5A2.25 2.25 0 016 4.5h12a2.25 2.25 0 012.25 1.75L21 10.5"/></svg></span>
+<span class="acnm">门店运营</span></div>
+<div class="acd">排班调度 · 营业日报 · 收银对账 · 开收店SOP</div>
+<div class="actags">
+<span class="tag trpa">RPA 4个</span>
+<span class="tag tai">AI 2个</span>
+<span class="tag tri">RPA+AI 3个</span>
+</div></div>
+<div class="ac" onclick="showD(1)">
+<div class="achdr"><span class="acic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg></span>
+<span class="acnm">外卖运营</span></div>
+<div class="acd">美团/饿了么/京东 · 多平台数据 · 菜单定价 · 评价管理</div>
+<div class="actags">
+<span class="tag trpa">RPA 6个</span>
+<span class="tag tai">AI 2个</span>
+<span class="tag tri">RPA+AI 2个</span>
+</div></div>
+<div class="ac" onclick="showD(2)">
+<div class="achdr"><span class="acic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg></span>
+<span class="acnm">财务结算</span></div>
+<div class="acd">多渠道对账 · 平台开票 · 发票管理 · 月度报表</div>
+<div class="actags">
+<span class="tag trpa">RPA 9个</span>
+<span class="tag tri">RPA+AI 1个</span>
+</div></div>
+<div class="ac" onclick="showD(3)">
+<div class="achdr"><span class="acic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg></span>
+<span class="acnm">人事行政</span></div>
+<div class="acd">招聘入职 · 排班考勤 · 薪资核算 · 跨系统数据同步</div>
+<div class="actags">
+<span class="tag trpa">RPA 8个</span>
+<span class="tag tri">RPA+AI 2个</span>
+</div></div>
+<div class="ac" onclick="showD(4)">
+<div class="achdr"><span class="acic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg></span>
+<span class="acnm">供应链采购</span></div>
+<div class="acd">采购计划 · 供应商协同 · 验收入库 · 成本管控</div>
+<div class="actags">
+<span class="tag trpa">RPA 4个</span>
+<span class="tag tai">AI 3个</span>
+<span class="tag tri">RPA+AI 1个</span>
+</div></div>
+<div class="ac" onclick="showD(5)">
+<div class="achdr"><span class="acic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/></svg></span>
+<span class="acnm">会员运营</span></div>
+<div class="acd">会员生命周期 · 储值积分 · 精准营销 · 私域运营</div>
+<div class="actags">
+<span class="tag trpa">RPA 4个</span>
+<span class="tag tai">AI 3个</span>
+<span class="tag tri">RPA+AI 2个</span>
+</div></div>
+<div class="ac" onclick="showD(6)">
+<div class="achdr"><span class="acic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46"/></svg></span>
+<span class="acnm">营销活动</span></div>
+<div class="acd">多渠道投放 · 口碑管理 · 内容运营 · 竞品监控</div>
+<div class="actags">
+<span class="tag trpa">RPA 2个</span>
+<span class="tag tai">AI 2个</span>
+<span class="tag tri">RPA+AI 3个</span>
+</div></div>
+<div class="ac" onclick="showD(7)">
+<div class="achdr"><span class="acic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/></svg></span>
+<span class="acnm">品控质检</span></div>
+<div class="acd">食安合规 · 出品质量 · 巡检管理 · 证照管控</div>
+<div class="actags">
+<span class="tag trpa">RPA 3个</span>
+<span class="tag tai">AI 2个</span>
+<span class="tag tri">RPA+AI 2个</span>
+</div></div>
+<div class="ac" onclick="showD(8)">
+<div class="achdr"><span class="acic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"/></svg></span>
+<span class="acnm">仓储物流</span></div>
+<div class="acd">进销存 · 临期预警 · 冷链温控 · 损耗追踪</div>
+<div class="actags">
+<span class="tag trpa">RPA 3个</span>
+<span class="tag tai">AI 1个</span>
+<span class="tag tri">RPA+AI 3个</span>
+</div></div>
+<div class="ac" onclick="showD(9)">
+<div class="achdr"><span class="acic"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/></svg></span>
+<span class="acnm">连锁管理（总部）</span></div>
+<div class="acd">多店监控 · 加盟商管理 · 标准化输出 · 经营分析</div>
+<div class="actags">
+<span class="tag trpa">RPA 4个</span>
+<span class="tag tai">AI 3个</span>
+<span class="tag tri">RPA+AI 1个</span>
+</div></div>
+</div></div>
+<div id="dvs">
+<div class="ds" id="ds0">
+<div class="dh">
+<div class="dic"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 21v-7.5a.75.75 0 01.75-.75h3a.75.75 0 01.75.75V21m-4.5 0H2.36m11.14 0H18m0 0h3.64m-1.39 0V9.349m-16.5.6v.99m0 0v.384m0-.384A2.25 2.25 0 015.25 8.25h13.5A2.25 2.25 0 0121 10.5v.6M3 21V10.5m0 0A2.25 2.25 0 015.25 8.25M3 10.5l.75-4.5A2.25 2.25 0 016 4.5h12a2.25 2.25 0 012.25 1.75L21 10.5"/></svg></div>
+<div class="dtx"><div class="dt">门店运营</div><div class="dd">排班调度 · 营业日报 · 收银对账 · 开收店SOP</div></div>
+<div class="dsts">
+<span class="tag trpa">RPA 4个</span>
+<span class="tag tai">AI 2个</span>
+<span class="tag tri">RPA+AI 3个</span>
+</div></div>
+<div class="wb" id="wbw0_0">
+<div class="wh" id="whw0_0" onclick="togWf('w0_0')">
+<span class="wa" id="waw0_0">&#9658;</span>
+<span class="wn">排班与人效管理</span>
+<span class="wi2">4 个机会点</span>
+</div>
+<div class="wbod" id="wbodw0_0">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r0_0_0" data-t="AI" data-n="客流量预测与智能排班" data-o="基于历史销售、节假日、天气、周边活动等多维数据，AI自动预测每日/每时段客流，输出最优排班方案；对接盖雅/美团收银/哗啦啦等系统自动填充班次" data-e="人工成本节省10-20%，排班时间从2小时降至5分钟，高峰不缺人、低峰不冗员" data-w="排班与人效管理" onclick="openDp('r0_0_0')">
+<td><span class="nm" id="nmr0_0_0">客流量预测与智能排班</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr0_0_0">基于历史销售、节假日、天气、周边活动等多维数据，AI自动预测每日/每时段客流，输出最优排班方案；对接盖雅/美团收银/哗啦啦等系统自动填充班次</span></td>
+<td><span class="et" id="etr0_0_0">人工成本节省10-20%，排班时间从2小时降至5分钟，高峰不缺人、低峰不冗员</span></td>
+</tr>
+<tr class="nr" id="r0_0_1" data-t="RPA" data-n="排班表钉钉/企微自动推送" data-o="基于盖雅/排班系统生成的班次，自动拆分为员工个人通知，通过钉钉/企微推送至员工端，调班申请自动流转至审批流" data-e="排班传达效率提升80%，员工提前知晓班次，调班沟通从线下转为线上闭环" data-w="排班与人效管理" onclick="openDp('r0_0_1')">
+<td><span class="nm" id="nmr0_0_1">排班表钉钉/企微自动推送</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr0_0_1">基于盖雅/排班系统生成的班次，自动拆分为员工个人通知，通过钉钉/企微推送至员工端，调班申请自动流转至审批流</span></td>
+<td><span class="et" id="etr0_0_1">排班传达效率提升80%，员工提前知晓班次，调班沟通从线下转为线上闭环</span></td>
+</tr>
+<tr class="nr" id="r0_0_2" data-t="RPA+AI" data-n="考勤日结异常自动通知" data-o="每日自动抓取盖雅/钉钉打卡数据，AI识别迟到/早退/缺勤/异地打卡/替打卡等异常，触发企微/钉钉分级预警通知" data-e="实时掌握全店出勤状态，月度考勤核算全自动，问题员工及时干预" data-w="排班与人效管理" onclick="openDp('r0_0_2')">
+<td><span class="nm" id="nmr0_0_2">考勤日结异常自动通知</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr0_0_2">每日自动抓取盖雅/钉钉打卡数据，AI识别迟到/早退/缺勤/异地打卡/替打卡等异常，触发企微/钉钉分级预警通知</span></td>
+<td><span class="et" id="etr0_0_2">实时掌握全店出勤状态，月度考勤核算全自动，问题员工及时干预</span></td>
+</tr>
+<tr class="nr" id="r0_0_3" data-t="RPA" data-n="员工入职进度自助查询" data-o="员工通过钉钉/企微发送查询指令，机器人自动查询北森/易路等HR系统中的入职进度并实时回复，支持多语言" data-e="HR无需手动答复大量查询，入职进度透明，员工体验提升" data-w="排班与人效管理" onclick="openDp('r0_0_3')">
+<td><span class="nm" id="nmr0_0_3">员工入职进度自助查询</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr0_0_3">员工通过钉钉/企微发送查询指令，机器人自动查询北森/易路等HR系统中的入职进度并实时回复，支持多语言</span></td>
+<td><span class="et" id="etr0_0_3">HR无需手动答复大量查询，入职进度透明，员工体验提升</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw0_1">
+<div class="wh" id="whw0_1" onclick="togWf('w0_1')">
+<span class="wa" id="waw0_1">&#9658;</span>
+<span class="wn">营业数据日报</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw0_1">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r0_1_0" data-t="RPA" data-n="多门店营业日报自动生成" data-o="收市后自动从哗啦啦/美团收银/客如云/商米POS系统提取营业数据（营业额/客单价/翻台率/外卖占比/支付方式），生成标准日报并推送至钉钉/企微管理层群" data-e="数据当日自动到位，省去店长手工汇报，区域总监一屏对比全部门店数据" data-w="营业数据日报" onclick="openDp('r0_1_0')">
+<td><span class="nm" id="nmr0_1_0">多门店营业日报自动生成</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr0_1_0">收市后自动从哗啦啦/美团收银/客如云/商米POS系统提取营业数据（营业额/客单价/翻台率/外卖占比/支付方式），生成标准日报并推送至钉钉/企微管理层群</span></td>
+<td><span class="et" id="etr0_1_0">数据当日自动到位，省去店长手工汇报，区域总监一屏对比全部门店数据</span></td>
+</tr>
+<tr class="nr" id="r0_1_1" data-t="RPA+AI" data-n="菜品销售数据自动统计分析" data-o="自动从美团管家/哗啦啦下载门店菜品销售统计（单品+套餐明细），AI生成SKU销售排行、毛利贡献分析，识别滞销和爆款，输出菜单调整建议" data-e="每日掌握菜品结构，菜单优化有数据支撑，毛利率优化2-5个百分点" data-w="营业数据日报" onclick="openDp('r0_1_1')">
+<td><span class="nm" id="nmr0_1_1">菜品销售数据自动统计分析</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr0_1_1">自动从美团管家/哗啦啦下载门店菜品销售统计（单品+套餐明细），AI生成SKU销售排行、毛利贡献分析，识别滞销和爆款，输出菜单调整建议</span></td>
+<td><span class="et" id="etr0_1_1">每日掌握菜品结构，菜单优化有数据支撑，毛利率优化2-5个百分点</span></td>
+</tr>
+<tr class="nr" id="r0_1_2" data-t="AI" data-n="异常营收实时预警" data-o="AI对比历史同期数据自动识别营收骤降/骤升，分析原因（设备故障/竞品活动/节假日/促销），触发企微即时通知；支持多门店战区数据对比" data-e="异常响应时间从T+1天缩短至当日2小时内，营业损失降至最低" data-w="营业数据日报" onclick="openDp('r0_1_2')">
+<td><span class="nm" id="nmr0_1_2">异常营收实时预警</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr0_1_2">AI对比历史同期数据自动识别营收骤降/骤升，分析原因（设备故障/竞品活动/节假日/促销），触发企微即时通知；支持多门店战区数据对比</span></td>
+<td><span class="et" id="etr0_1_2">异常响应时间从T+1天缩短至当日2小时内，营业损失降至最低</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw0_2">
+<div class="wh" id="whw0_2" onclick="togWf('w0_2')">
+<span class="wa" id="waw0_2">&#9658;</span>
+<span class="wn">收银对账与结算</span>
+<span class="wi2">2 个机会点</span>
+</div>
+<div class="wbod" id="wbodw0_2">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r0_2_0" data-t="RPA" data-n="多渠道收款自动汇总" data-o="自动抓取微信支付、支付宝、美团收银、网商银行等各渠道收款数据，统一汇总生成对账文件并推送财务（包括微信支付宝订单表、网商账单等自动下载）" data-e="多渠道对账从人工4小时缩短至15分钟，数据完整性100%" data-w="收银对账与结算" onclick="openDp('r0_2_0')">
+<td><span class="nm" id="nmr0_2_0">多渠道收款自动汇总</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr0_2_0">自动抓取微信支付、支付宝、美团收银、网商银行等各渠道收款数据，统一汇总生成对账文件并推送财务（包括微信支付宝订单表、网商账单等自动下载）</span></td>
+<td><span class="et" id="etr0_2_0">多渠道对账从人工4小时缩短至15分钟，数据完整性100%</span></td>
+</tr>
+<tr class="nr" id="r0_2_1" data-t="RPA+AI" data-n="收银日结差异自动核对" data-o="逐笔比对POS系统账与各渠道流水，自动标记差异项，AI分类差异原因（退款/折扣/操作失误），生成差异报告推送财务审核" data-e="差异识别准确率超95%，财务仅需处理异常项，错账漏账率趋近于零" data-w="收银对账与结算" onclick="openDp('r0_2_1')">
+<td><span class="nm" id="nmr0_2_1">收银日结差异自动核对</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr0_2_1">逐笔比对POS系统账与各渠道流水，自动标记差异项，AI分类差异原因（退款/折扣/操作失误），生成差异报告推送财务审核</span></td>
+<td><span class="et" id="etr0_2_1">差异识别准确率超95%，财务仅需处理异常项，错账漏账率趋近于零</span></td>
+</tr>
+</tbody></table></div></div>
+</div>
+<div class="ds" id="ds1">
+<div class="dh">
+<div class="dic"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12"/></svg></div>
+<div class="dtx"><div class="dt">外卖运营</div><div class="dd">美团/饿了么/京东 · 多平台数据 · 菜单定价 · 评价管理</div></div>
+<div class="dsts">
+<span class="tag trpa">RPA 6个</span>
+<span class="tag tai">AI 2个</span>
+<span class="tag tri">RPA+AI 2个</span>
+</div></div>
+<div class="wb" id="wbw1_0">
+<div class="wh" id="whw1_0" onclick="togWf('w1_0')">
+<span class="wa" id="waw1_0">&#9658;</span>
+<span class="wn">多平台数据运营</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw1_0">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r1_0_0" data-t="RPA" data-n="多平台外卖数据统一看板" data-o="自动抓取美团外卖/饿了么/京东外卖/自营小程序订单量、销售额、评分、曝光、点击等核心指标，汇总至统一运营看板；自动下载门店表现、出餐效率等数据" data-e="管理层一屏掌控全渠道外卖，节省每日手动取数2小时" data-w="多平台数据运营" onclick="openDp('r1_0_0')">
+<td><span class="nm" id="nmr1_0_0">多平台外卖数据统一看板</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr1_0_0">自动抓取美团外卖/饿了么/京东外卖/自营小程序订单量、销售额、评分、曝光、点击等核心指标，汇总至统一运营看板；自动下载门店表现、出餐效率等数据</span></td>
+<td><span class="et" id="etr1_0_0">管理层一屏掌控全渠道外卖，节省每日手动取数2小时</span></td>
+</tr>
+<tr class="nr" id="r1_0_1" data-t="RPA" data-n="外卖出餐效率自动追踪" data-o="自动从出餐宝/POS系统下载门店订单数据，统计出餐时效、超时订单分布，生成出餐效率门店对比报告" data-e="出餐效率可视化，超时环节定向优化，差评率降低" data-w="多平台数据运营" onclick="openDp('r1_0_1')">
+<td><span class="nm" id="nmr1_0_1">外卖出餐效率自动追踪</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr1_0_1">自动从出餐宝/POS系统下载门店订单数据，统计出餐时效、超时订单分布，生成出餐效率门店对比报告</span></td>
+<td><span class="et" id="etr1_0_1">出餐效率可视化，超时环节定向优化，差评率降低</span></td>
+</tr>
+<tr class="nr" id="r1_0_2" data-t="RPA+AI" data-n="外卖推广ROI自动分析" data-o="自动下载美团外卖/饿了么推广数据（曝光/点击/转化/ROI），AI归集生成推广效果报告，支持多店、多计划横向对比" data-e="推广ROI清晰可见，预算分配数据驱动，无效投放及时止损" data-w="多平台数据运营" onclick="openDp('r1_0_2')">
+<td><span class="nm" id="nmr1_0_2">外卖推广ROI自动分析</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr1_0_2">自动下载美团外卖/饿了么推广数据（曝光/点击/转化/ROI），AI归集生成推广效果报告，支持多店、多计划横向对比</span></td>
+<td><span class="et" id="etr1_0_2">推广ROI清晰可见，预算分配数据驱动，无效投放及时止损</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw1_1">
+<div class="wh" id="whw1_1" onclick="togWf('w1_1')">
+<span class="wa" id="waw1_1">&#9658;</span>
+<span class="wn">菜单价格与活动管理</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw1_1">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r1_1_0" data-t="RPA" data-n="多端菜单价格一键同步" data-o="总部在后台修改菜单/价格/图片后，自动同步至美团外卖/饿了么/京东外卖/门店POS/小程序点单，支持按门店、时段差异化配置和定时上线" data-e="菜单更新从3天缩短至1小时，全渠道价格统一，杜绝漏改导致的损失" data-w="菜单价格与活动管理" onclick="openDp('r1_1_0')">
+<td><span class="nm" id="nmr1_1_0">多端菜单价格一键同步</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr1_1_0">总部在后台修改菜单/价格/图片后，自动同步至美团外卖/饿了么/京东外卖/门店POS/小程序点单，支持按门店、时段差异化配置和定时上线</span></td>
+<td><span class="et" id="etr1_1_0">菜单更新从3天缩短至1小时，全渠道价格统一，杜绝漏改导致的损失</span></td>
+</tr>
+<tr class="nr" id="r1_1_1" data-t="RPA" data-n="平台KA活动计划自动跟踪" data-o="每日自动下载美团/饿了么KA活动计划数据，汇总各门店活动参与情况、核销进度、补贴明细，生成KA执行跟踪报告" data-e="KA计划执行进度实时掌握，活动落地率提升，资源浪费减少" data-w="菜单价格与活动管理" onclick="openDp('r1_1_1')">
+<td><span class="nm" id="nmr1_1_1">平台KA活动计划自动跟踪</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr1_1_1">每日自动下载美团/饿了么KA活动计划数据，汇总各门店活动参与情况、核销进度、补贴明细，生成KA执行跟踪报告</span></td>
+<td><span class="et" id="etr1_1_1">KA计划执行进度实时掌握，活动落地率提升，资源浪费减少</span></td>
+</tr>
+<tr class="nr" id="r1_1_2" data-t="AI" data-n="外卖动态定价AI建议" data-o="基于时段需求弹性、竞品定价、平台流量扶持策略，AI推荐最优定价区间和套餐组合；结合大众点评竞品评分和定价数据辅助决策" data-e="高峰期毛利最大化，低峰期流量引入最优化，套餐核销率提升" data-w="菜单价格与活动管理" onclick="openDp('r1_1_2')">
+<td><span class="nm" id="nmr1_1_2">外卖动态定价AI建议</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr1_1_2">基于时段需求弹性、竞品定价、平台流量扶持策略，AI推荐最优定价区间和套餐组合；结合大众点评竞品评分和定价数据辅助决策</span></td>
+<td><span class="et" id="etr1_1_2">高峰期毛利最大化，低峰期流量引入最优化，套餐核销率提升</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw1_2">
+<div class="wh" id="whw1_2" onclick="togWf('w1_2')">
+<span class="wa" id="waw1_2">&#9658;</span>
+<span class="wn">差评与口碑管理</span>
+<span class="wi2">4 个机会点</span>
+</div>
+<div class="wbod" id="wbodw1_2">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r1_2_0" data-t="RPA+AI" data-n="美团/饿了么评价自动采集分析" data-o="自动下载美团外卖/饿了么门店评价（含星级评分/评价表现/差评分类），AI汇总差评热词、问题分布，生成口碑健康度日报" data-e="差评响应从24小时缩短至1小时，口碑问题早发现，平台评分持续提升" data-w="差评与口碑管理" onclick="openDp('r1_2_0')">
+<td><span class="nm" id="nmr1_2_0">美团/饿了么评价自动采集分析</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr1_2_0">自动下载美团外卖/饿了么门店评价（含星级评分/评价表现/差评分类），AI汇总差评热词、问题分布，生成口碑健康度日报</span></td>
+<td><span class="et" id="etr1_2_0">差评响应从24小时缩短至1小时，口碑问题早发现，平台评分持续提升</span></td>
+</tr>
+<tr class="nr" id="r1_2_1" data-t="RPA" data-n="门店评分表现定期报告" data-o="每周自动从美团/大众点评经营管理后台下载门店评价表现数据（含收藏打卡/星级分），生成多门店评分对比周报" data-e="口碑数据可视化，差门店定向干预，品牌形象持续优化" data-w="差评与口碑管理" onclick="openDp('r1_2_1')">
+<td><span class="nm" id="nmr1_2_1">门店评分表现定期报告</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr1_2_1">每周自动从美团/大众点评经营管理后台下载门店评价表现数据（含收藏打卡/星级分），生成多门店评分对比周报</span></td>
+<td><span class="et" id="etr1_2_1">口碑数据可视化，差门店定向干预，品牌形象持续优化</span></td>
+</tr>
+<tr class="nr" id="r1_2_2" data-t="AI" data-n="差评智能回复草稿生成" data-o="AI按差评类型（口味/服务/配送/环境/等待时间）生成多版本专业回复草稿，覆盖道歉/解释/补偿话术，人工确认后一键发布至美团/饿了么" data-e="差评回复率从40%提升至100%，申诉成功率提升，顾客挽留效果改善" data-w="差评与口碑管理" onclick="openDp('r1_2_2')">
+<td><span class="nm" id="nmr1_2_2">差评智能回复草稿生成</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr1_2_2">AI按差评类型（口味/服务/配送/环境/等待时间）生成多版本专业回复草稿，覆盖道歉/解释/补偿话术，人工确认后一键发布至美团/饿了么</span></td>
+<td><span class="et" id="etr1_2_2">差评回复率从40%提升至100%，申诉成功率提升，顾客挽留效果改善</span></td>
+</tr>
+<tr class="nr" id="r1_2_3" data-t="RPA" data-n="好评激励自动触发" data-o="消费后按设定时间自动发送好评引导短信/企微消息，对好评顾客推送感谢优惠，跟踪各门店好评转化率" data-e="好评数量平均提升20-35%，平台搜索自然排名提升" data-w="差评与口碑管理" onclick="openDp('r1_2_3')">
+<td><span class="nm" id="nmr1_2_3">好评激励自动触发</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr1_2_3">消费后按设定时间自动发送好评引导短信/企微消息，对好评顾客推送感谢优惠，跟踪各门店好评转化率</span></td>
+<td><span class="et" id="etr1_2_3">好评数量平均提升20-35%，平台搜索自然排名提升</span></td>
+</tr>
+</tbody></table></div></div>
+</div>
+<div class="ds" id="ds2">
+<div class="dh">
+<div class="dic"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-.375m1.5-1.5H21a.75.75 0 00-.75.75v.75m0 0H3.75m0 0h-.375a1.125 1.125 0 01-1.125-1.125V15m1.5 1.5v-.75A.75.75 0 003 15h-.75M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm3 0h.008v.008H18V10.5zm-12 0h.008v.008H6V10.5z"/></svg></div>
+<div class="dtx"><div class="dt">财务结算</div><div class="dd">多渠道对账 · 平台开票 · 发票管理 · 月度报表</div></div>
+<div class="dsts">
+<span class="tag trpa">RPA 9个</span>
+<span class="tag tri">RPA+AI 1个</span>
+</div></div>
+<div class="wb" id="wbw2_0">
+<div class="wh" id="whw2_0" onclick="togWf('w2_0')">
+<span class="wa" id="waw2_0">&#9658;</span>
+<span class="wn">外卖平台对账与开票</span>
+<span class="wi2">4 个机会点</span>
+</div>
+<div class="wbod" id="wbodw2_0">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r2_0_0" data-t="RPA" data-n="美团外卖财务对账自动化" data-o="自动登录美团商家后台，下载外卖财务对账表（含订单明细/结算汇总/扣款明细），与内部账逐项核对，生成差异确认表" data-e="对账时间从每天3小时缩短至15分钟，平台漏扣差错率趋近于零，年均挽回平台少结损失" data-w="外卖平台对账与开票" onclick="openDp('r2_0_0')">
+<td><span class="nm" id="nmr2_0_0">美团外卖财务对账自动化</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr2_0_0">自动登录美团商家后台，下载外卖财务对账表（含订单明细/结算汇总/扣款明细），与内部账逐项核对，生成差异确认表</span></td>
+<td><span class="et" id="etr2_0_0">对账时间从每天3小时缩短至15分钟，平台漏扣差错率趋近于零，年均挽回平台少结损失</span></td>
+</tr>
+<tr class="nr" id="r2_0_1" data-t="RPA" data-n="饿了么对账与批量开票" data-o="自动下载饿了么外卖账单汇总，核对结算金额；自动完成饿了么总部开票流程，支持多门店批量开票" data-e="饿了么对账开票全自动，财务人员从重复操作中解放" data-w="外卖平台对账与开票" onclick="openDp('r2_0_1')">
+<td><span class="nm" id="nmr2_0_1">饿了么对账与批量开票</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr2_0_1">自动下载饿了么外卖账单汇总，核对结算金额；自动完成饿了么总部开票流程，支持多门店批量开票</span></td>
+<td><span class="et" id="etr2_0_1">饿了么对账开票全自动，财务人员从重复操作中解放</span></td>
+</tr>
+<tr class="nr" id="r2_0_2" data-t="RPA" data-n="美团团购/买单/券包开票自动化" data-o="自动下载美团团购、买单、券包明细数据，完成财务自动开票流程，支持团购/买单分类开票" data-e="团购开票从手工操作变为全自动，每月节省财务人员2-3天工作量" data-w="外卖平台对账与开票" onclick="openDp('r2_0_2')">
+<td><span class="nm" id="nmr2_0_2">美团团购/买单/券包开票自动化</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr2_0_2">自动下载美团团购、买单、券包明细数据，完成财务自动开票流程，支持团购/买单分类开票</span></td>
+<td><span class="et" id="etr2_0_2">团购开票从手工操作变为全自动，每月节省财务人员2-3天工作量</span></td>
+</tr>
+<tr class="nr" id="r2_0_3" data-t="RPA" data-n="京东外卖订单对账开票" data-o="自动下载京东外卖订单数据，完成财务对账和自动开票，支持多账号/多门店批量处理" data-e="新渠道快速接入，开票流程标准化，多平台统一管理" data-w="外卖平台对账与开票" onclick="openDp('r2_0_3')">
+<td><span class="nm" id="nmr2_0_3">京东外卖订单对账开票</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr2_0_3">自动下载京东外卖订单数据，完成财务对账和自动开票，支持多账号/多门店批量处理</span></td>
+<td><span class="et" id="etr2_0_3">新渠道快速接入，开票流程标准化，多平台统一管理</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw2_1">
+<div class="wh" id="whw2_1" onclick="togWf('w2_1')">
+<span class="wa" id="waw2_1">&#9658;</span>
+<span class="wn">资金与付款管理</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw2_1">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r2_1_0" data-t="RPA" data-n="多银行账单自动汇总" data-o="自动抓取多家银行账单数据（招行/网商/工行等），汇总生成资金汇总表，与ERP（JDE/用友/金蝶）自动对账" data-e="多银行资金归集自动化，每日资金头寸实时掌握，银行对账时间缩短80%" data-w="资金与付款管理" onclick="openDp('r2_1_0')">
+<td><span class="nm" id="nmr2_1_0">多银行账单自动汇总</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr2_1_0">自动抓取多家银行账单数据（招行/网商/工行等），汇总生成资金汇总表，与ERP（JDE/用友/金蝶）自动对账</span></td>
+<td><span class="et" id="etr2_1_0">多银行资金归集自动化，每日资金头寸实时掌握，银行对账时间缩短80%</span></td>
+</tr>
+<tr class="nr" id="r2_1_1" data-t="RPA" data-n="付款审批流程自动化" data-o="在ERP系统（JDE/用友/金蝶）中自动完成付款工作台提交、付款组创建至资金审批，支持资金调拨/材料款等分类处理" data-e="付款审批效率提升60%，操作合规留痕，资金管理规范化" data-w="资金与付款管理" onclick="openDp('r2_1_1')">
+<td><span class="nm" id="nmr2_1_1">付款审批流程自动化</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr2_1_1">在ERP系统（JDE/用友/金蝶）中自动完成付款工作台提交、付款组创建至资金审批，支持资金调拨/材料款等分类处理</span></td>
+<td><span class="et" id="etr2_1_1">付款审批效率提升60%，操作合规留痕，资金管理规范化</span></td>
+</tr>
+<tr class="nr" id="r2_1_2" data-t="RPA" data-n="费控报表自动下载上传BI" data-o="自动下载费控系统报表，上传至BI数据平台，支持基础数据批量更新、摊行处理等" data-e="费控数据从手工导出变为全自动同步，分析决策数据实时到位" data-w="资金与付款管理" onclick="openDp('r2_1_2')">
+<td><span class="nm" id="nmr2_1_2">费控报表自动下载上传BI</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr2_1_2">自动下载费控系统报表，上传至BI数据平台，支持基础数据批量更新、摊行处理等</span></td>
+<td><span class="et" id="etr2_1_2">费控数据从手工导出变为全自动同步，分析决策数据实时到位</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw2_2">
+<div class="wh" id="whw2_2" onclick="togWf('w2_2')">
+<span class="wa" id="waw2_2">&#9658;</span>
+<span class="wn">发票与凭证管理</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw2_2">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r2_2_0" data-t="RPA+AI" data-n="发票OCR识别入账验真" data-o="OCR识别纸质或电子发票关键信息（金额/税号/日期/类型），自动录入ERP财务系统，调用税务平台接口验真，标记异常发票并支持批量打印" data-e="发票处理效率提升90%，假发票/重复报销零漏过，合规管理自动化" data-w="发票与凭证管理" onclick="openDp('r2_2_0')">
+<td><span class="nm" id="nmr2_2_0">发票OCR识别入账验真</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr2_2_0">OCR识别纸质或电子发票关键信息（金额/税号/日期/类型），自动录入ERP财务系统，调用税务平台接口验真，标记异常发票并支持批量打印</span></td>
+<td><span class="et" id="etr2_2_0">发票处理效率提升90%，假发票/重复报销零漏过，合规管理自动化</span></td>
+</tr>
+<tr class="nr" id="r2_2_1" data-t="RPA" data-n="应收发票批量开具" data-o="根据对账结果，在财务系统中批量开具手工应收发票，支持按门店/渠道/品类分类开具" data-e="批量开票效率提升10倍，票据管理规范化" data-w="发票与凭证管理" onclick="openDp('r2_2_1')">
+<td><span class="nm" id="nmr2_2_1">应收发票批量开具</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr2_2_1">根据对账结果，在财务系统中批量开具手工应收发票，支持按门店/渠道/品类分类开具</span></td>
+<td><span class="et" id="etr2_2_1">批量开票效率提升10倍，票据管理规范化</span></td>
+</tr>
+<tr class="nr" id="r2_2_2" data-t="RPA" data-n="凭证自动生成与核对" data-o="基于对账结果和付款记录，自动在ERP系统跑凭证，核对收款录入与核销记录，支持月末批量处理" data-e="月末凭证处理时间缩短70%，财务准确性提升" data-w="发票与凭证管理" onclick="openDp('r2_2_2')">
+<td><span class="nm" id="nmr2_2_2">凭证自动生成与核对</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr2_2_2">基于对账结果和付款记录，自动在ERP系统跑凭证，核对收款录入与核销记录，支持月末批量处理</span></td>
+<td><span class="et" id="etr2_2_2">月末凭证处理时间缩短70%，财务准确性提升</span></td>
+</tr>
+</tbody></table></div></div>
+</div>
+<div class="ds" id="ds3">
+<div class="dh">
+<div class="dic"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/></svg></div>
+<div class="dtx"><div class="dt">人事行政</div><div class="dd">招聘入职 · 排班考勤 · 薪资核算 · 跨系统数据同步</div></div>
+<div class="dsts">
+<span class="tag trpa">RPA 8个</span>
+<span class="tag tri">RPA+AI 2个</span>
+</div></div>
+<div class="wb" id="wbw3_0">
+<div class="wh" id="whw3_0" onclick="togWf('w3_0')">
+<span class="wa" id="waw3_0">&#9658;</span>
+<span class="wn">招聘与入职管理</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw3_0">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r3_0_0" data-t="RPA" data-n="Offer与简历自动下载归档" data-o="自动从招聘平台（Boss直聘/猎聘/拉勾等）下载Offer文件和简历，按岗位/门店/日期分类归档至HR系统，更新招聘进度表" data-e="招聘文件处理时间减少80%，HR聚焦候选人评估与文化匹配" data-w="招聘与入职管理" onclick="openDp('r3_0_0')">
+<td><span class="nm" id="nmr3_0_0">Offer与简历自动下载归档</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr3_0_0">自动从招聘平台（Boss直聘/猎聘/拉勾等）下载Offer文件和简历，按岗位/门店/日期分类归档至HR系统，更新招聘进度表</span></td>
+<td><span class="et" id="etr3_0_0">招聘文件处理时间减少80%，HR聚焦候选人评估与文化匹配</span></td>
+</tr>
+<tr class="nr" id="r3_0_1" data-t="RPA+AI" data-n="入职材料自动核验归档" data-o="新员工通过移动端提交身份证/健康证/劳动合同等材料，RPA验证完整性，AI识别证件信息自动录入北森/易路/Rippling等HR系统，同步更新钉钉/企微通讯录" data-e="入职手续从2天压缩至2小时，合规留档100%，证件信息录入零差错" data-w="招聘与入职管理" onclick="openDp('r3_0_1')">
+<td><span class="nm" id="nmr3_0_1">入职材料自动核验归档</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr3_0_1">新员工通过移动端提交身份证/健康证/劳动合同等材料，RPA验证完整性，AI识别证件信息自动录入北森/易路/Rippling等HR系统，同步更新钉钉/企微通讯录</span></td>
+<td><span class="et" id="etr3_0_1">入职手续从2天压缩至2小时，合规留档100%，证件信息录入零差错</span></td>
+</tr>
+<tr class="nr" id="r3_0_2" data-t="RPA" data-n="入职首日流程自动校验" data-o="自动校验新员工首次工作日打卡、系统账号开通、权限分配等情况，异常项自动通知HR和门店主管及时补救" data-e="新员工入职体验提升，漏洞项及时补救，合规率100%" data-w="招聘与入职管理" onclick="openDp('r3_0_2')">
+<td><span class="nm" id="nmr3_0_2">入职首日流程自动校验</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr3_0_2">自动校验新员工首次工作日打卡、系统账号开通、权限分配等情况，异常项自动通知HR和门店主管及时补救</span></td>
+<td><span class="et" id="etr3_0_2">新员工入职体验提升，漏洞项及时补救，合规率100%</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw3_1">
+<div class="wh" id="whw3_1" onclick="togWf('w3_1')">
+<span class="wa" id="waw3_1">&#9658;</span>
+<span class="wn">考勤与排班系统</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw3_1">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r3_1_0" data-t="RPA" data-n="跨系统排班考勤数据同步" data-o="自动将盖雅/华嘉等排班系统数据同步至钉钉/企微，支持打卡数据双向同步，处理请假数据与排班系统互通" data-e="多系统排班考勤数据打通，数据孤岛消除，HR操作效率提升60%" data-w="考勤与排班系统" onclick="openDp('r3_1_0')">
+<td><span class="nm" id="nmr3_1_0">跨系统排班考勤数据同步</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr3_1_0">自动将盖雅/华嘉等排班系统数据同步至钉钉/企微，支持打卡数据双向同步，处理请假数据与排班系统互通</span></td>
+<td><span class="et" id="etr3_1_0">多系统排班考勤数据打通，数据孤岛消除，HR操作效率提升60%</span></td>
+</tr>
+<tr class="nr" id="r3_1_1" data-t="RPA" data-n="多HR系统数据一致性核查" data-o="自动对比北森/易路/Rippling/盖雅等系统间人员数据差异，生成差异报告并推送HR处理" data-e="数据不一致问题从月度发现变为日度发现，HR数据质量大幅提升" data-w="考勤与排班系统" onclick="openDp('r3_1_1')">
+<td><span class="nm" id="nmr3_1_1">多HR系统数据一致性核查</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr3_1_1">自动对比北森/易路/Rippling/盖雅等系统间人员数据差异，生成差异报告并推送HR处理</span></td>
+<td><span class="et" id="etr3_1_1">数据不一致问题从月度发现变为日度发现，HR数据质量大幅提升</span></td>
+</tr>
+<tr class="nr" id="r3_1_2" data-t="RPA+AI" data-n="考勤异常预警与数据核对" data-o="AI分析各门店考勤异常分布，识别高频异常门店和人员，生成预警报告；自动核对钉钉信息与HR系统数据一致性" data-e="考勤异常提前发现，劳动合规风险降低，门店人效管理精细化" data-w="考勤与排班系统" onclick="openDp('r3_1_2')">
+<td><span class="nm" id="nmr3_1_2">考勤异常预警与数据核对</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr3_1_2">AI分析各门店考勤异常分布，识别高频异常门店和人员，生成预警报告；自动核对钉钉信息与HR系统数据一致性</span></td>
+<td><span class="et" id="etr3_1_2">考勤异常提前发现，劳动合规风险降低，门店人效管理精细化</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw3_2">
+<div class="wh" id="whw3_2" onclick="togWf('w3_2')">
+<span class="wa" id="waw3_2">&#9658;</span>
+<span class="wn">薪资与员工关系</span>
+<span class="wi2">4 个机会点</span>
+</div>
+<div class="wbod" id="wbodw3_2">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r3_2_0" data-t="RPA" data-n="薪资总表自动核算" data-o="自动汇总考勤/绩效/排班/社保/餐补/计件等数据，套用薪资公式计算，生成加密工资条并推送至员工；对接北森/易路/Rippling薪资模块" data-e="薪资核算从3天降至半天，差错率近零，员工查询方便" data-w="薪资与员工关系" onclick="openDp('r3_2_0')">
+<td><span class="nm" id="nmr3_2_0">薪资总表自动核算</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr3_2_0">自动汇总考勤/绩效/排班/社保/餐补/计件等数据，套用薪资公式计算，生成加密工资条并推送至员工；对接北森/易路/Rippling薪资模块</span></td>
+<td><span class="et" id="etr3_2_0">薪资核算从3天降至半天，差错率近零，员工查询方便</span></td>
+</tr>
+<tr class="nr" id="r3_2_1" data-t="RPA" data-n="社保增减员自动处理" data-o="基于入离职数据自动触发社保增员/减员操作，支持批量处理多城市参保，提交社保局系统并更新人事台账" data-e="社保操作从手工登录变为全自动，漏增漏减风险归零" data-w="薪资与员工关系" onclick="openDp('r3_2_1')">
+<td><span class="nm" id="nmr3_2_1">社保增减员自动处理</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr3_2_1">基于入离职数据自动触发社保增员/减员操作，支持批量处理多城市参保，提交社保局系统并更新人事台账</span></td>
+<td><span class="et" id="etr3_2_1">社保操作从手工登录变为全自动，漏增漏减风险归零</span></td>
+</tr>
+<tr class="nr" id="r3_2_2" data-t="RPA" data-n="离职/转正/异动流程催办" data-o="自动监控钉钉/企微审批中滞留超时的离职/转正/异动流程，分级催办责任人及时处理" data-e="审批滞留率降低70%，员工关系流程周期缩短，员工体验改善" data-w="薪资与员工关系" onclick="openDp('r3_2_2')">
+<td><span class="nm" id="nmr3_2_2">离职/转正/异动流程催办</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr3_2_2">自动监控钉钉/企微审批中滞留超时的离职/转正/异动流程，分级催办责任人及时处理</span></td>
+<td><span class="et" id="etr3_2_2">审批滞留率降低70%，员工关系流程周期缩短，员工体验改善</span></td>
+</tr>
+<tr class="nr" id="r3_2_3" data-t="RPA" data-n="员工福利券自动发放" data-o="按节日/生日/入职周年等节点，自动向符合条件的员工发放电子消费券或福利，支持国内外多区域差异化配置" data-e="员工福利发放全自动，无遗漏，运营效率提升，员工满意度提升" data-w="薪资与员工关系" onclick="openDp('r3_2_3')">
+<td><span class="nm" id="nmr3_2_3">员工福利券自动发放</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr3_2_3">按节日/生日/入职周年等节点，自动向符合条件的员工发放电子消费券或福利，支持国内外多区域差异化配置</span></td>
+<td><span class="et" id="etr3_2_3">员工福利发放全自动，无遗漏，运营效率提升，员工满意度提升</span></td>
+</tr>
+</tbody></table></div></div>
+</div>
+<div class="ds" id="ds4">
+<div class="dh">
+<div class="dic"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 7.5l-.625 10.632a2.25 2.25 0 01-2.247 2.118H6.622a2.25 2.25 0 01-2.247-2.118L3.75 7.5M10 11.25h4M3.375 7.5h17.25c.621 0 1.125-.504 1.125-1.125v-1.5c0-.621-.504-1.125-1.125-1.125H3.375c-.621 0-1.125.504-1.125 1.125v1.5c0 .621.504 1.125 1.125 1.125z"/></svg></div>
+<div class="dtx"><div class="dt">供应链采购</div><div class="dd">采购计划 · 供应商协同 · 验收入库 · 成本管控</div></div>
+<div class="dsts">
+<span class="tag trpa">RPA 4个</span>
+<span class="tag tai">AI 3个</span>
+<span class="tag tri">RPA+AI 1个</span>
+</div></div>
+<div class="wb" id="wbw4_0">
+<div class="wh" id="whw4_0" onclick="togWf('w4_0')">
+<span class="wa" id="waw4_0">&#9658;</span>
+<span class="wn">采购需求生成</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw4_0">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r4_0_0" data-t="AI" data-n="食材用量AI智能预测" data-o="基于各门店历史销售、菜单结构、促销计划、天气等多维数据，AI预测未来3-7天各食材需求量，自动生成分门店/分品类建议采购量，对接供应链管理系统" data-e="缺货率降低30%，过剩库存降低25%，食材成本整体优化5-8%" data-w="采购需求生成" onclick="openDp('r4_0_0')">
+<td><span class="nm" id="nmr4_0_0">食材用量AI智能预测</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr4_0_0">基于各门店历史销售、菜单结构、促销计划、天气等多维数据，AI预测未来3-7天各食材需求量，自动生成分门店/分品类建议采购量，对接供应链管理系统</span></td>
+<td><span class="et" id="etr4_0_0">缺货率降低30%，过剩库存降低25%，食材成本整体优化5-8%</span></td>
+</tr>
+<tr class="nr" id="r4_0_1" data-t="RPA" data-n="采购单自动生成与审批发送" data-o="基于预测需求与实时库存差值，自动生成采购申请单，推送钉钉/企微审批流，审批通过后一键发至供应商；与哗啦啦/供应链系统同步更新库存" data-e="省去采购员每日手工计算，采购响应速度提升2倍，审批留痕可追溯" data-w="采购需求生成" onclick="openDp('r4_0_1')">
+<td><span class="nm" id="nmr4_0_1">采购单自动生成与审批发送</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr4_0_1">基于预测需求与实时库存差值，自动生成采购申请单，推送钉钉/企微审批流，审批通过后一键发至供应商；与哗啦啦/供应链系统同步更新库存</span></td>
+<td><span class="et" id="etr4_0_1">省去采购员每日手工计算，采购响应速度提升2倍，审批留痕可追溯</span></td>
+</tr>
+<tr class="nr" id="r4_0_2" data-t="RPA+AI" data-n="多供应商询价比价自动化" data-o="自动向多家供应商发送询价消息，归集报价后AI综合价格/质量/交期评分，推荐最优采购方案，生成比价报告存档" data-e="比价效率提升80%，年均采购成本节省5-10%，避免人情采购偏差" data-w="采购需求生成" onclick="openDp('r4_0_2')">
+<td><span class="nm" id="nmr4_0_2">多供应商询价比价自动化</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr4_0_2">自动向多家供应商发送询价消息，归集报价后AI综合价格/质量/交期评分，推荐最优采购方案，生成比价报告存档</span></td>
+<td><span class="et" id="etr4_0_2">比价效率提升80%，年均采购成本节省5-10%，避免人情采购偏差</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw4_1">
+<div class="wh" id="whw4_1" onclick="togWf('w4_1')">
+<span class="wa" id="waw4_1">&#9658;</span>
+<span class="wn">供应商管理</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw4_1">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r4_1_0" data-t="RPA" data-n="合同到期自动预警续签" data-o="监控所有供应商合同有效期，提前30天自动推送预警至采购负责人，触发续签审批流，归档合同扫描件至云端" data-e="合同断档风险归零，供应商管理合规化，不再靠人工记忆跟进" data-w="供应商管理" onclick="openDp('r4_1_0')">
+<td><span class="nm" id="nmr4_1_0">合同到期自动预警续签</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr4_1_0">监控所有供应商合同有效期，提前30天自动推送预警至采购负责人，触发续签审批流，归档合同扫描件至云端</span></td>
+<td><span class="et" id="etr4_1_0">合同断档风险归零，供应商管理合规化，不再靠人工记忆跟进</span></td>
+</tr>
+<tr class="nr" id="r4_1_1" data-t="AI" data-n="供应商绩效自动评分" data-o="基于交货及时率、品质合格率、价格稳定性、服务响应速度，自动计算供应商综合评分，月度生成评级排名报告，支持优胜劣汰决策" data-e="量化供应商管理，评级结果用于续约谈判，采购质量持续提升" data-w="供应商管理" onclick="openDp('r4_1_1')">
+<td><span class="nm" id="nmr4_1_1">供应商绩效自动评分</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr4_1_1">基于交货及时率、品质合格率、价格稳定性、服务响应速度，自动计算供应商综合评分，月度生成评级排名报告，支持优胜劣汰决策</span></td>
+<td><span class="et" id="etr4_1_1">量化供应商管理，评级结果用于续约谈判，采购质量持续提升</span></td>
+</tr>
+<tr class="nr" id="r4_1_2" data-t="RPA" data-n="到货验收差异自动核对" data-o="扫描或拍照发货单，自动与采购订单比对，生成数量/规格/价格差异报告，差异项自动推送供应商确认" data-e="验收时间缩短60%，差异可追溯，防止缺斤少两，数据自动入账" data-w="供应商管理" onclick="openDp('r4_1_2')">
+<td><span class="nm" id="nmr4_1_2">到货验收差异自动核对</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr4_1_2">扫描或拍照发货单，自动与采购订单比对，生成数量/规格/价格差异报告，差异项自动推送供应商确认</span></td>
+<td><span class="et" id="etr4_1_2">验收时间缩短60%，差异可追溯，防止缺斤少两，数据自动入账</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw4_2">
+<div class="wh" id="whw4_2" onclick="togWf('w4_2')">
+<span class="wa" id="waw4_2">&#9658;</span>
+<span class="wn">成本管控</span>
+<span class="wi2">2 个机会点</span>
+</div>
+<div class="wbod" id="wbodw4_2">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r4_2_0" data-t="RPA" data-n="食材成本率实时追踪" data-o="自动汇总各门店食材采购、使用、损耗数据，按品类/门店/时段计算食材成本率，与ERP（用友/金蝶/JDE）实时同步，成本异常自动预警" data-e="成本核算从月度变为日度，成本异常实时发现，毛利管理精细化" data-w="成本管控" onclick="openDp('r4_2_0')">
+<td><span class="nm" id="nmr4_2_0">食材成本率实时追踪</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr4_2_0">自动汇总各门店食材采购、使用、损耗数据，按品类/门店/时段计算食材成本率，与ERP（用友/金蝶/JDE）实时同步，成本异常自动预警</span></td>
+<td><span class="et" id="etr4_2_0">成本核算从月度变为日度，成本异常实时发现，毛利管理精细化</span></td>
+</tr>
+<tr class="nr" id="r4_2_1" data-t="AI" data-n="菜品毛利AI实时监控" data-o="基于实时食材价格和销售数据，自动计算每道菜品实际毛利率，识别毛利低于阈值的菜品，推送调价或下架建议，对接美团管家套餐统计数据" data-e="问题菜品及时发现，定价决策更精准，整体毛利率持续提升" data-w="成本管控" onclick="openDp('r4_2_1')">
+<td><span class="nm" id="nmr4_2_1">菜品毛利AI实时监控</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr4_2_1">基于实时食材价格和销售数据，自动计算每道菜品实际毛利率，识别毛利低于阈值的菜品，推送调价或下架建议，对接美团管家套餐统计数据</span></td>
+<td><span class="et" id="etr4_2_1">问题菜品及时发现，定价决策更精准，整体毛利率持续提升</span></td>
+</tr>
+</tbody></table></div></div>
+</div>
+<div class="ds" id="ds5">
+<div class="dh">
+<div class="dic"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M17.982 18.725A7.488 7.488 0 0012 15.75a7.488 7.488 0 00-5.982 2.975m11.963 0a9 9 0 10-11.963 0m11.963 0A8.966 8.966 0 0112 21a8.966 8.966 0 01-5.982-2.275M15 9.75a3 3 0 11-6 0 3 3 0 016 0z"/></svg></div>
+<div class="dtx"><div class="dt">会员运营</div><div class="dd">会员生命周期 · 储值积分 · 精准营销 · 私域运营</div></div>
+<div class="dsts">
+<span class="tag trpa">RPA 4个</span>
+<span class="tag tai">AI 3个</span>
+<span class="tag tri">RPA+AI 2个</span>
+</div></div>
+<div class="wb" id="wbw5_0">
+<div class="wh" id="whw5_0" onclick="togWf('w5_0')">
+<span class="wa" id="waw5_0">&#9658;</span>
+<span class="wn">会员生命周期管理</span>
+<span class="wi2">4 个机会点</span>
+</div>
+<div class="wbod" id="wbodw5_0">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r5_0_0" data-t="RPA+AI" data-n="会员交易明细自动下载分析" data-o="自动从会员CRM系统下载交易明细数据，AI分析消费频次/金额/偏好趋势，生成会员价值分层报告" data-e="会员数据自动归集，分析效率提升80%，精准营销决策数据驱动" data-w="会员生命周期管理" onclick="openDp('r5_0_0')">
+<td><span class="nm" id="nmr5_0_0">会员交易明细自动下载分析</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr5_0_0">自动从会员CRM系统下载交易明细数据，AI分析消费频次/金额/偏好趋势，生成会员价值分层报告</span></td>
+<td><span class="et" id="etr5_0_0">会员数据自动归集，分析效率提升80%，精准营销决策数据驱动</span></td>
+</tr>
+<tr class="nr" id="r5_0_1" data-t="RPA+AI" data-n="新客自动欢迎与首单引导" data-o="新会员注册后自动触发欢迎序列：发送权益说明、首单专属优惠券、企微私域加粉邀请，AI个性化欢迎文案；对接哗啦啦/会员CRM系统" data-e="新客复购率提升15-25%，私域留存率提升，会员激活成本降低" data-w="会员生命周期管理" onclick="openDp('r5_0_1')">
+<td><span class="nm" id="nmr5_0_1">新客自动欢迎与首单引导</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr5_0_1">新会员注册后自动触发欢迎序列：发送权益说明、首单专属优惠券、企微私域加粉邀请，AI个性化欢迎文案；对接哗啦啦/会员CRM系统</span></td>
+<td><span class="et" id="etr5_0_1">新客复购率提升15-25%，私域留存率提升，会员激活成本降低</span></td>
+</tr>
+<tr class="nr" id="r5_0_2" data-t="AI" data-n="沉睡会员AI个性化唤醒" data-o="识别N天未消费的会员，AI基于历史消费偏好生成个性化唤醒文案和专属优惠，自动推送企微/短信/小程序消息，跟踪唤醒转化率" data-e="沉睡会员召回率提升10-20%，唤醒ROI显著改善，LTV损失降低" data-w="会员生命周期管理" onclick="openDp('r5_0_2')">
+<td><span class="nm" id="nmr5_0_2">沉睡会员AI个性化唤醒</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr5_0_2">识别N天未消费的会员，AI基于历史消费偏好生成个性化唤醒文案和专属优惠，自动推送企微/短信/小程序消息，跟踪唤醒转化率</span></td>
+<td><span class="et" id="etr5_0_2">沉睡会员召回率提升10-20%，唤醒ROI显著改善，LTV损失降低</span></td>
+</tr>
+<tr class="nr" id="r5_0_3" data-t="AI" data-n="流失风险预警与挽留" data-o="基于消费频次衰减曲线建立流失预测模型，提前30天预警高风险会员，自动触发挽留权益发送，记录挽留效果" data-e="主动挽留胜于事后召回，每月减少流失会员数量可观" data-w="会员生命周期管理" onclick="openDp('r5_0_3')">
+<td><span class="nm" id="nmr5_0_3">流失风险预警与挽留</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr5_0_3">基于消费频次衰减曲线建立流失预测模型，提前30天预警高风险会员，自动触发挽留权益发送，记录挽留效果</span></td>
+<td><span class="et" id="etr5_0_3">主动挽留胜于事后召回，每月减少流失会员数量可观</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw5_1">
+<div class="wh" id="whw5_1" onclick="togWf('w5_1')">
+<span class="wa" id="waw5_1">&#9658;</span>
+<span class="wn">储值与积分管理</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw5_1">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r5_1_0" data-t="RPA" data-n="会员数据核对与核销" data-o="自动核对会员系统与收银系统的积分/储值数据一致性，处理积分补录、手工核销异常，生成差异报告推送运营" data-e="会员数据准确性提升，顾客纠纷减少，信任度提升" data-w="储值与积分管理" onclick="openDp('r5_1_0')">
+<td><span class="nm" id="nmr5_1_0">会员数据核对与核销</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr5_1_0">自动核对会员系统与收银系统的积分/储值数据一致性，处理积分补录、手工核销异常，生成差异报告推送运营</span></td>
+<td><span class="et" id="etr5_1_0">会员数据准确性提升，顾客纠纷减少，信任度提升</span></td>
+</tr>
+<tr class="nr" id="r5_1_1" data-t="RPA" data-n="储值余额低额自动提醒" data-o="自动检测余额低于设定阈值的会员，推送充值提醒及当期充值优惠，记录触达率和充值转化率" data-e="储值续费率提升，门店预收现金流改善" data-w="储值与积分管理" onclick="openDp('r5_1_1')">
+<td><span class="nm" id="nmr5_1_1">储值余额低额自动提醒</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr5_1_1">自动检测余额低于设定阈值的会员，推送充值提醒及当期充值优惠，记录触达率和充值转化率</span></td>
+<td><span class="et" id="etr5_1_1">储值续费率提升，门店预收现金流改善</span></td>
+</tr>
+<tr class="nr" id="r5_1_2" data-t="RPA" data-n="积分临期分批自动提醒" data-o="积分临近过期前7/3/1天自动分批推送提醒，引导消费或兑换，逾期积分自动注销并记录" data-e="减少积分注销损失，促进到店消费转化，会员活跃度提升" data-w="储值与积分管理" onclick="openDp('r5_1_2')">
+<td><span class="nm" id="nmr5_1_2">积分临期分批自动提醒</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr5_1_2">积分临近过期前7/3/1天自动分批推送提醒，引导消费或兑换，逾期积分自动注销并记录</span></td>
+<td><span class="et" id="etr5_1_2">减少积分注销损失，促进到店消费转化，会员活跃度提升</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw5_2">
+<div class="wh" id="whw5_2" onclick="togWf('w5_2')">
+<span class="wa" id="waw5_2">&#9658;</span>
+<span class="wn">精准营销</span>
+<span class="wi2">2 个机会点</span>
+</div>
+<div class="wbod" id="wbodw5_2">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r5_2_0" data-t="AI" data-n="个性化优惠券AI定向推送" data-o="基于消费历史/偏好菜品/消费时段/地理位置，AI为每位会员生成专属优惠推荐，自动推送企微/短信/小程序，A/B测试持续优化推送策略" data-e="券核销率提升30-50%，促销ROI显著改善，营销成本降低" data-w="精准营销" onclick="openDp('r5_2_0')">
+<td><span class="nm" id="nmr5_2_0">个性化优惠券AI定向推送</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr5_2_0">基于消费历史/偏好菜品/消费时段/地理位置，AI为每位会员生成专属优惠推荐，自动推送企微/短信/小程序，A/B测试持续优化推送策略</span></td>
+<td><span class="et" id="etr5_2_0">券核销率提升30-50%，促销ROI显著改善，营销成本降低</span></td>
+</tr>
+<tr class="nr" id="r5_2_1" data-t="RPA" data-n="生日节日关怀全自动化" data-o="自动识别近期生日会员提前3天推送专属礼包；节日自动批量发送节庆优惠；入会周年自动触发感谢权益，记录触达和转化数据" data-e="情感营销全自动化，每次关怀人工成本极低，会员忠诚度显著提升" data-w="精准营销" onclick="openDp('r5_2_1')">
+<td><span class="nm" id="nmr5_2_1">生日节日关怀全自动化</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr5_2_1">自动识别近期生日会员提前3天推送专属礼包；节日自动批量发送节庆优惠；入会周年自动触发感谢权益，记录触达和转化数据</span></td>
+<td><span class="et" id="etr5_2_1">情感营销全自动化，每次关怀人工成本极低，会员忠诚度显著提升</span></td>
+</tr>
+</tbody></table></div></div>
+</div>
+<div class="ds" id="ds6">
+<div class="dh">
+<div class="dic"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M10.34 15.84c-.688-.06-1.386-.09-2.09-.09H7.5a4.5 4.5 0 110-9h.75c.704 0 1.402-.03 2.09-.09m0 9.18c.253.962.584 1.892.985 2.783.247.55.06 1.21-.463 1.511l-.657.38c-.551.318-1.26.117-1.527-.461a20.845 20.845 0 01-1.44-4.282m3.102.069a18.03 18.03 0 01-.59-4.59c0-1.586.205-3.124.59-4.59m0 9.18a23.848 23.848 0 018.835 2.535M10.34 6.66a23.847 23.847 0 008.835-2.535m0 0A23.74 23.74 0 0018.795 3m.38 1.125a23.91 23.91 0 011.014 5.395m-1.014 8.855c-.118.38-.245.754-.38 1.125m.38-1.125a23.91 23.91 0 001.014-5.395m0-3.46c.495.413.811 1.035.811 1.73 0 .695-.316 1.317-.811 1.73m0-3.46a24.347 24.347 0 010 3.46"/></svg></div>
+<div class="dtx"><div class="dt">营销活动</div><div class="dd">多渠道投放 · 口碑管理 · 内容运营 · 竞品监控</div></div>
+<div class="dsts">
+<span class="tag trpa">RPA 2个</span>
+<span class="tag tai">AI 2个</span>
+<span class="tag tri">RPA+AI 3个</span>
+</div></div>
+<div class="wb" id="wbw6_0">
+<div class="wh" id="whw6_0" onclick="togWf('w6_0')">
+<span class="wa" id="waw6_0">&#9658;</span>
+<span class="wn">多渠道内容投放</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw6_0">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r6_0_0" data-t="AI" data-n="营销素材AI批量生成" data-o="输入活动主题和品牌调性，AI自动生成多版本海报文案、推文、短视频脚本、小红书种草图文、抖音团购描述，适配各平台调性和字数限制" data-e="内容生产效率提升5倍，A/B测试版本丰富，内容制作人工成本降低60%" data-w="多渠道内容投放" onclick="openDp('r6_0_0')">
+<td><span class="nm" id="nmr6_0_0">营销素材AI批量生成</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr6_0_0">输入活动主题和品牌调性，AI自动生成多版本海报文案、推文、短视频脚本、小红书种草图文、抖音团购描述，适配各平台调性和字数限制</span></td>
+<td><span class="et" id="etr6_0_0">内容生产效率提升5倍，A/B测试版本丰富，内容制作人工成本降低60%</span></td>
+</tr>
+<tr class="nr" id="r6_0_1" data-t="RPA" data-n="多平台内容自动同步发布" data-o="一键将营销内容同步推送至微信公众号/小红书/抖音商家端/美团商家端/饿了么商家端/企微朋友圈，记录各渠道发布状态" data-e="省去各平台重复操作，发布效率提升80%，多渠道统一触达零遗漏" data-w="多渠道内容投放" onclick="openDp('r6_0_1')">
+<td><span class="nm" id="nmr6_0_1">多平台内容自动同步发布</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr6_0_1">一键将营销内容同步推送至微信公众号/小红书/抖音商家端/美团商家端/饿了么商家端/企微朋友圈，记录各渠道发布状态</span></td>
+<td><span class="et" id="etr6_0_1">省去各平台重复操作，发布效率提升80%，多渠道统一触达零遗漏</span></td>
+</tr>
+<tr class="nr" id="r6_0_2" data-t="RPA+AI" data-n="活动效果数据自动汇总" data-o="自动抓取各渠道活动数据（曝光/点击/核销/GMV），汇总生成活动复盘报告，支持渠道ROI横向对比，推送品牌整体运营数据" data-e="复盘周期从3天缩短至当日，预算分配决策数据驱动" data-w="多渠道内容投放" onclick="openDp('r6_0_2')">
+<td><span class="nm" id="nmr6_0_2">活动效果数据自动汇总</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr6_0_2">自动抓取各渠道活动数据（曝光/点击/核销/GMV），汇总生成活动复盘报告，支持渠道ROI横向对比，推送品牌整体运营数据</span></td>
+<td><span class="et" id="etr6_0_2">复盘周期从3天缩短至当日，预算分配决策数据驱动</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw6_1">
+<div class="wh" id="whw6_1" onclick="togWf('w6_1')">
+<span class="wa" id="waw6_1">&#9658;</span>
+<span class="wn">竞品与市场监控</span>
+<span class="wi2">2 个机会点</span>
+</div>
+<div class="wbod" id="wbodw6_1">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r6_1_0" data-t="RPA+AI" data-n="竞品动态自动监控分析" data-o="定期抓取美团/大众点评竞品评分、活动信息、菜单定价变化，结合大众点评榜单数据，AI生成竞争态势分析报告" data-e="竞争情报自动化，定价和活动响应速度提升，市场敏感度增强" data-w="竞品与市场监控" onclick="openDp('r6_1_0')">
+<td><span class="nm" id="nmr6_1_0">竞品动态自动监控分析</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr6_1_0">定期抓取美团/大众点评竞品评分、活动信息、菜单定价变化，结合大众点评榜单数据，AI生成竞争态势分析报告</span></td>
+<td><span class="et" id="etr6_1_0">竞争情报自动化，定价和活动响应速度提升，市场敏感度增强</span></td>
+</tr>
+<tr class="nr" id="r6_1_1" data-t="RPA" data-n="抖音团购商品数据管理" data-o="总部确认抖音团购商品信息后，自动同步至各门店抖音商家端，支持分区域配置和定时上线；自动下载抖音团购销售数据汇总分析" data-e="团购商品上线时间从2天缩短至2小时，全网一致性保障" data-w="竞品与市场监控" onclick="openDp('r6_1_1')">
+<td><span class="nm" id="nmr6_1_1">抖音团购商品数据管理</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr6_1_1">总部确认抖音团购商品信息后，自动同步至各门店抖音商家端，支持分区域配置和定时上线；自动下载抖音团购销售数据汇总分析</span></td>
+<td><span class="et" id="etr6_1_1">团购商品上线时间从2天缩短至2小时，全网一致性保障</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw6_2">
+<div class="wh" id="whw6_2" onclick="togWf('w6_2')">
+<span class="wa" id="waw6_2">&#9658;</span>
+<span class="wn">口碑管理</span>
+<span class="wi2">2 个机会点</span>
+</div>
+<div class="wbod" id="wbodw6_2">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r6_2_0" data-t="RPA+AI" data-n="多平台评价集中监控" data-o="实时抓取美团点评/大众点评/口碑/抖音团购等平台全部评价，AI分类情感倾向，汇总差评热词，生成口碑健康度日报" data-e="差评响应从24小时缩短至1小时，口碑问题早发现，平台评分持续提升" data-w="口碑管理" onclick="openDp('r6_2_0')">
+<td><span class="nm" id="nmr6_2_0">多平台评价集中监控</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr6_2_0">实时抓取美团点评/大众点评/口碑/抖音团购等平台全部评价，AI分类情感倾向，汇总差评热词，生成口碑健康度日报</span></td>
+<td><span class="et" id="etr6_2_0">差评响应从24小时缩短至1小时，口碑问题早发现，平台评分持续提升</span></td>
+</tr>
+<tr class="nr" id="r6_2_1" data-t="AI" data-n="差评智能分类回复" data-o="AI按差评类型（口味/服务/配送/环境）生成专业回复草稿，覆盖道歉/解释/补偿话术，人工确认后一键发布，记录申诉进度" data-e="差评回复率从40%提升至100%，专业回复维护品牌形象，申诉成功率提升" data-w="口碑管理" onclick="openDp('r6_2_1')">
+<td><span class="nm" id="nmr6_2_1">差评智能分类回复</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr6_2_1">AI按差评类型（口味/服务/配送/环境）生成专业回复草稿，覆盖道歉/解释/补偿话术，人工确认后一键发布，记录申诉进度</span></td>
+<td><span class="et" id="etr6_2_1">差评回复率从40%提升至100%，专业回复维护品牌形象，申诉成功率提升</span></td>
+</tr>
+</tbody></table></div></div>
+</div>
+<div class="ds" id="ds7">
+<div class="dh">
+<div class="dic"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 01-1.043 3.296 3.745 3.745 0 01-3.296 1.043A3.745 3.745 0 0112 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 01-3.296-1.043 3.745 3.745 0 01-1.043-3.296A3.745 3.745 0 013 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 011.043-3.296 3.746 3.746 0 013.296-1.043A3.746 3.746 0 0112 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 013.296 1.043 3.746 3.746 0 011.043 3.296A3.745 3.745 0 0121 12z"/></svg></div>
+<div class="dtx"><div class="dt">品控质检</div><div class="dd">食安合规 · 出品质量 · 巡检管理 · 证照管控</div></div>
+<div class="dsts">
+<span class="tag trpa">RPA 3个</span>
+<span class="tag tai">AI 2个</span>
+<span class="tag tri">RPA+AI 2个</span>
+</div></div>
+<div class="wb" id="wbw7_0">
+<div class="wh" id="whw7_0" onclick="togWf('w7_0')">
+<span class="wa" id="waw7_0">&#9658;</span>
+<span class="wn">食品安全合规</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw7_0">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r7_0_0" data-t="RPA" data-n="健康证与证照到期集中预警" data-o="统一管理全员健康证/食品从业资格证/营业执照/食品经营许可证，到期前30/15/7天分级自动推送续证提醒，留存证件扫描件" data-e="杜绝健康证过期上岗，多门店证照管理从被动变主动，监管检查零风险" data-w="食品安全合规" onclick="openDp('r7_0_0')">
+<td><span class="nm" id="nmr7_0_0">健康证与证照到期集中预警</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr7_0_0">统一管理全员健康证/食品从业资格证/营业执照/食品经营许可证，到期前30/15/7天分级自动推送续证提醒，留存证件扫描件</span></td>
+<td><span class="et" id="etr7_0_0">杜绝健康证过期上岗，多门店证照管理从被动变主动，监管检查零风险</span></td>
+</tr>
+<tr class="nr" id="r7_0_1" data-t="RPA+AI" data-n="食安自查记录数字化归档" data-o="门店通过移动端完成食安自查，照片+记录自动上传，AI识别不合格项，自动归档并生成整改工单，可一键导出应对监管检查" data-e="检查记录100%数字化，监管检查响应时间不足10分钟，合规成本降低" data-w="食品安全合规" onclick="openDp('r7_0_1')">
+<td><span class="nm" id="nmr7_0_1">食安自查记录数字化归档</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr7_0_1">门店通过移动端完成食安自查，照片+记录自动上传，AI识别不合格项，自动归档并生成整改工单，可一键导出应对监管检查</span></td>
+<td><span class="et" id="etr7_0_1">检查记录100%数字化，监管检查响应时间不足10分钟，合规成本降低</span></td>
+</tr>
+<tr class="nr" id="r7_0_2" data-t="RPA" data-n="食材溯源信息自动建档" data-o="验收时扫描供应商批次码，自动将食材来源/日期/批次/供应商资质关联至库存记录，建立从原料到餐桌的完整溯源链" data-e="食品溯源链完整可查，召回响应时间从天级缩短至小时级" data-w="食品安全合规" onclick="openDp('r7_0_2')">
+<td><span class="nm" id="nmr7_0_2">食材溯源信息自动建档</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr7_0_2">验收时扫描供应商批次码，自动将食材来源/日期/批次/供应商资质关联至库存记录，建立从原料到餐桌的完整溯源链</span></td>
+<td><span class="et" id="etr7_0_2">食品溯源链完整可查，召回响应时间从天级缩短至小时级</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw7_1">
+<div class="wh" id="whw7_1" onclick="togWf('w7_1')">
+<span class="wa" id="waw7_1">&#9658;</span>
+<span class="wn">出品质量管控</span>
+<span class="wi2">2 个机会点</span>
+</div>
+<div class="wbod" id="wbodw7_1">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r7_1_0" data-t="AI" data-n="菜品出品图像AI质检" data-o="出餐口摄像头实时采集菜品图像，AI识别摆盘规范性/分量标准/食品卫生（异物/颜色异常），不合格品自动报警并记录，生成出品一致性报告" data-e="出品一致性提升，顾客投诉降低30%以上，品控从人工抽查变全量自动化" data-w="出品质量管控" onclick="openDp('r7_1_0')">
+<td><span class="nm" id="nmr7_1_0">菜品出品图像AI质检</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr7_1_0">出餐口摄像头实时采集菜品图像，AI识别摆盘规范性/分量标准/食品卫生（异物/颜色异常），不合格品自动报警并记录，生成出品一致性报告</span></td>
+<td><span class="et" id="etr7_1_0">出品一致性提升，顾客投诉降低30%以上，品控从人工抽查变全量自动化</span></td>
+</tr>
+<tr class="nr" id="r7_1_1" data-t="AI" data-n="顾客投诉根因AI溯源" data-o="顾客投诉（外卖差评/到店投诉）自动关联当日出品批次/操作人员/食材来源，AI生成根因分析报告，推送改进建议" data-e="质量问题根因分析效率提升80%，同类问题复发率持续降低" data-w="出品质量管控" onclick="openDp('r7_1_1')">
+<td><span class="nm" id="nmr7_1_1">顾客投诉根因AI溯源</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr7_1_1">顾客投诉（外卖差评/到店投诉）自动关联当日出品批次/操作人员/食材来源，AI生成根因分析报告，推送改进建议</span></td>
+<td><span class="et" id="etr7_1_1">质量问题根因分析效率提升80%，同类问题复发率持续降低</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw7_2">
+<div class="wh" id="whw7_2" onclick="togWf('w7_2')">
+<span class="wa" id="waw7_2">&#9658;</span>
+<span class="wn">门店巡检管理</span>
+<span class="wi2">2 个机会点</span>
+</div>
+<div class="wbod" id="wbodw7_2">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r7_2_0" data-t="RPA" data-n="巡检任务自动推送督导" data-o="按标准频率自动推送卫生/安全/服务/设备巡检任务至责任人，逾期未完成自动升级催办，巡检结果汇总至总部管理看板" data-e="巡检执行率从70%提升至98%以上，全网门店巡检数据可视化" data-w="门店巡检管理" onclick="openDp('r7_2_0')">
+<td><span class="nm" id="nmr7_2_0">巡检任务自动推送督导</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr7_2_0">按标准频率自动推送卫生/安全/服务/设备巡检任务至责任人，逾期未完成自动升级催办，巡检结果汇总至总部管理看板</span></td>
+<td><span class="et" id="etr7_2_0">巡检执行率从70%提升至98%以上，全网门店巡检数据可视化</span></td>
+</tr>
+<tr class="nr" id="r7_2_1" data-t="RPA+AI" data-n="巡检问题整改闭环管理" data-o="巡检发现问题自动生成整改工单推送责任人，整改完成提交照片证明，AI验证整改效果，逾期未整改自动上报上级，形成完整闭环" data-e="问题整改闭环率提升，门店标准化水平持续改善，责任可追溯" data-w="门店巡检管理" onclick="openDp('r7_2_1')">
+<td><span class="nm" id="nmr7_2_1">巡检问题整改闭环管理</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr7_2_1">巡检发现问题自动生成整改工单推送责任人，整改完成提交照片证明，AI验证整改效果，逾期未整改自动上报上级，形成完整闭环</span></td>
+<td><span class="et" id="etr7_2_1">问题整改闭环率提升，门店标准化水平持续改善，责任可追溯</span></td>
+</tr>
+</tbody></table></div></div>
+</div>
+<div class="ds" id="ds8">
+<div class="dh">
+<div class="dic"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M20.25 14.15v4.25c0 1.094-.787 2.036-1.872 2.18-2.087.277-4.216.42-6.378.42s-4.291-.143-6.378-.42c-1.085-.144-1.872-1.086-1.872-2.18v-4.25m16.5 0a2.18 2.18 0 00.75-1.661V8.706c0-1.081-.768-2.015-1.837-2.175a48.114 48.114 0 00-3.413-.387m4.5 8.006c-.194.165-.42.295-.673.38A23.978 23.978 0 0112 15.75c-2.648 0-5.195-.429-7.577-1.22a2.016 2.016 0 01-.673-.38m0 0A2.18 2.18 0 013 12.489V8.706c0-1.081.768-2.015 1.837-2.175a48.111 48.111 0 013.413-.387m7.5 0V5.25A2.25 2.25 0 0013.5 3h-3a2.25 2.25 0 00-2.25 2.25v.894m7.5 0a48.667 48.667 0 00-7.5 0M12 12.75h.008v.008H12v-.008z"/></svg></div>
+<div class="dtx"><div class="dt">仓储物流</div><div class="dd">进销存 · 临期预警 · 冷链温控 · 损耗追踪</div></div>
+<div class="dsts">
+<span class="tag trpa">RPA 3个</span>
+<span class="tag tai">AI 1个</span>
+<span class="tag tri">RPA+AI 3个</span>
+</div></div>
+<div class="wb" id="wbw8_0">
+<div class="wh" id="whw8_0" onclick="togWf('w8_0')">
+<span class="wa" id="waw8_0">&#9658;</span>
+<span class="wn">进销存管理</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw8_0">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r8_0_0" data-t="RPA" data-n="实时库存台账自动更新" data-o="入库/出库/调拨/报损操作自动同步更新库存台账，与哗啦啦/供应链管理系统/ERP双向实时同步，支持多仓库/多门店统一管理" data-e="消除手工台账，库存准确率提升至99%以上，数据实时可信" data-w="进销存管理" onclick="openDp('r8_0_0')">
+<td><span class="nm" id="nmr8_0_0">实时库存台账自动更新</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr8_0_0">入库/出库/调拨/报损操作自动同步更新库存台账，与哗啦啦/供应链管理系统/ERP双向实时同步，支持多仓库/多门店统一管理</span></td>
+<td><span class="et" id="etr8_0_0">消除手工台账，库存准确率提升至99%以上，数据实时可信</span></td>
+</tr>
+<tr class="nr" id="r8_0_1" data-t="RPA+AI" data-n="临期食材智能分级预警" data-o="自动识别临近保质期食材，按紧急程度分级预警（7天/3天/当日），建议优先出库或促销处置，推送至仓管及采购负责人" data-e="食材损耗率降低15-30%，每月节省损耗成本，食安风险同步降低" data-w="进销存管理" onclick="openDp('r8_0_1')">
+<td><span class="nm" id="nmr8_0_1">临期食材智能分级预警</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr8_0_1">自动识别临近保质期食材，按紧急程度分级预警（7天/3天/当日），建议优先出库或促销处置，推送至仓管及采购负责人</span></td>
+<td><span class="et" id="etr8_0_1">食材损耗率降低15-30%，每月节省损耗成本，食安风险同步降低</span></td>
+</tr>
+<tr class="nr" id="r8_0_2" data-t="RPA" data-n="库存盘点数字化辅助" data-o="生成盘点任务单推送至仓管员，盘点数据移动端扫码录入，完成后自动对比账面库存，输出盈亏差异表，异常项推送审计" data-e="盘点时间减半，差异自动归因，报告一键生成，准确率提升" data-w="进销存管理" onclick="openDp('r8_0_2')">
+<td><span class="nm" id="nmr8_0_2">库存盘点数字化辅助</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr8_0_2">生成盘点任务单推送至仓管员，盘点数据移动端扫码录入，完成后自动对比账面库存，输出盈亏差异表，异常项推送审计</span></td>
+<td><span class="et" id="etr8_0_2">盘点时间减半，差异自动归因，报告一键生成，准确率提升</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw8_1">
+<div class="wh" id="whw8_1" onclick="togWf('w8_1')">
+<span class="wa" id="waw8_1">&#9658;</span>
+<span class="wn">冷链温控管理</span>
+<span class="wi2">2 个机会点</span>
+</div>
+<div class="wbod" id="wbodw8_1">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r8_1_0" data-t="RPA" data-n="冷库温度自动采集合规留档" data-o="对接IoT温度传感器，每15分钟自动采集冷库/冷柜温度，写入合规台账并归档，满足食安监管留档要求，支持历史数据查询" data-e="温控数据100%合规留档，监管检查零风险，异常数据秒级发现" data-w="冷链温控管理" onclick="openDp('r8_1_0')">
+<td><span class="nm" id="nmr8_1_0">冷库温度自动采集合规留档</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr8_1_0">对接IoT温度传感器，每15分钟自动采集冷库/冷柜温度，写入合规台账并归档，满足食安监管留档要求，支持历史数据查询</span></td>
+<td><span class="et" id="etr8_1_0">温控数据100%合规留档，监管检查零风险，异常数据秒级发现</span></td>
+</tr>
+<tr class="nr" id="r8_1_1" data-t="RPA+AI" data-n="超温异常多级自动告警" data-o="温度超出安全阈值时秒级触发多级告警（短信/企微/电话），AI判断异常严重程度推荐处置方案，自动记录事件日志形成合规档案" data-e="设备故障导致食材损坏风险降低80%，食安隐患提前消除" data-w="冷链温控管理" onclick="openDp('r8_1_1')">
+<td><span class="nm" id="nmr8_1_1">超温异常多级自动告警</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr8_1_1">温度超出安全阈值时秒级触发多级告警（短信/企微/电话），AI判断异常严重程度推荐处置方案，自动记录事件日志形成合规档案</span></td>
+<td><span class="et" id="etr8_1_1">设备故障导致食材损坏风险降低80%，食安隐患提前消除</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw8_2">
+<div class="wh" id="whw8_2" onclick="togWf('w8_2')">
+<span class="wa" id="waw8_2">&#9658;</span>
+<span class="wn">损耗追踪</span>
+<span class="wi2">2 个机会点</span>
+</div>
+<div class="wbod" id="wbodw8_2">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r8_2_0" data-t="RPA+AI" data-n="食材损耗分类录入分析" data-o="损耗数据移动端一键录入，AI按原因分类（过期/制作/退货/盘亏），输出各门店/品类损耗趋势对比，与采购计划联动" data-e="损耗数据统一管理，毛利率优化2-5个百分点，问题门店快速定位" data-w="损耗追踪" onclick="openDp('r8_2_0')">
+<td><span class="nm" id="nmr8_2_0">食材损耗分类录入分析</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr8_2_0">损耗数据移动端一键录入，AI按原因分类（过期/制作/退货/盘亏），输出各门店/品类损耗趋势对比，与采购计划联动</span></td>
+<td><span class="et" id="etr8_2_0">损耗数据统一管理，毛利率优化2-5个百分点，问题门店快速定位</span></td>
+</tr>
+<tr class="nr" id="r8_2_1" data-t="AI" data-n="异常损耗自动预警与归因" data-o="建立各品类食材正常损耗基线，损耗超出阈值自动告警，AI分析异常原因（操作不规范/盘点差异/设备故障），推送改进建议" data-e="异常损耗响应时间不足1小时，及时发现浪费和异常，损耗成本持续降低" data-w="损耗追踪" onclick="openDp('r8_2_1')">
+<td><span class="nm" id="nmr8_2_1">异常损耗自动预警与归因</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr8_2_1">建立各品类食材正常损耗基线，损耗超出阈值自动告警，AI分析异常原因（操作不规范/盘点差异/设备故障），推送改进建议</span></td>
+<td><span class="et" id="etr8_2_1">异常损耗响应时间不足1小时，及时发现浪费和异常，损耗成本持续降低</span></td>
+</tr>
+</tbody></table></div></div>
+</div>
+<div class="ds" id="ds9">
+<div class="dh">
+<div class="dic"><svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="#1d4ed8" stroke-width="1.6"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 21h19.5m-18-18v18m10.5-18v18m6-13.5V21M6.75 6.75h.75m-.75 3h.75m-.75 3h.75m3-6h.75m-.75 3h.75m-.75 3h.75M6.75 21v-3.375c0-.621.504-1.125 1.125-1.125h2.25c.621 0 1.125.504 1.125 1.125V21M3 3h12m-.75 4.5H21m-3.75 3.75h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008zm0 3h.008v.008h-.008v-.008z"/></svg></div>
+<div class="dtx"><div class="dt">连锁管理（总部）</div><div class="dd">多店监控 · 加盟商管理 · 标准化输出 · 经营分析</div></div>
+<div class="dsts">
+<span class="tag trpa">RPA 4个</span>
+<span class="tag tai">AI 3个</span>
+<span class="tag tri">RPA+AI 1个</span>
+</div></div>
+<div class="wb" id="wbw9_0">
+<div class="wh" id="whw9_0" onclick="togWf('w9_0')">
+<span class="wa" id="waw9_0">&#9658;</span>
+<span class="wn">多店监控与绩效</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw9_0">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r9_0_0" data-t="RPA" data-n="全网门店经营实时看板" data-o="自动汇聚各门店销售/客流/库存/人力/外卖评分/考勤数据，生成总部实时多维对比看板，支持按区域/业态/加盟类型筛选，对接哗啦啦/美团收银/POS系统" data-e="总部一屏掌控全网，区域经理管理效率提升，问题门店秒级发现" data-w="多店监控与绩效" onclick="openDp('r9_0_0')">
+<td><span class="nm" id="nmr9_0_0">全网门店经营实时看板</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr9_0_0">自动汇聚各门店销售/客流/库存/人力/外卖评分/考勤数据，生成总部实时多维对比看板，支持按区域/业态/加盟类型筛选，对接哗啦啦/美团收银/POS系统</span></td>
+<td><span class="et" id="etr9_0_0">总部一屏掌控全网，区域经理管理效率提升，问题门店秒级发现</span></td>
+</tr>
+<tr class="nr" id="r9_0_1" data-t="AI" data-n="门店绩效自动排名预警" data-o="按预设KPI（营业额/翻台率/好评率/成本率/人效）自动计算各门店综合评分，生成排名榜单，识别异常门店自动预警，推送区域负责人" data-e="问题门店早发现早干预，总部管控从月度汇报变实时监控" data-w="多店监控与绩效" onclick="openDp('r9_0_1')">
+<td><span class="nm" id="nmr9_0_1">门店绩效自动排名预警</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr9_0_1">按预设KPI（营业额/翻台率/好评率/成本率/人效）自动计算各门店综合评分，生成排名榜单，识别异常门店自动预警，推送区域负责人</span></td>
+<td><span class="et" id="etr9_0_1">问题门店早发现早干预，总部管控从月度汇报变实时监控</span></td>
+</tr>
+<tr class="nr" id="r9_0_2" data-t="RPA" data-n="加盟商数据自动汇报" data-o="加盟门店销售/库存/食安/评分/证照等数据按期自动汇总至总部，生成加盟商周报，异常数据自动标记提示，支持OA报表一键导出" data-e="加盟管理效率翻倍，违规风险提前识别，总部监管有据可依" data-w="多店监控与绩效" onclick="openDp('r9_0_2')">
+<td><span class="nm" id="nmr9_0_2">加盟商数据自动汇报</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr9_0_2">加盟门店销售/库存/食安/评分/证照等数据按期自动汇总至总部，生成加盟商周报，异常数据自动标记提示，支持OA报表一键导出</span></td>
+<td><span class="et" id="etr9_0_2">加盟管理效率翻倍，违规风险提前识别，总部监管有据可依</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw9_1">
+<div class="wh" id="whw9_1" onclick="togWf('w9_1')">
+<span class="wa" id="waw9_1">&#9658;</span>
+<span class="wn">标准化输出管理</span>
+<span class="wi2">3 个机会点</span>
+</div>
+<div class="wbod" id="wbodw9_1">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r9_1_0" data-t="RPA" data-n="SOP文件更新全网推送" data-o="总部更新SOP/产品手册/价格政策后，自动推送至各门店和加盟商，要求确认签收，记录阅读状态，未读自动催促，对接钉钉/企微审批流" data-e="标准传达效率提升，全网执行一致性保障，版本管理规范化" data-w="标准化输出管理" onclick="openDp('r9_1_0')">
+<td><span class="nm" id="nmr9_1_0">SOP文件更新全网推送</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr9_1_0">总部更新SOP/产品手册/价格政策后，自动推送至各门店和加盟商，要求确认签收，记录阅读状态，未读自动催促，对接钉钉/企微审批流</span></td>
+<td><span class="et" id="etr9_1_0">标准传达效率提升，全网执行一致性保障，版本管理规范化</span></td>
+</tr>
+<tr class="nr" id="r9_1_1" data-t="RPA" data-n="新品上线全渠道同步" data-o="总部确认新品上线后，自动同步菜单至各门店POS（哗啦啦/美团收银/客如云/商米）、外卖平台（美团/饿了么/京东）、小程序点单系统，支持分批/定时上线" data-e="新品上线从3天缩短至1小时，全渠道同步零遗漏，门店操作负担大幅降低" data-w="标准化输出管理" onclick="openDp('r9_1_1')">
+<td><span class="nm" id="nmr9_1_1">新品上线全渠道同步</span></td>
+<td><span class="tb trpa2">RPA</span></td>
+<td><span class="ot" id="otr9_1_1">总部确认新品上线后，自动同步菜单至各门店POS（哗啦啦/美团收银/客如云/商米）、外卖平台（美团/饿了么/京东）、小程序点单系统，支持分批/定时上线</span></td>
+<td><span class="et" id="etr9_1_1">新品上线从3天缩短至1小时，全渠道同步零遗漏，门店操作负担大幅降低</span></td>
+</tr>
+<tr class="nr" id="r9_1_2" data-t="AI" data-n="品牌合规违规自动检测" data-o="AI持续分析各门店数据（定价偏差/未授权折扣/菜单违规/服务标准偏差），自动识别违反加盟协议行为，生成违规报告并发起处理流程" data-e="品牌合规保护自动化，加盟体系品牌价值维护，总部执法有据可依" data-w="标准化输出管理" onclick="openDp('r9_1_2')">
+<td><span class="nm" id="nmr9_1_2">品牌合规违规自动检测</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr9_1_2">AI持续分析各门店数据（定价偏差/未授权折扣/菜单违规/服务标准偏差），自动识别违反加盟协议行为，生成违规报告并发起处理流程</span></td>
+<td><span class="et" id="etr9_1_2">品牌合规保护自动化，加盟体系品牌价值维护，总部执法有据可依</span></td>
+</tr>
+</tbody></table></div></div>
+<div class="wb" id="wbw9_2">
+<div class="wh" id="whw9_2" onclick="togWf('w9_2')">
+<span class="wa" id="waw9_2">&#9658;</span>
+<span class="wn">经营分析决策</span>
+<span class="wi2">2 个机会点</span>
+</div>
+<div class="wbod" id="wbodw9_2">
+<table class="nt"><thead><tr>
+<th>节点名称</th><th>能力类型</th><th>自动化机会点</th><th>效能提升</th>
+</tr></thead><tbody>
+<tr class="nr" id="r9_2_0" data-t="RPA+AI" data-n="周月度经营报告AI自动生成" data-o="自动从各系统提取数据，套用模板生成周/月度经营报告（含同比/环比/预算对比），AI撰写重点结论和改善建议，自动上传至BI平台" data-e="经营报告生成从2天缩短至2小时，管理层决策提速，分析质量同步提升" data-w="经营分析决策" onclick="openDp('r9_2_0')">
+<td><span class="nm" id="nmr9_2_0">周月度经营报告AI自动生成</span></td>
+<td><span class="tb tri2">RPA+AI</span></td>
+<td><span class="ot" id="otr9_2_0">自动从各系统提取数据，套用模板生成周/月度经营报告（含同比/环比/预算对比），AI撰写重点结论和改善建议，自动上传至BI平台</span></td>
+<td><span class="et" id="etr9_2_0">经营报告生成从2天缩短至2小时，管理层决策提速，分析质量同步提升</span></td>
+</tr>
+<tr class="nr" id="r9_2_1" data-t="AI" data-n="门店盈亏实时监控预警" data-o="实时汇聚营收/成本/费用数据，AI计算各门店实时毛利率和净利率，识别亏损门店并推送预警，生成止损改善建议" data-e="亏损门店主动干预，止损及时，总部财务管控精细化" data-w="经营分析决策" onclick="openDp('r9_2_1')">
+<td><span class="nm" id="nmr9_2_1">门店盈亏实时监控预警</span></td>
+<td><span class="tb tai2">AI</span></td>
+<td><span class="ot" id="otr9_2_1">实时汇聚营收/成本/费用数据，AI计算各门店实时毛利率和净利率，识别亏损门店并推送预警，生成止损改善建议</span></td>
+<td><span class="et" id="etr9_2_1">亏损门店主动干预，止损及时，总部财务管控精细化</span></td>
+</tr>
+</tbody></table></div></div>
+</div>
+</div>
+<div id="empty"><div style="font-size:36px;opacity:.3">&#128269;</div><div style="font-size:13px">没有找到匹配的结果</div></div>
+</div>
+</div>
+<div id="dp">
+<div id="dphdr"><div id="dpcls" onclick="clsD()">&#215;</div></div>
+<div id="dpbod"></div>
+</div>
+<script>
+
+(function(){
+var curD = -1;
+var curF = 0;
+var curS = "";
+var actRow = null;
+
+function esc(s){
+  return String(s)
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;");
+}
+
+function init(){
+  var rows = document.querySelectorAll(".nr");
+  var total = rows.length;
+  document.getElementById("hmeta").textContent =
+    "10 大岗位 · 30 条工作流 · " + total + " 个机会点  |  面向连锁餐饮管理咨询与数字化方案销售";
+  document.getElementById("nc-all").textContent = total;
+  updateNavCounts();
+  document.getElementById("sinp").addEventListener("input", onSearch);
+  document.getElementById("sinp").addEventListener("keydown", function(e){
+    if(e.key === "Escape") clrS();
+  });
+  document.addEventListener("keydown", function(e){
+    if(e.key === "Escape") clsD();
+  });
+}
+
+function showD(idx){
+  curD = idx;
+  clsD();
+  document.querySelectorAll(".ni").forEach(function(el){ el.classList.remove("act"); });
+  var navEl = document.getElementById(idx === -1 ? "nav-all" : "nav-" + idx);
+  if(navEl) navEl.classList.add("act");
+
+  var av = document.getElementById("av");
+  var dvs = document.querySelectorAll(".ds");
+
+  if(idx === -1){
+    av.style.display = curS ? "none" : "block";
+    dvs.forEach(function(el){ el.classList.toggle("vis", !!curS); });
+  } else {
+    av.style.display = "none";
+    dvs.forEach(function(el){ el.classList.remove("vis"); });
+    var ds = document.getElementById("ds" + idx);
+    if(ds) ds.classList.add("vis");
+  }
+  applyFilters();
+}
+
+function togWf(wid){
+  var b = document.getElementById("wbod" + wid);
+  var a = document.getElementById("wa" + wid);
+  var h = document.getElementById("wh" + wid);
+  if(!b) return;
+  b.classList.toggle("op");
+  a.classList.toggle("op");
+  h.classList.toggle("op");
+}
+
+function openAllWf(){
+  document.querySelectorAll(".wbod").forEach(function(el){ el.classList.add("op"); });
+  document.querySelectorAll(".wa").forEach(function(el){ el.classList.add("op"); });
+  document.querySelectorAll(".wh").forEach(function(el){ el.classList.add("op"); });
+}
+function closeAllWf(){
+  document.querySelectorAll(".wbod").forEach(function(el){ el.classList.remove("op"); });
+  document.querySelectorAll(".wa").forEach(function(el){ el.classList.remove("op"); });
+  document.querySelectorAll(".wh").forEach(function(el){ el.classList.remove("op"); });
+}
+
+function setF(f){
+  curF = f;
+  document.getElementById("ball").className = "fb" + (f===0?" fall":"");
+  document.getElementById("brpa").className = "fb" + (f===1?" frpa":"");
+  document.getElementById("bai").className  = "fb" + (f===2?" fai":"");
+  document.getElementById("bri").className  = "fb" + (f===3?" fri":"");
+  applyFilters();
+}
+
+function onSearch(e){
+  curS = e.target.value.trim();
+  document.getElementById("sclr").style.display = curS ? "block" : "none";
+  var av = document.getElementById("av");
+  if(curS){
+    openAllWf();
+    av.style.display = "none";
+    if(curD === -1){
+      document.querySelectorAll(".ds").forEach(function(el){ el.classList.add("vis"); });
+    }
+  } else {
+    closeAllWf();
+    restoreText();
+    document.getElementById("scnt").textContent = "";
+    av.style.display = (curD === -1) ? "block" : "none";
+    if(curD === -1){
+      document.querySelectorAll(".ds").forEach(function(el){ el.classList.remove("vis"); });
+    }
+  }
+  applyFilters();
+}
+
+function clrS(){
+  document.getElementById("sinp").value = "";
+  onSearch({target:{value:""}});
+}
+
+function applyFilters(){
+  var q = curS.toLowerCase();
+  var types = ["","RPA","AI","RPA+AI"];
+  var ft = curF === 0 ? "" : types[curF];
+  var mc = 0;
+
+  document.querySelectorAll(".nr").forEach(function(row){
+    var t = row.getAttribute("data-t") || "";
+    var n = row.getAttribute("data-n") || "";
+    var o = row.getAttribute("data-o") || "";
+    var ef= row.getAttribute("data-e") || "";
+    var w = row.getAttribute("data-w") || "";
+    var typeOk = (ft === "" || t === ft);
+    var srchOk = !q || (
+      n.toLowerCase().indexOf(q) >= 0 ||
+      o.toLowerCase().indexOf(q) >= 0 ||
+      ef.toLowerCase().indexOf(q) >= 0 ||
+      w.toLowerCase().indexOf(q) >= 0
+    );
+    var vis = typeOk && srchOk;
+    row.classList.toggle("hid", !vis);
+    if(vis){
+      mc++;
+      if(q){
+        hlCell("nm" + row.id, n, q);
+        hlCell("ot" + row.id, o, q);
+        hlCell("et" + row.id, ef, q);
+      }
+    }
+  });
+
+  document.querySelectorAll(".wb").forEach(function(b){
+    b.style.display = b.querySelectorAll(".nr:not(.hid)").length > 0 ? "" : "none";
+  });
+
+  if(curS || curF !== 0){
+    document.querySelectorAll(".ds").forEach(function(s){
+      if(curD === -1){
+        s.classList.toggle("vis", s.querySelectorAll(".nr:not(.hid)").length > 0);
+      }
+    });
+  }
+
+  updateNavCounts();
+  var tot = document.querySelectorAll(".nr:not(.hid)").length;
+  document.getElementById("nc-all").textContent = tot;
+  if(q) document.getElementById("scnt").textContent = "找到 " + mc + " 条";
+  document.getElementById("empty").classList.toggle("vis", tot === 0);
+}
+
+function updateNavCounts(){
+  var depts = document.querySelectorAll(".ds");
+  depts.forEach(function(ds, i){
+    var el = document.getElementById("nc-" + i);
+    if(el) el.textContent = ds.querySelectorAll(".nr:not(.hid)").length;
+  });
+}
+
+function hlCell(id, text, q){
+  var el = document.getElementById(id);
+  if(!el) return;
+  var lo = text.toLowerCase();
+  var idx = lo.indexOf(q);
+  if(idx < 0){ el.textContent = text; return; }
+  el.innerHTML = esc(text.substring(0,idx))
+    + '<mark class="hl">' + esc(text.substring(idx, idx+q.length)) + '</mark>'
+    + esc(text.substring(idx+q.length));
+}
+
+function restoreText(){
+  document.querySelectorAll(".nr").forEach(function(row){
+    var id = row.id;
+    var nm = document.getElementById("nm" + id);
+    var ot = document.getElementById("ot" + id);
+    var et = document.getElementById("et" + id);
+    if(nm) nm.textContent = row.getAttribute("data-n") || "";
+    if(ot) ot.textContent = row.getAttribute("data-o") || "";
+    if(et) et.textContent = row.getAttribute("data-e") || "";
+  });
+}
+
+function openDp(rid){
+  var row = document.getElementById(rid);
+  if(!row) return;
+  if(actRow) actRow.classList.remove("act");
+  actRow = row; row.classList.add("act");
+
+  var t  = row.getAttribute("data-t") || "";
+  var n  = row.getAttribute("data-n") || "";
+  var o  = row.getAttribute("data-o") || "";
+  var ef = row.getAttribute("data-e") || "";
+  var w  = row.getAttribute("data-w") || "";
+
+  var tcls = t==="RPA" ? "trpa2" : (t==="AI" ? "tai2" : "tri2");
+
+  var hdrHtml = '<div class="dpwf">' + esc(w) + '</div>'
+    + '<div class="dpnm">' + esc(n) + '</div>'
+    + '<div class="dptype"><span class="tb ' + tcls + '">' + t + '</span></div>';
+  document.getElementById("dphdr").innerHTML = hdrHtml
+    + '<div id="dpcls" onclick="clsD()" style="position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;border:1px solid var(--bd);background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--t3);">&#215;</div>';
+
+  var refMatch = o.match(/\(此类[^)]+\)/g);
+  var cleanO = o.replace(/\(此类[^)]+\)/g, "").trim();
+
+  var bodyHtml = '<div class="dpsec"><div class="dplbl">自动化机会点</div><div class="dpbox">' + esc(cleanO) + '</div></div>'
+    + '<div class="dpsec"><div class="dplbl">效能提升</div><div class="dpbox">' + esc(ef) + '</div></div>';
+
+  if(refMatch && refMatch.length > 0){
+    bodyHtml += '<div class="dpref">&#128202; 行业参考数据：' + esc(refMatch.join("；")) + '</div>';
+  }
+
+  document.getElementById("dpbod").innerHTML = bodyHtml;
+  document.getElementById("dp").classList.add("op");
+}
+
+function clsD(){
+  document.getElementById("dp").classList.remove("op");
+  if(actRow){ actRow.classList.remove("act"); actRow = null; }
+}
+
+window.showD = showD;
+window.togWf = togWf;
+window.setF  = setF;
+window.clrS  = clrS;
+window.openDp= openDp;
+window.clsD  = clsD;
+
+init();
+})();
+
+</script>
+<!-- 返回导航页按钮 -->
+<style>
+.back-btn {
+  position: fixed; bottom: 28px; left: 24px; z-index: 9999;
+  display: flex; align-items: center; gap: 7px;
+  background: #fff; color: #1d4ed8;
+  border: 1px solid #bfdbfe; border-radius: 24px;
+  padding: 9px 18px 9px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  font-size: 13px; font-weight: 500;
+  text-decoration: none; cursor: pointer;
+  box-shadow: 0 2px 12px rgba(29,78,216,0.15);
+  transition: all 0.18s;
+}
+.back-btn:hover {
+  background: #eff6ff; border-color: #93c5fd;
+  box-shadow: 0 4px 16px rgba(29,78,216,0.22);
+  transform: translateY(-1px);
+}
+.back-btn-arrow { font-size: 16px; line-height: 1; }
+</style>
+<a class="back-btn" href="index.html">
+  <span class="back-btn-arrow">←</span>
+  <span>返回地图合集</span>
+</a>
+
+</body></html>

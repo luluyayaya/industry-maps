@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RPA+AI 自动化机会地图</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', 'Microsoft YaHei', sans-serif;
+  background: #f0f2f5;
+  min-height: 100vh;
+  color: #1a202c;
+}
+
+/* ── Header ── */
+.header {
+  background: #fff;
+  border-bottom: 1px solid #e8ecf0;
+  padding: 0 32px;
+  height: 52px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.06);
+}
+.header-left { display: flex; align-items: center; gap: 10px; }
+.header-icon {
+  width: 30px; height: 30px; background: #1d4ed8;
+  border-radius: 7px; display: flex; align-items: center; justify-content: center;
+  font-size: 15px; color: #fff; flex-shrink: 0;
+}
+.header-brand { font-size: 14px; font-weight: 600; color: #1a202c; }
+.header-sep { color: #d0d5dd; margin: 0 4px; }
+.header-sub { font-size: 13px; color: #8a94a6; }
+.header-tags { display: flex; gap: 10px; }
+.header-tag {
+  font-size: 12px; padding: 3px 12px; border-radius: 20px;
+  font-weight: 500; border: 1px solid; cursor: default;
+}
+.tag-rpa   { color: #1d4ed8; background: #eff6ff; border-color: #bfdbfe; }
+.tag-ai    { color: #059669; background: #ecfdf5; border-color: #a7f3d0; }
+.tag-combo { color: #7c3aed; background: #f5f3ff; border-color: #ddd6fe; }
+
+/* ── Hero ── */
+.hero {
+  background: linear-gradient(135deg, #1e3a8a 0%, #1d4ed8 60%, #3b82f6 100%);
+  padding: 52px 40px 48px;
+  text-align: center; color: #fff;
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  content: '';
+  position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 20% 50%, rgba(255,255,255,0.05) 0%, transparent 50%),
+                    radial-gradient(circle at 80% 20%, rgba(255,255,255,0.04) 0%, transparent 40%);
+}
+.hero-label {
+  display: inline-block;
+  background: rgba(255,255,255,0.15);
+  border: 1px solid rgba(255,255,255,0.25);
+  font-size: 11px; color: rgba(255,255,255,0.9);
+  letter-spacing: 2px; padding: 4px 16px; border-radius: 20px;
+  margin-bottom: 20px; position: relative;
+}
+.hero-title {
+  font-size: 32px; font-weight: 700; margin-bottom: 12px;
+  position: relative; letter-spacing: 0.5px;
+}
+.hero-desc {
+  font-size: 14px; color: rgba(255,255,255,0.75);
+  line-height: 1.9; position: relative;
+}
+.hero-stats {
+  display: flex; justify-content: center; gap: 56px;
+  margin-top: 36px; position: relative;
+}
+.hero-stat { text-align: center; }
+.hero-stat-num {
+  font-size: 28px; font-weight: 700; color: #fff;
+  display: block; line-height: 1;
+}
+.hero-stat-label {
+  font-size: 12px; color: rgba(255,255,255,0.6);
+  margin-top: 4px; display: block;
+}
+
+/* ── Main ── */
+.main { max-width: 1080px; margin: 0 auto; padding: 36px 24px 60px; }
+
+.section-label {
+  font-size: 13px; color: #8a94a6; font-weight: 500;
+  margin-bottom: 20px;
+  display: flex; align-items: center; gap: 10px;
+}
+.section-label::after {
+  content: ''; flex: 1; height: 1px; background: #e4e7ec;
+}
+
+/* ── Grid ── */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 16px;
+}
+@media (max-width: 900px) {
+  .grid { grid-template-columns: repeat(2, 1fr); }
+  .hero-stats { gap: 32px; }
+}
+@media (max-width: 580px) {
+  .grid { grid-template-columns: 1fr; }
+  .hero-stats { gap: 24px; flex-wrap: wrap; }
+  .header-tags { display: none; }
+}
+
+/* ── Card ── */
+.card {
+  background: #fff;
+  border: 1px solid #e8ecf0;
+  border-radius: 12px;
+  padding: 20px;
+  text-decoration: none;
+  display: flex; flex-direction: column;
+  transition: all 0.2s;
+  position: relative;
+  cursor: pointer;
+}
+.card:hover {
+  border-color: #93c5fd;
+  box-shadow: 0 4px 20px rgba(29,78,216,0.1);
+  transform: translateY(-2px);
+}
+.card-header {
+  display: flex; align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+}
+.card-header-left { display: flex; align-items: center; gap: 12px; }
+.card-icon {
+  width: 44px; height: 44px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 22px; flex-shrink: 0;
+}
+.card-titles { display: flex; flex-direction: column; gap: 2px; }
+.card-title { font-size: 16px; font-weight: 600; color: #1a202c; }
+.card-en { font-size: 11px; color: #a0aec0; letter-spacing: 0.5px; }
+.card-arrow { font-size: 16px; color: #c8d0dc; transition: all 0.2s; }
+.card:hover .card-arrow { color: #1d4ed8; transform: translateX(3px); }
+
+.card-desc {
+  font-size: 13px; color: #4a5568; line-height: 1.75;
+  margin-bottom: 14px; flex: 1;
+}
+
+.card-tags { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 16px; }
+.card-tag {
+  font-size: 11px; padding: 2px 10px; border-radius: 10px;
+  font-weight: 500; border: 1px solid;
+}
+
+/* 数字统计 */
+.card-stats {
+  display: flex; gap: 20px;
+  padding-top: 14px;
+  border-top: 1px solid #f0f3f7;
+}
+.card-stat-num {
+  font-size: 18px; font-weight: 700; color: #1d4ed8;
+  display: block; line-height: 1;
+}
+.card-stat-label {
+  font-size: 11px; color: #a0aec0;
+  margin-top: 3px; display: block;
+}
+
+/* 行业图标背景色 */
+.icon-medical    { background: #eff6ff; }
+.icon-catering   { background: #fff7ed; }
+.icon-domestic   { background: #f0fdf4; }
+.icon-cross      { background: #faf5ff; }
+.icon-mfg        { background: #fef2f2; }
+.icon-logistics  { background: #f0f9ff; }
+
+/* ── Footer ── */
+.footer {
+  background: #fff; border-top: 1px solid #e8ecf0;
+  padding: 18px 32px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.footer-left { font-size: 13px; }
+.footer-brand { font-weight: 600; color: #1a202c; }
+.footer-sub { color: #8a94a6; margin-top: 2px; font-size: 12px; }
+.footer-right { font-size: 12px; color: #a0aec0; }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="header">
+  <div class="header-left">
+    <div class="header-icon">⚡</div>
+    <span class="header-brand">影刀 RPA · 行业解决方案</span>
+    <span class="header-sep">·</span>
+    <span class="header-sub">自动化机会地图合集</span>
+  </div>
+  <div class="header-tags">
+    <span class="header-tag tag-rpa">RPA 流程自动化</span>
+    <span class="header-tag tag-ai">AI 智能增强</span>
+    <span class="header-tag tag-combo">RPA+AI 组合方案</span>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-label">INDUSTRY AUTOMATION MAP</div>
+  <div class="hero-title">RPA + AI 自动化机会地图</div>
+  <div class="hero-desc">
+    覆盖六大行业，系统梳理自动化落地场景与机会点<br>
+    助力企业识别效率提升空间，加速数字化转型
+  </div>
+  <div class="hero-stats">
+    <div class="hero-stat">
+      <span class="hero-stat-num">6</span>
+      <span class="hero-stat-label">覆盖行业</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">567</span>
+      <span class="hero-stat-label">自动化机会点</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">60</span>
+      <span class="hero-stat-label">核心岗位场景</span>
+    </div>
+    <div class="hero-stat">
+      <span class="hero-stat-num">3</span>
+      <span class="hero-stat-label">能力类型</span>
+    </div>
+  </div>
+</div>
+
+<!-- Cards -->
+<div class="main">
+  <div class="section-label">选择行业，开始探索</div>
+  <div class="grid">
+
+    <!-- 医药 -->
+    <a class="card" href="medical-map.html">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon icon-medical">💊</div>
+          <div class="card-titles">
+            <div class="card-title">医药行业</div>
+            <div class="card-en">PHARMACEUTICAL INDUSTRY</div>
+          </div>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="card-desc">覆盖不良反应录入、合规报告生成、临床数据处理、药品注册申报等核心场景，助力医药企业提升合规效率。</div>
+      <div class="card-tags">
+        <span class="card-tag tag-rpa">RPA</span>
+        <span class="card-tag tag-ai">AI</span>
+        <span class="card-tag tag-combo">RPA+AI</span>
+      </div>
+      <div class="card-stats">
+        <div class="card-stat">
+          <span class="card-stat-num">10</span>
+          <span class="card-stat-label">核心岗位</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-num">30</span>
+          <span class="card-stat-label">工作流</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-num">90</span>
+          <span class="card-stat-label">机会点</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 餐饮 -->
+    <a class="card" href="catering-map.html">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon icon-catering">🍜</div>
+          <div class="card-titles">
+            <div class="card-title">餐饮行业</div>
+            <div class="card-en">CATERING INDUSTRY</div>
+          </div>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="card-desc">聚焦连锁餐饮管理与数字化场景，涵盖门店运营、供应链采购、财务结算、人事行政、会员营销等10大岗位。</div>
+      <div class="card-tags">
+        <span class="card-tag tag-rpa">RPA</span>
+        <span class="card-tag tag-ai">AI</span>
+        <span class="card-tag tag-combo">RPA+AI</span>
+      </div>
+      <div class="card-stats">
+        <div class="card-stat">
+          <span class="card-stat-num">10</span>
+          <span class="card-stat-label">核心岗位</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-num">30</span>
+          <span class="card-stat-label">工作流</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-num">85</span>
+          <span class="card-stat-label">机会点</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 国内电商 -->
+    <a class="card" href="domestic-ec.html">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon icon-domestic">🛒</div>
+          <div class="card-titles">
+            <div class="card-title">国内电商</div>
+            <div class="card-en">DOMESTIC E-COMMERCE</div>
+          </div>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="card-desc">覆盖国内主流电商平台运营场景，包括订单处理、客服自动化、数据分析、库存管理等高频自动化需求。</div>
+      <div class="card-tags">
+        <span class="card-tag tag-rpa">RPA</span>
+        <span class="card-tag tag-ai">AI</span>
+        <span class="card-tag tag-combo">RPA+AI</span>
+      </div>
+      <div class="card-stats">
+        <div class="card-stat">
+          <span class="card-stat-num">10</span>
+          <span class="card-stat-label">核心岗位</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-num">30</span>
+          <span class="card-stat-label">工作流</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-num">100</span>
+          <span class="card-stat-label">机会点</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 跨境电商 -->
+    <a class="card" href="cross-border.html">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon icon-cross">🌐</div>
+          <div class="card-titles">
+            <div class="card-title">跨境电商</div>
+            <div class="card-en">CROSS-BORDER E-COMMERCE</div>
+          </div>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="card-desc">针对亚马逊、独立站等跨境场景，覆盖物流追踪、多平台运营、合规申报、利润归因分析等核心自动化需求。</div>
+      <div class="card-tags">
+        <span class="card-tag tag-rpa">RPA</span>
+        <span class="card-tag tag-ai">AI</span>
+        <span class="card-tag tag-combo">RPA+AI</span>
+      </div>
+      <div class="card-stats">
+        <div class="card-stat">
+          <span class="card-stat-num">10</span>
+          <span class="card-stat-label">核心岗位</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-num">28</span>
+          <span class="card-stat-label">工作流</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-num">112</span>
+          <span class="card-stat-label">机会点</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 制造业 -->
+    <a class="card" href="manufacturing.html">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon icon-mfg">🏭</div>
+          <div class="card-titles">
+            <div class="card-title">制造业</div>
+            <div class="card-en">MANUFACTURING INDUSTRY</div>
+          </div>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="card-desc">面向离散制造与流程制造场景，覆盖生产排程、质检报告、ERP对接、供应链协同等自动化落地场景。</div>
+      <div class="card-tags">
+        <span class="card-tag tag-rpa">RPA</span>
+        <span class="card-tag tag-ai">AI</span>
+        <span class="card-tag tag-combo">RPA+AI</span>
+      </div>
+      <div class="card-stats">
+        <div class="card-stat">
+          <span class="card-stat-num">11</span>
+          <span class="card-stat-label">核心岗位</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-num">33</span>
+          <span class="card-stat-label">工作流</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-num">99</span>
+          <span class="card-stat-label">机会点</span>
+        </div>
+      </div>
+    </a>
+
+    <!-- 跨境物流 -->
+    <a class="card" href="logistics-map.html">
+      <div class="card-header">
+        <div class="card-header-left">
+          <div class="card-icon icon-logistics">🚚</div>
+          <div class="card-titles">
+            <div class="card-title">跨境物流</div>
+            <div class="card-en">CROSS-BORDER LOGISTICS</div>
+          </div>
+        </div>
+        <span class="card-arrow">→</span>
+      </div>
+      <div class="card-desc">覆盖跨境物流全链路场景，包括运单处理、货物追踪、清关申报、账单对账等核心自动化需求。</div>
+      <div class="card-tags">
+        <span class="card-tag tag-rpa">RPA</span>
+        <span class="card-tag tag-ai">AI</span>
+        <span class="card-tag tag-combo">RPA+AI</span>
+      </div>
+      <div class="card-stats">
+        <div class="card-stat">
+          <span class="card-stat-num">9</span>
+          <span class="card-stat-label">核心岗位</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-num">25</span>
+          <span class="card-stat-label">工作流</span>
+        </div>
+        <div class="card-stat">
+          <span class="card-stat-num">81</span>
+          <span class="card-stat-label">机会点</span>
+        </div>
+      </div>
+    </a>
+
+  </div>
+</div>
+
+<!-- Footer -->
+<div class="footer">
+  <div class="footer-left">
+    <div class="footer-brand">影刀 RPA · 自动化解决方案</div>
+    <div class="footer-sub">让自动化触达每一个业务场景</div>
+  </div>
+  <div class="footer-right">RPA + AI · Industry Automation Map</div>
+</div>
+
+</body>
+</html>

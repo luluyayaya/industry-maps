@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>跨境物流 RPA+AI 自动化机会地图</title>
+<style>
+:root{
+  --bg:#f0f4f8;--surf:#fff;--surf2:#f7f9fc;--bd:#dce3ea;--bd2:#edf0f4;
+  --t1:#0d1b2a;--t2:#364f6b;--t3:#8a9aac;
+  --acc:#1B2A4A;--acc2:#1B4F8A;--acc-l:#e5edf8;
+  --rpa-bg:#dbeafe;--rpa-fg:#1e3a8a;--rpa-bd:#93c5fd;
+  --ai-bg:#ede9fe;--ai-fg:#5b21b6;--ai-bd:#c4b5fd;
+  --ri-bg:#d1fae5;--ri-fg:#065f46;--ri-bd:#6ee7b7;
+  --nav:244px;--hdr:60px;--flt:46px;
+  --r:8px;--r2:5px;
+  --s1:0 1px 3px rgba(0,0,0,.06);--s2:0 4px 14px rgba(0,0,0,.10);--s3:0 20px 52px rgba(0,0,0,.14);
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:14px}
+body{font-family:"PingFang SC","Microsoft YaHei","Hiragino Sans GB",sans-serif;
+     background:var(--bg);color:var(--t1);height:100vh;overflow:hidden;display:flex;flex-direction:column}
+#hdr{height:var(--hdr);flex-shrink:0;z-index:100;
+     background:linear-gradient(135deg,#071524 0%,#1B2A4A 50%,#1a4a82 100%);
+     box-shadow:0 2px 12px rgba(0,0,0,.3);display:flex;align-items:center;padding:0 20px;gap:14px}
+.hbox{width:36px;height:36px;background:rgba(255,255,255,.12);border-radius:8px;
+      display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.htx b{font-size:15px;font-weight:700;color:#fff;letter-spacing:-.2px}
+.htx small{font-size:10.5px;color:rgba(255,255,255,.55)}
+#hmeta{font-size:11px;color:rgba(255,255,255,.5);margin-left:6px}
+.tag{font-size:10.5px;font-weight:600;padding:3px 9px;border-radius:12px;border:1px solid}
+.trpa{background:var(--rpa-bg);color:var(--rpa-fg);border-color:var(--rpa-bd)}
+.tai{background:var(--ai-bg);color:var(--ai-fg);border-color:var(--ai-bd)}
+.tri{background:var(--ri-bg);color:var(--ri-fg);border-color:var(--ri-bd)}
+#flt{height:var(--flt);flex-shrink:0;background:var(--surf);border-bottom:1px solid var(--bd);
+     display:flex;align-items:center;padding:0 18px;gap:8px}
+.fl{font-size:11px;color:var(--t3)}
+.fb{padding:5px 13px;border-radius:20px;border:1px solid var(--bd);background:transparent;
+    font-size:12px;font-weight:500;cursor:pointer;color:var(--t2);transition:all .12s;font-family:inherit}
+.fb:hover{border-color:var(--acc2);color:var(--acc2)}
+.fall{background:var(--acc);color:#fff;border-color:var(--acc)}
+.frpa{background:var(--rpa-fg);color:#fff;border-color:var(--rpa-fg)}
+.fai{background:var(--ai-fg);color:#fff;border-color:var(--ai-fg)}
+.fri{background:var(--ri-fg);color:#fff;border-color:var(--ri-fg)}
+.fdiv{width:1px;height:18px;background:var(--bd);flex-shrink:0}
+.sw{margin-left:auto;position:relative;display:flex;align-items:center}
+.sic{position:absolute;left:9px;color:var(--t3);font-size:13px;pointer-events:none;top:50%;transform:translateY(-50%)}
+#sinp{width:240px;padding:6px 28px 6px 30px;border:1px solid var(--bd);border-radius:var(--r);
+      font-size:12.5px;font-family:inherit;color:var(--t1);background:var(--bg);outline:none;transition:all .12s}
+#sinp:focus{border-color:var(--acc2);background:var(--surf);box-shadow:0 0 0 3px rgba(27,79,138,.10)}
+#sclr{position:absolute;right:7px;cursor:pointer;color:var(--t3);font-size:16px;display:none;
+      top:50%;transform:translateY(-50%)}
+#sclr:hover{color:var(--t1)}
+#scnt{font-size:11.5px;color:var(--t3);min-width:54px;white-space:nowrap;margin-left:8px}
+#bdy{display:flex;flex:1;overflow:hidden}
+#nav{width:var(--nav);background:var(--surf);border-right:1px solid var(--bd);overflow-y:auto;flex-shrink:0;padding:10px 8px}
+#nav::-webkit-scrollbar{width:3px}
+#nav::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+.nlbl{font-size:10px;font-weight:600;color:var(--t3);text-transform:uppercase;letter-spacing:.8px;padding:4px 10px 8px}
+.ni{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--r2);cursor:pointer;transition:background .11s;margin-bottom:1px}
+.ni:hover{background:var(--bg)}
+.ni.act{background:var(--acc-l)}
+.ni.act .nn{color:var(--acc2);font-weight:600}
+.niic{flex-shrink:0;font-size:15px;line-height:1;opacity:.7}
+.ni.act .niic{opacity:1}
+.ntx{flex:1;min-width:0}
+.nn{font-size:12.5px;color:var(--t1);font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nc{font-size:11px;color:var(--t3);background:var(--bg);border:1px solid var(--bd);border-radius:10px;padding:0 6px;line-height:18px;flex-shrink:0}
+.ni.act .nc{background:var(--acc-l);border-color:var(--rpa-bd);color:var(--acc2)}
+#cnt{flex:1;overflow-y:auto;padding:20px 22px}
+#cnt::-webkit-scrollbar{width:5px}
+#cnt::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+.ds{display:none}.ds.vis{display:block}
+.dh{display:flex;align-items:center;gap:11px;margin-bottom:16px;padding-bottom:12px;border-bottom:2px solid var(--acc2)}
+.dic{flex-shrink:0;width:42px;height:42px;display:flex;align-items:center;justify-content:center;
+     background:linear-gradient(135deg,#071524,#1B4F8A);border-radius:var(--r);font-size:21px}
+.dtx{flex:1}.dt{font-size:17px;font-weight:700;color:var(--t1)}
+.dd{font-size:12px;color:var(--t3);margin-top:2px}
+.dsts{display:flex;gap:6px;flex-shrink:0;flex-wrap:wrap}
+.wb{background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);margin-bottom:10px;overflow:hidden;box-shadow:var(--s1);transition:box-shadow .13s}
+.wb:hover{box-shadow:var(--s2)}
+.wh{display:flex;align-items:center;padding:10px 15px;cursor:pointer;user-select:none;gap:9px;transition:background .1s;border-bottom:1px solid transparent}
+.wh:hover{background:var(--surf2)}
+.wh.op{background:var(--surf2);border-bottom-color:var(--bd)}
+.wa{color:var(--t3);transition:transform .18s;flex-shrink:0;font-size:11px}
+.wa.op{transform:rotate(90deg)}
+.wn{font-size:13px;font-weight:600;color:var(--t1);flex:1}
+.wi2{font-size:11.5px;color:var(--t3)}
+.wbod{display:none}.wbod.op{display:block}
+.nt{width:100%;border-collapse:collapse}
+.nt th{padding:7px 13px;text-align:left;font-size:10px;font-weight:600;color:var(--t3);
+       text-transform:uppercase;letter-spacing:.5px;background:#f2f6fb;border-bottom:1px solid var(--bd)}
+.nt th:nth-child(1){width:18%}.nt th:nth-child(2){width:10%}.nt th:nth-child(3){width:44%}.nt th:nth-child(4){width:28%}
+.nr{border-bottom:1px solid var(--bd2);cursor:pointer;transition:background .09s}
+.nr:last-child{border-bottom:none}
+.nr:hover{background:#eef5ff}
+.nr.act{background:var(--acc-l)}
+.nr.hid{display:none}
+.nr td{padding:10px 13px;vertical-align:top}
+.nm{font-size:12.5px;font-weight:600;color:var(--t1);line-height:1.4}
+.tb{display:inline-flex;align-items:center;padding:3px 9px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.3px;border:1px solid;white-space:nowrap}
+.trpa2{background:var(--rpa-bg);color:var(--rpa-fg);border-color:var(--rpa-bd)}
+.tai2{background:var(--ai-bg);color:var(--ai-fg);border-color:var(--ai-bd)}
+.tri2{background:var(--ri-bg);color:var(--ri-fg);border-color:var(--ri-bd)}
+.ot{font-size:12px;color:var(--t2);line-height:1.7}
+.et{font-size:12px;color:#065f46;line-height:1.65;font-style:italic}
+mark.hl{background:#fde68a;color:var(--t1);border-radius:2px;padding:0 1px}
+#dp{position:fixed;right:-400px;top:calc(var(--hdr) + var(--flt));width:386px;
+    height:calc(100vh - var(--hdr) - var(--flt));background:var(--surf);border-left:1px solid var(--bd);
+    box-shadow:var(--s3);overflow:hidden;transition:right .24s cubic-bezier(.4,0,.2,1);z-index:200;display:flex;flex-direction:column}
+#dp.op{right:0}
+#dphdr{padding:16px 18px 12px;border-bottom:1px solid var(--bd2);flex-shrink:0;position:relative}
+#dpcls{position:absolute;top:12px;right:12px;width:26px;height:26px;border-radius:50%;border:1px solid var(--bd);
+       background:var(--bg);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:14px;color:var(--t3);transition:all .12s}
+#dpcls:hover{background:var(--bd);color:var(--t1)}
+#dpbod{flex:1;overflow-y:auto;padding:16px 18px 20px}
+#dpbod::-webkit-scrollbar{width:3px}
+#dpbod::-webkit-scrollbar-thumb{background:var(--bd);border-radius:3px}
+.dpwf{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:5px}
+.dpnm{font-size:15px;font-weight:700;color:var(--t1);line-height:1.4;margin-bottom:10px}
+.dptype{margin-bottom:14px}
+.dpsec{margin-bottom:14px}
+.dplbl{font-size:10px;font-weight:700;color:var(--t3);text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+.dplbl::after{content:"";flex:1;height:1px;background:var(--bd)}
+.dpbox{font-size:13px;color:var(--t2);line-height:1.8;background:var(--surf2);border-radius:var(--r2);padding:11px 13px;border:1px solid var(--bd2)}
+.dpeff{font-size:12px;color:#065f46;padding:9px 11px;background:#f0fdf4;border:1px solid #a7f3d0;border-radius:var(--r2);line-height:1.7}
+.ag{display:grid;grid-template-columns:repeat(auto-fill,minmax(258px,1fr));gap:10px;margin-bottom:18px}
+.ac{background:var(--surf);border:1px solid var(--bd);border-radius:var(--r);padding:14px 15px;cursor:pointer;transition:all .13s;box-shadow:var(--s1)}
+.ac:hover{box-shadow:var(--s2);border-color:var(--acc2);transform:translateY(-1px)}
+.achdr{display:flex;align-items:center;gap:9px;margin-bottom:7px}
+.acic{font-size:22px;line-height:1}
+.acnm{font-size:13px;font-weight:700;color:var(--t1)}
+.acd{font-size:11px;color:var(--t3);line-height:1.5;margin-bottom:9px}
+.actags{display:flex;gap:5px;flex-wrap:wrap}
+.acst{font-size:11px;font-weight:600;padding:2px 8px;border-radius:10px}
+.acst-r{background:var(--rpa-bg);color:var(--rpa-fg)}
+.acst-a{background:var(--ai-bg);color:var(--ai-fg)}
+.acst-i{background:var(--ri-bg);color:var(--ri-fg)}
+#empty{display:none;flex-direction:column;align-items:center;justify-content:center;height:260px;color:var(--t3);gap:8px}
+#empty.vis{display:flex}
+</style>
+</head>
+<body>
+<div id="hdr"><div class="hbox"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="#fff" stroke-width="1.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 21a9.004 9.004 0 008.716-6.747M12 21a9.004 9.004 0 01-8.716-6.747M12 21c2.485 0 4.5-4.03 4.5-9S14.485 3 12 3m0 18c-2.485 0-4.5-4.03-4.5-9S9.515 3 12 3m0 0a8.997 8.997 0 017.843 4.582M12 3a8.997 8.997 0 00-7.843 4.582m15.686 0A11.953 11.953 0 0112 10.5c-2.998 0-5.74-1.1-7.843-2.918m15.686 0A8.959 8.959 0 0121 12c0 .778-.099 1.533-.284 2.253"/></svg></div><div class="htx"><b>跨境物流行业 RPA+AI 自动化机会地图</b><small>适用：跨境货代 · FBA头程服务商 · 国际物流 · 海外仓运营商 · 跨境电商物流</small></div><span id="hmeta"></span><div style="margin-left:auto;display:flex;gap:6px;align-items:center"><span class="tag trpa">RPA</span><span class="tag tai">AI</span><span class="tag tri">RPA+AI</span></div></div>
+<div id="flt"><span class="fl">能力类型</span><button class="fb fall" id="ball" onclick="setF(0)">全部</button><button class="fb" id="brpa" onclick="setF(1)">RPA</button><button class="fb" id="bai" onclick="setF(2)">AI</button><button class="fb" id="bri" onclick="setF(3)">RPA+AI</button><div class="fdiv"></div><div class="sw"><span class="sic">&#128269;</span><input id="sinp" type="text" placeholder="搜索节点、场景或关键词…（Esc清除）" autocomplete="off"><span id="sclr" onclick="clrS()">&#215;</span></div><span id="scnt"></span></div>
+<div id="bdy"><div id="nav"><div class="nlbl">岗位导航</div><div class="ni act" id="nav-all" onclick="showD(-1)"><span class="niic">&#128202;</span><div class="ntx"><div class="nn">全部岗位</div></div><span class="nc" id="nc-all">-</span></div></div><div id="cnt"></div></div>
+<div id="dp"><div id="dphdr"><div class="dpwf" id="dp-wf"></div><div class="dpnm" id="dp-nm"></div><div class="dptype" id="dp-type"></div><div id="dpcls" onclick="closeDP()">&#215;</div></div><div id="dpbod"><div class="dpsec"><div class="dplbl">自动化机会点</div><div class="dpbox" id="dp-opp"></div></div><div class="dpsec"><div class="dplbl">效能提升</div><div class="dpeff" id="dp-eff"></div></div></div></div>
+<script>
+var DEPTS=[
+{id:0,name:"客服部",icon:"🎧",desc:"覆盖轨迹推送、企微机器人、POD批量处理、计重确认、时效赔付、异常件预警的客服全流程",workflows:[
+{wf:"轨迹通知与自助服务",items:[["货物轨迹关键节点批量推送","RPA","按船期/到港批次筛选运单，将提箱/进港/装船/离港/抵港/海关放行/可提货等节点状态，批量推送至企微客户群或发送邮件；同时登录API接口或货代系统自动抓取多线路轨迹更新并回填系统，7×24小时无间断","通知发送效率提升5倍，人工查询电话降低60%，每日节省2小时"],["企微机器人：自助查轨迹/仓位/地址","RPA","部署企微影刀机器人，监控客户群@消息，识别运单号/FBA号关键词，通过API接口或货代系统自动抓取最新轨迹、仓位、目的地址，1分钟内回复；同时支持群发节点通知","平均1分钟响应，7×24小时运行，一个机器人顶替2个客服助理日常查询工作"],["企微机器人：调取POD/过机图/退税资料","RPA","客户输入运单号或FBA号，机器人自动判断需求类型，登录对应系统检索下载POD/过机图/退税资料/ISA截图，发送至指定群，全程无需人工介入，数据繁多时人工操作易出错","7×24小时运行，数据准确率100%，可顶替2个客服助理，夜间客户需求实时响应"],["DX/宁波码头运单跟踪单号查询","RPA","自动登录DX跟踪系统或宁波码头反馈平台，批量查询指定运单跟踪状态及码头反馈原因，汇总至系统并推送异常预警，无需人工逐一登录多个网站","批量查询效率提升10倍，码头反馈信息及时获取，异常件提前预警处理"]]},{wf:"POD批量处理",items:[["POD批量下载按运单号归档","RPA","登录货代系统筛选已到港运单，根据快递类型（FedEx/UPS/DHL等）在对应官网批量搜索下载POD，按运单号命名后存入指定文件夹；同时支持从速递管家导出配舱数据按柜子分类整理","每日自动处理1000+份POD，人工操作完全替代，重复操作节省80%，文件分类规范"],["POD核实回传+ISA多渠道发送","RPA","读取待回传运单清单，从查询网站/云文档/企微群三路并行下载POD及ISA截图，根据客户名依次在企微群发送，发送后标识已回传并循环下一票；送完后自动标识状态，防止漏发","效率提升2倍，每日节省4.5小时，月均节省约15人天，客户催促归零"],["底单/报关发票按SO单号批量下载分类","RPA","影刀浏览器批量下载报关底单/清关发票，根据SO单号自动新建对应文件夹分类存放，支持多客服组协同批量操作，底单数量庞大时人工操作极易出错","整理效率提升5倍，按SO单号随时检索，应对稽查响应时间5分钟内"]]},{wf:"计重确认与异常赔付",items:[["计重与运费信息截图企微批量确认","RPA","登录货代系统筛选需确认运单，下载运单明细（单号/尺寸/比重/重量/单价/附加费），截图后逐客户在企微发送确认，货代系统中标识已发送；装柜前必须完成，手工量大","节省80%重复操作，任务体量扩大1倍，装柜前确认及时率100%"],["时效赔付自动核算执行","RPA","客户发起赔付申请，自动抓取签入/离港/到港/签收时间，录入腾讯文档/表格，根据合同目表自动计算赔付金额，确认后自动赔付；10票人工需30分钟以上","数据准确率100%，效率提升10倍，赔付流程标准化"],["异常件自动识别分级预警+工单创建","RPA+AI","实时监控运单轨迹，AI识别超时/地址异常/清关扣押/无法联系等异常类型，按紧急程度分级推送预警，自动创建处理工单并开始SLA计时，TK平台重差/计泡申诉自动处理","异常发现从人工日检提升至实时，响应速度提升10倍，SLA逾期率降低30%"]]},]},{id:1,name:"单证操作部",icon:"📋",desc:"覆盖港前审单重量确认、报关全流程申报、提单制作、ISF/AMS/舱单、清关资料、截单监控的单证全流程",workflows:[
+{wf:"港前审单与重量确认",items:[["港前结算重数据发送客户确认","RPA","从系统导出货物明细，自动核验件数/重量/体积，计算结算重，通过企微批量发送给客户确认，确认结果回填系统；港前装柜必须完成此确认，手工量极大","端到端自动化，客户确认效率提升5倍，漏发率归零，装柜前数据准确率100%"],["港前审单-服务仓码批量核查","RPA","自动核查运单的服务类型与目的仓库代码匹配性，不符规则的自动标记推送操作员修改，批量处理支持日处理千余票，人工逐单审核效率极低","差错率降低90%，审单效率提升5倍，操作员聚焦异常处理"],["发账单与应收运费同步","RPA","月末/周末自动从系统提取应收运费数据，生成各类型账单（同行/直客/渠道），推送到企微或邮件，同步将应收金额更新至财务系统；涉及多客户批量操作","账单发送效率提升5倍，漏发率归零，应收数据实时同步"]]},{wf:"报关申报与合规",items:[["报关放行委托全流程自动化","RPA","从系统提取货物信息，登录H2000/单一窗口填写报关单字段，提交申报并跟踪放行状态，放行后自动发出报关委托；报关-放行-委托全链路打通，300%提效","申报录入人工操作归零，夜间无人值守申报，放行信息实时推送，报关效率提升300%"],["海关出关信息定时自动获取更新","RPA","每天定时登录海关网站批量查询清关完成状态并更新出关信息表，从每周人工更新升级为每日全量查询；人工每天需花2小时逐一登录","每天节省2小时，从每周更新升级为每日全量，无需人工介入，全时段覆盖"],["查验状态实时监控+扣件提醒","RPA+AI","实时监控海关系统查验推送，AI结合货物特征和历史数据预判查验概率，查验指令下达后立即推送预警，协调仓库提前备查，生成应对材料清单","查验响应时间从人工30分钟降至实时，备查准备充分度提升，因滞港产生的仓储费节省"]]},{wf:"提单与单证制作",items:[["提单自动填写模板并转PDF","RPA","准备货物清单Excel，根据清单找到对应提单模板，填写品名/件重尺/收发货人/唛头等字段，将已处理文件转换PDF格式，循环处理下一条；一次耗时1分钟，人工贴数据易出错","原人工2小时/天降至30分钟/天，提效400%，自动化铁如数据并转化PDF文件100%"],["ISF/AMS/舱单自动申报","RPA","提取货物信息（品名/HS编码/发货人/收货人/SCAC代码等）自动填写ISF申报表，对接AMS系统提交舱单，截单前自动检查申报状态，延误预警推送操作员","ISF/AMS申报时间从人工2小时降至20分钟，截单前遗漏申报率归零"],["装柜表/拆柜表自动整理推送","RPA","装柜完成后从速递管家导出配舱数据，按各柜子分别制作拆柜明细表，在企微依次搜索对应客户发送柜子明细，结果回填本地记录；海外卸船拆柜时需要清单比对","效率提升2倍，80%重复操作节省，通知准确率100%，海外拆柜交接更顺畅"],["托书留底与交单节点提醒","RPA","定时监控交单节点（多时段），提前发送交单提醒至操作员，交单完成后自动保存托书留底，逾期未交单触发升级提醒推送主管","交单提醒零遗漏，托书存档100%完整，因漏交单导致的滞期费和客户投诉降至零"]]},{wf:"清关资料处理",items:[["FBA/海运进出口清关资料自动生成合并","RPA","从TMS提取货物信息，自动生成清关所需装箱单/发票/PACKING LIST，合并PDF，按规定格式整理后发送给清关代理；不同线路（美线/欧线/加线/越南线）格式各异","清关资料准备从人工4小时降至15分钟，格式标准化，多线路统一处理"],["进口清关资料二次合并整理发邮件","RPA","对已有进口清关资料（空运/海运）进行二次合并处理，统一格式，发送给清关代理邮件，支持多操作员并行，AGS越南/美国/荷邮/墨西哥等多线路清关总表生成","清关资料合并从人工3小时降至30分钟，多线路清关资料100%标准化"],["报关箱单发票格式自动优化","RPA","从速递管家等系统导出报关箱单发票，根据海关要求或客户模板自动调整Excel格式（字段映射/列宽/合并单元格/数字格式），支持多客户不同模板批量处理","格式整理从人工30分钟/票降至1分钟，格式合规率100%，客户验收通过率提升"],["单一窗口核注清单导入TMS","RPA","从国家国际贸易单一窗口导出核注清单数据，自动映射字段导入TMS系统，生成内部运单记录，触发后续报关和操作流程；海关与TMS之间存在数据断层","海关数据到TMS手工录入完全消除，数据及时性从次日提升至实时"],["截单状态实时监控+邮件提醒回填","RPA","实时监控船司审核状态，截单截止前自动推送邮件提醒业务及时处理，截单完成后数据自动回填业务系统，规避延期风险，不同船司规则不同且无交互接口","截单逾期产生的额外费用降至零，流程监控从人工变为24小时自动"]]},]},{id:2,name:"财务部",icon:"💰",desc:"覆盖柜子毛利/费用分摊/审单、收款分拆、对账催款、开票税金、业务员提成、钉钉审批、银行流水的财务全流程",workflows:[
+{wf:"成本核算与费用分摊",items:[["柜子预估/实际毛利表自动核算","RPA+AI","统计打单反弹账单并审单，从系统获取方数/运费/头程/卡派/仓储/清关等费用项，AI自动匹配科目，生成预估和实际柜子利润表及成本汇总表，核算方式复杂且字段多","柜子利润核算从人工2天降至2小时，预估vs实际双视角对比，精准识别亏损柜次"],["拆柜费用按货量智能分摊","RPA+AI","读取拆柜清单，AI按货物立方数/重量/件数等维度自动计算各客户应分摊的头程/仓储/清关/报销等费用，生成分摊明细表，支持多种规则配置，手工分摊耗时且易出错","费用分摊提效167%，人工分摊从每柜4小时降至15分钟，客户费用争议减少"],["供应商/承运商费用自动审核","RPA","批量读取供应商/承运商账单，与系统协议价格逐项比对，差异项自动标红，包括各地区渠道账单核对/系统打单费核对/赔偿登记，按审核规则一键通过或拒绝","费用审核效率提升10倍，多付漏审减少，每月挽回大量差错费用"],["卡派试算与成本报价批量上传","RPA","根据货物参数自动计算各目的地卡派运费，汇总卡派试算结果，支持批量上传成本报价至系统，并自动更新每周价格表推送业务员","卡派报价从人工逐单计算改为全自动，效率提升5倍，价格表始终为最新版本"]]},{wf:"对账催款与应收管理",items:[["同行/直客对账单批量生成发送","RPA","月末/周末自动从系统提取当期运单流水，套用协议价格逐笔计算，生成同行欠款表和直客业务员应收明细，批量发送客户企微/邮件，支持月结/周结/半月结多种周期","对账单制作从月末3天压缩至当日，批量发送零遗漏，应收催收效率提升60%"],["同行客户回流单与直客应收录入核对","RPA","定期从系统提取同行客户回流单和直客应收录入，核对业务员提报数据，差异项自动标红，下载UPS账单核查承运费用，核对报关备注和费用","应收核对从月末人工升级为定期自动，数据准确率100%，差异早发现早处理"],["逾期催款分层预警推送","RPA","按30/60/90天以上账龄自动生成催款提醒，推送对应业务员和财务，跟踪回款状态；长期未回款客户自动触发信用管理流程，合同到期预警续费","逾期账款早发现早处理，坏账风险降低，催款效率提升，信用管理量化"]]},{wf:"收款分拆与开票",items:[["收款分拆自动核销入账","RPA","客户回款到账后，自动从财务系统提取收款明细，按运单/发票逐笔分拆核销，生成收款分拆凭证推送财务记账；该场景为最高频核心场景，每日处理大量收款","核心高频场景，每日自动处理大量收款分拆，替代全天人工操作，差错率降至零"],["增值税发票自动开具","RPA","从系统提取开票数据，自动登录百望云/税控开票系统，批量开具增值税普票/专票，保存记录并推送相关人员；开具发票数量大且规则统一","开票效率提升5-10倍，税号/金额差错率降至零，开票清单整理同步完成"],["税金单批量下载整理推送","RPA","自动登录税务平台或承运商系统，按美线/加线/欧线等批量下载税金单（含加线税金单），按客户/线路分类整理，推送企微或邮件；保税税金同步导出","税金单下载分发从人工每日1-2小时降至全自动，多线路并行处理，覆盖率100%"]]},{wf:"业务员薪酬与报销审批",items:[["业务员提成自动计算","RPA","获取业务员名单，从速递管家导出当期运单数据，按提成规则（运费提点/利润分成等）自动计算每位业务员应得提成，生成提成报表推送财务；规则复杂且跨系统取数","核算从3小时降至15分钟，效率提升1200%，月节省15人天，杜绝人工误算争议"],["钉钉OA报销审批+AI智能识别","RPA+AI","登录钉钉OA获取待处理报销单截图，调用豆包/AI提取关键信息（金额/科目/申请人/日期），比对历史判断是否重复报销，按规则自动审批通过或拒绝，批阅下一份","重复报销识别准确率100%，每日节省财务至少1小时，审批响应从1天降至实时"],["货拉拉/司机外勤报销单自动处理","RPA","自动读取货拉拉行程记录和外出报销申请，提取金额/时间/路线信息，填写报销单，提交OA审批，审批通过后归档，报销分摊自动计算","司机/外勤报销处理完全自动化，每月节省HR和财务大量时间"]]},]},{id:3,name:"运营调度部",icon:"🚛",desc:"覆盖波次汇总、多船司订舱、甩柜应对、司机调度、码头查询、仓库放约、全程轨迹监控的运营全流程",workflows:[
+{wf:"波次与订舱管理",items:[["波次汇总自动处理推送","RPA","自动从TMS导出当日/次日波次数据，汇总各线路货量/板数/重量，生成标准波次汇总表，推送调度和报关人员；为最高频核心场景，每日多次执行，香港/义乌等多节点并行","波次汇总从人工2-3小时降至15分钟，每日稳定运行，支持多节点并行"],["多船司订舱信息填写+提单数据回填","RPA","自动识别订舱成功订单，从船司官网将订舱号/集装箱号/船名航次/截单时间回填至业务系统，同步录入船期；WHL订舱自动化通过SOP智能学习打通多船司系统，无接口也可实现","自动录单效率大幅提升，手工差错率降至近零，多船司规则统一处理"],["全流程首次订舱确认邮件申请","RPA","订舱后自动向船司发送首次订舱确认邮件申请，跟踪回复状态，确认函收到后归档并通知业务；实时监控船司审核状态，第一时间推送通知，流程长人工监测时效低","24小时全流程监控，确认通知及时率100%，履约效率大幅提升"],["PO检查/做约/锁约/装车单自动化","RPA","监控邮箱进行PO检查，完成做约和锁约操作，生成做装车单并发送给供应商，实现港前操作节点自动化；涉及多系统切换和大量重复数据录入","港前操作自动化，供应商通知及时，装车准备效率提升"]]},{wf:"码头查询与末端调度",items:[["多码头集装箱状态自动查询推送","RPA","自动获取需查询的订舱号/船名/集装箱号，在洋山/南沙/盐田/宁波/LBCT等多个码头官网查询集装箱进港状态/预计开船/截港时间，汇总后企微/邮件推送；购买第三方软件费用高","告别人工逐一登录多网站，每日节省2小时，替代高价三方软件"],["司机提货数据每日自动处理","RPA","每天自动从T6/TMS导出司机当日提货任务，整理成标准交接表，推送给司机确认，完成后回传系统更新提货状态；每日需处理大量提货单","每日调度数据处理全自动，司机信息及时准确，提货异常实时发现"],["甩柜机器人自动应对处理","RPA","发生甩柜时，自动重新分配货物至替代班轮，更新系统运单信息，通知客户和操作人员，生成甩柜处理记录，同步推送最新预计到港时间；甩柜情况紧急需快速响应","响应时间压缩80%，客户通知及时率100%，甩柜处理标准化"],["仓库放约情况批量测试生成报告","RPA","批量测试各仓库（卡板仓/地板仓/海外仓等）当前放约情况，自动生成测试结果Excel，标记已放约/未放约/待确认，推送调度安排，手工逐一查询耗时且易遗漏","仓库放约测试效率提升10倍，漏查率归零，调度决策更及时"]]},{wf:"全程轨迹监控",items:[["物流全程API轨迹追踪+异常预警","RPA+AI","对接API接口持续追踪从开船到抵达港口/可提柜等轨迹信息，统一信息格式及时发送客户，API轨迹追踪/轨迹更新/轨迹发送三步自动化","轨迹信息从人工频繁查验提升为实时自动，减少人工查验轨迹频次，确保信息及时准确"],["17track单号推送与尾端签收追踪","RPA","自动将指定运单号推送至17track系统进行全球轨迹追踪，批量查询各承运商末端包裹签收状态，异常轨迹自动标记，更新内部状态看板","末端轨迹同步延迟从每日人工更新降至实时，异常件提前发现处理"]]},]},{id:4,name:"海关合规部",icon:"🛃",desc:"覆盖HS编码归类、价格合规核查、清关资料合规审查、申报状态监控、制裁名单筛查的合规全流程",workflows:[
+{wf:"HS编码与价格合规",items:[["HS编码智能归类与税率批量查询","AI","AI解析中英文品名、材质、成分、用途，推荐HS编码及置信度，高置信度自动使用，低置信度推送复核；同时批量登录欧盟/英国/美国海关系统查询对应税率/优惠税率，积累品名知识库","归类准确率>92%，杜绝HS错误导致的补税和罚款，税率变化自动感知"],["商品链接售价与申报价格全量核查","RPA","自动登录电商平台/官网，批量抓取商品链接实时售价和产品图片，核对是否符合申报价格标准，生成差异报告推送合规团队；申报价格偏低是海关重点稽查项","申报价格从人工抽查改为全量自动化，价格合规风险提前发现"],["贸易制裁名单实时筛查","RPA+AI","新建客户/订单时自动对接OFAC/EU/UN制裁名单数据库，AI模糊匹配识别高风险主体，高风险推送合规审查，筛查日志完整留档","合规管控全自动化，贸易制裁违规风险归零，合规审查效率提升5倍"]]},{wf:"清关资料合规处理",items:[["进出口清关资料自动生成合并发送","RPA","从TMS提取FBA/海运货物信息，生成装箱单/发票/PACKING LIST合并PDF，按美线/加线/欧线/越南线/墨西哥等不同线路格式整理，发送给清关代理，不同监管方式（9610/A1/FBA）分别处理","清关资料准备从人工4小时降至15分钟，多线路多监管方式统一管理"],["进口清关资料二次合并整理","RPA","对已有进口清关资料（空运/海运）进行二次合并，统一格式，批量发送清关操作员和代理，支持多人员并行分工，空海运混合批次处理","清关资料二次处理全自动，合并准确率100%，清关行可直接操作"],["报关底单批量上传申报系统","RPA","自动登录单一窗口/海关申报系统，批量上传已准备好的报关底单，提交申报，监控申报状态，异常推送报关员处理","申报录入人工操作归零，夜间可无人值守申报，申报时效提升"]]},]},{id:5,name:"海外仓运营部",icon:"🏭",desc:"覆盖FBA多仓操作、预约调度、入库换标、出仓拣货、拆柜预报、库存管理、尾端派送的海外仓全流程",workflows:[
+{wf:"FBA仓操作与预约",items:[["FBA出仓/入仓指令自动提交","RPA","根据补货计划登录亚马逊卖家后台，提交FBA入库指令，选择仓库/SKU/数量，获取仓库地址同步内部系统；支持多账号多仓库并行，亚逊仓点直送/UPS整柜/私人整柜多模式","出仓指令提交全自动，支持多账号多仓库并行，每批次节省2小时，错误率降至零"],["换标/不换标多模式批量出仓","RPA","货到海外仓后，根据订单要求在WMS批量执行换标/不换标出仓（多仓多模式），支持分批/不挑箱/综合等不同处理方式，更新SKU状态生成出仓记录","出仓操作批量自动化，支持多个仓库不同模式，每日处理数百票，错误率降至零"],["美客多/海外仓预约自动提交","RPA","根据货物到港时间和仓库要求，自动登录目的地仓库预约平台（美客多/卡尔顿等），按货物信息填写预约表单，选择时间段提交预约，获取确认码同步系统","预约操作全自动，支持多仓库不同平台，每日可提交大量预约，漏预约率归零"],["FBA看板数据导出整理","RPA","定时从FBA运营看板（领星ERP/亚马逊后台）导出库存/销量/在途/补货需求，整理汇总后导入内部数据库；排仓数据统计自动化，一件代发订单尺寸刷新同步处理","FBA运营数据从多平台人工汇总改为自动化，每日节省2小时，数据实时更新"]]},{wf:"拆柜预报与尾端配送",items:[["拆柜预报自动生成推送","RPA","货柜到港前自动生成拆柜预报，包含各客户分货明细、目的仓库、预计送仓日期，批量发送给客户和仓库，DW预报统计同步更新，客户需提前备仓","拆柜预报从人工制作2小时降至15分钟，客户提前备仓，仓库资源利用率提升30%"],["尾端轨迹追踪+官网签收+还箱查询","RPA","自动查询各承运商末端包裹签收状态（官网签收/POD下载/系统运单签收），同时查询ATA/目的港还箱情况，状态回填业务系统并推送客户；线销登记+货到通知自动触发","尾端签收追踪效率提升5倍，客户主动催问量降低60%，签收异常自动预警处理"],["预报数据导入Shein/TikTok Shop等平台","RPA","从内部系统提取预报数据，自动登录Shein/TikTok Shop等平台，按平台要求格式录入预报信息，支持多人员版本并行，完成后同步内部状态","多平台预报录入完全自动化，录入准确率100%，多操作员并行效率倍增"]]},]},{id:6,name:"销售与商务部",icon:"📢",desc:"覆盖询盘导入、运价报价、公海营销、客户开发、大客户维护、多平台Booking、活跃度管理的商务全流程",workflows:[
+{wf:"询盘与报价管理",items:[["多平台询盘自动导入CRM系统","RPA","自动从阿里国际站/AISE/大市场等平台抓取新询盘，按线路批量导入内部CRM/业务系统完成登记分配；新版/最新版等多个程序版本持续迭代，询盘响应速度直接影响成单","询盘录入从人工半天改为自动分钟级，漏录率归零，业务员立即跟进最新商机"],["运价报价自动测算+价格表定期更新","RPA+AI","RPA实时查询各线路最新运价，对比船司价格核算各渠道成本；AI综合货物特征/时效/利润目标生成报价单，按设定频率自动更新每周价格表并推送业务员","报价时间从4小时降至20分钟，价格表始终最新，业务员无需手工查价"],["大市场RFQ批量报价处理","RPA","自动从阿里国际站大市场RFQ池抓取新报价需求，匹配对应线路报价，自动填写报价表单提交，未中标的自动归档；RFQ响应速度和质量直接影响成单","RFQ响应从人工逐个查看改为自动批量处理，响应速度提升10倍"]]},{wf:"客户开发与营销",items:[["多平台商业/招聘线索自动爬取","RPA","自动从Boss直聘/探迹/天眼查/阿里巴巴/速卖通/importgenius等平台爬取目标客户/候选人联系信息，整理至表格按优先级分配，同时抓取关注同行数据，传统人工搜索效率极低","线索获取效率提升10倍，每日可获取大量新线索，招聘和开发效率双提升"],["公海营销多线路自动化","RPA","自动从CRM筛选7天/30天无跟进的公海客户，逐一发送个性化营销消息（文字/图片/产品介绍），记录发送状态，支持物流各线路专属营销内容，多版本持续迭代优化","公海营销从人工每日2小时改为全自动，覆盖客户量提升5倍，业务员聚焦有效沟通"],["大客户活跃度预警与货量下降提醒","RPA","调用报表系统查询客户回访数据，识别近期货量骤降/长期未下单的沉睡客户，返回企微推送指定业务员跟进；货量下降提醒升级，每天定期执行节省30分钟手工监控","每日节省30分钟，定期及时预警跟进提升长期合作概率，流失提前30天预知"],["阿里国际站商品批量上架+图文运营","RPA","批量上架商品至阿里国际站，包括填写商品信息/上传主图/更新详情图/修改类目；支持商品主图批量更换、A+详情图编辑、创意更新等运营操作，多账号并行","商品上架和运营从人工逐个改为批量自动化，每日可处理数十至数百个SKU"]]},{wf:"大客户平台操作",items:[["WMT/TGT多平台在线订舱+EChop自动添加","RPA","自动登录沃尔玛RetailLink/Target GTN等采购商平台，下载PO，按要求创建在线Booking（DS直送/EI/FCL/SCP整柜等），添加电子印章EChop，下载确认函存档；多平台规则各异","国际大买家平台操作全自动，每票从1小时降至15分钟，多货运模式统一处理"],["发货报价/简报定期自动发送","RPA","按设定频率（每周/每日）自动从系统获取最新运价和货物信息，生成报价单或运营简报，通过企微/飞书/邮件发送给客户，定时群发不同渠道","报价/简报发送完全自动化，客户及时获取最新信息，客户关系维护效率提升"]]},]},{id:7,name:"人事行政部",icon:"👥",desc:"覆盖工资推送、绩效社保、招聘筛选、证件预警、报销审批、考勤调度的人事行政全流程",workflows:[
+{wf:"薪酬绩效与社保",items:[["工资单批量生成企微/钉钉推送","RPA","月末自动从薪资系统导出各员工工资单，生成加密PDF或工资条，通过企微/钉钉批量推送至员工个人，推送结果记录归档；百人以上规模人工逐一发送耗时且易泄露","工资条发放全自动，百人规模15分钟内完成，保密性和效率双提升"],["月度绩效数据上传与社保整理","RPA","从绩效系统导出月度绩效数据，自动上传至人事系统触发奖金计算；同时每月自动整理社保公积金数据上传至社保平台，核对缴纳状态，异常推送HR处理","绩效和社保处理每月各节省1-2天工时，差错率降至零，合规有保障"]]},{wf:"招聘与证件合规",items:[["简历自动爬取筛选AI评分","RPA+AI","从Boss直聘/猎聘等平台爬取目标岗位投递简历，AI按岗位要求（驾龄/证件/工作经验/技能）评分排序，推送高匹配候选人名单；同时支持企微批量添加外部联系人","筛简时间减少70%，HR精力聚焦面试和背调，候选人响应速度提升"],["证件资质到期自动预警","RPA","建立司机/操作人员驾照/从业资格证/危险品资质/保险等证件台账，到期前60/30/7天分批次推送续证提醒，逾期自动暂停排班，无证驾驶合规风险极高","100%消除无证驾驶风险，证件续期零遗漏，合规事故风险降至零"]]},]},{id:8,name:"IT与数据管理",icon:"📊",desc:"覆盖多系统数据整合、运营看板、时效KPI分析、多平台系统对接、快递单打印的数据管理全流程",workflows:[
+{wf:"运营数据整合与看板",items:[["多系统运营数据自动汇总看板","RPA","定时从TMS/WMS/电商平台/财务系统提取运单量/签收率/在途货量/毛利/OKR/时效达标率等核心KPI，汇总至统一看板，推送管理层企微/钉钉","运营数据从每日人工制报改为全自动，管理层一屏掌握全局，决策响应提速"],["时效图与KPI自动分析预警","RPA+AI","从系统提取各线路时效数据，AI建立正常时效基线，生成时效分布图表，识别异常线路/承运商并预警，同比环比自动计算","时效分析从月度手工制图升级为定期自动，时效问题提前发现，改善有数据支撑"],["应用运行状态监控+每日简报推送","RPA","自动统计各机器人应用运行时长、执行次数、异常情况，生成每日运行状态简报，推送至IT和管理层企微；影刀概况自动生成并发送，便于运营决策","应用运行状态透明化，异常及时发现，管理层掌握自动化投入产出比"]]},{wf:"系统对接与批量操作",items:[["Skylog/OTM/17track轨迹文件批量上传","RPA","将客户轨迹数据整理成Skylog/OTM/17track要求格式，批量上传至系统完成轨迹更新和状态推送，支持海运/空运多种模式，手工上传耗时且格式要求严格","轨迹文件上传全自动，客户可视化率大幅提升，多模式统一管理"],["TMS/WMS数据清洗整理导入","RPA","对TMS/WMS导出的原始数据进行批量清洗、格式转换、字段映射，生成标准格式数据导入业务系统或数据库，支持定时自动执行；速递管家系统数据定期导出整理","数据处理从人工Excel操作改为全自动，每月节省大量IT人员时间，数据标准化"],["每日快递单批量打印","RPA","每日自动从系统获取需打印的快递单数据，批量发送至打印机执行打印，按批次/承运商分组，打印结果回传系统，大量重复操作适合RPA","快递单打印从人工逐单操作改为全自动，每日节省1小时，打印准确率100%"],["多平台数据同步与系统联动","RPA","将内部系统数据（库存/订单/价格）同步至多个销售平台或合作方系统，包括代理路由更新、客户资料准确性刷新、多维表格数据同步、MySQL客户代码库更新等","多系统数据一致性保障，人工同步时间归零，数据实时性大幅提升"]]},]},];
+function cntT(d){var r=0,a=0,ri=0;d.workflows.forEach(function(wf){wf.items.forEach(function(it){if(it[1]==="RPA")r++;else if(it[1]==="AI")a++;else ri++;});});return{r:r,a:a,ri:ri};}
+function cntI(d){return d.workflows.reduce(function(s,wf){return s+wf.items.length;},0);}
+var TI=0,TW=0;
+DEPTS.forEach(function(d){TI+=cntI(d);TW+=d.workflows.length;});
+document.getElementById("hmeta").textContent=DEPTS.length+"\u5927\u5c97\u4f4d \u00b7 "+TW+"\u6761\u5de5\u4f5c\u6d41 \u00b7 "+TI+"\u4e2a\u673a\u4f1a\u70b9";
+var nav=document.getElementById("nav");
+DEPTS.forEach(function(d){
+  var ni=document.createElement("div");ni.className="ni";ni.id="nav-"+d.id;ni.onclick=function(){showD(d.id);};
+  ni.innerHTML='<span class="niic">'+d.icon+'</span><div class="ntx"><div class="nn">'+d.name+'</div></div><span class="nc" id="nc-'+d.id+'">'+cntI(d)+'</span>';
+  nav.appendChild(ni);
+});
+var cnt=document.getElementById("cnt");
+var ov=document.createElement("div");ov.className="ds vis";ov.id="d-all";
+var oh=document.createElement("div");oh.className="dh";
+oh.innerHTML='<div class="dic">\u{1F30F}</div><div class="dtx"><div class="dt">\u8de8\u5883\u7269\u6d41\u884c\u4e1a RPA+AI \u81ea\u52a8\u5316\u673a\u4f1a\u5730\u56fe</div><div class="dd">'+DEPTS.length+' \u5927\u5c97\u4f4d \u00b7 '+TW+' \u6761\u5de5\u4f5c\u6d41 \u00b7 '+TI+' \u4e2a\u673a\u4f1a\u70b9 \u00b7 \u9002\u7528\u8de8\u5883\u8d27\u4ee3\u00b7\u56fd\u9645\u7269\u6d41\u00b7FBA\u5934\u7a0b\u00b7\u6d77\u5916\u4ed3\u670d\u52a1\u5546</div></div>';
+ov.appendChild(oh);
+var grid=document.createElement("div");grid.className="ag";
+DEPTS.forEach(function(d){
+  var ct=cntT(d);
+  var ac=document.createElement("div");ac.className="ac";ac.onclick=function(){showD(d.id);};
+  ac.innerHTML='<div class="achdr"><span class="acic">'+d.icon+'</span><span class="acnm">'+d.name+'</span></div><div class="acd">'+d.desc+'</div><div class="actags"><span class="acst acst-r">RPA '+ct.r+'</span><span class="acst acst-a">AI '+ct.a+'</span><span class="acst acst-i">RPA+AI '+ct.ri+'</span></div>';
+  grid.appendChild(ac);
+});
+ov.appendChild(grid);cnt.appendChild(ov);
+DEPTS.forEach(function(d){
+  var ct=cntT(d);
+  var div=document.createElement("div");div.className="ds";div.id="d-"+d.id;
+  var dh=document.createElement("div");dh.className="dh";
+  dh.innerHTML='<div class="dic">'+d.icon+'</div><div class="dtx"><div class="dt">'+d.name+'</div><div class="dd">'+d.desc+'</div></div><div class="dsts"><span class="tag trpa">RPA '+ct.r+'</span><span class="tag tai">AI '+ct.a+'</span><span class="tag tri">RPA+AI '+ct.ri+'</span></div>';
+  div.appendChild(dh);
+  d.workflows.forEach(function(wf,wi){
+    var wb=document.createElement("div");wb.className="wb";
+    var isF=(wi===0);
+    var wh=document.createElement("div");wh.className="wh"+(isF?" op":"");wh.onclick=function(){toggleWF(wh);};
+    wh.innerHTML='<span class="wa'+(isF?" op":"")+'">&#9658;</span><span class="wn">'+wf.wf+'</span><span class="wi2">'+wf.items.length+' \u4e2a\u673a\u4f1a\u70b9</span>';
+    wb.appendChild(wh);
+    var wbod=document.createElement("div");wbod.className="wbod"+(isF?" op":"");
+    var table=document.createElement("table");table.className="nt";
+    table.innerHTML='<thead><tr><th>\u6d41\u7a0b\u8282\u70b9</th><th>\u80fd\u529b\u7c7b\u578b</th><th>\u81ea\u52a8\u5316\u673a\u4f1a\u70b9</th><th>\u6548\u80fd\u63d0\u5347</th></tr></thead>';
+    var tbody=document.createElement("tbody");
+    wf.items.forEach(function(item){
+      var node=item[0],typ=item[1],opp=item[2],eff=item[3];
+      var tc=(typ==="RPA"?"trpa2":typ==="AI"?"tai2":"tri2");
+      var tr=document.createElement("tr");tr.className="nr";
+      tr.dataset.type=typ;tr.dataset.node=node;tr.dataset.opp=opp;tr.dataset.eff=eff;tr.dataset.wf=wf.wf;
+      tr.innerHTML='<td><div class="nm">'+node+'</div></td><td><span class="tb '+tc+'">'+typ+'</span></td><td class="ot">'+opp+'</td><td class="et">'+eff+'</td>';
+      tr.onclick=function(){openDP(tr,node,typ,opp,eff,wf.wf);};
+      tbody.appendChild(tr);
+    });
+    table.appendChild(tbody);wbod.appendChild(table);wb.appendChild(wbod);div.appendChild(wb);
+  });
+  cnt.appendChild(div);
+});
+var emptyDiv=document.createElement("div");emptyDiv.id="empty";
+emptyDiv.innerHTML='<div style="font-size:32px">&#128269;</div><div style="font-size:14px">\u6ca1\u6709\u5339\u914d\u7684\u673a\u4f1a\u70b9</div>';
+cnt.appendChild(emptyDiv);
+function toggleWF(wh){wh.classList.toggle("op");wh.querySelector(".wa").classList.toggle("op");wh.nextSibling.classList.toggle("op");}
+var curDept=-1,curFilter=0,curSearch="";
+function showD(id){
+  curDept=id;
+  document.querySelectorAll(".ni").forEach(function(n){n.classList.remove("act");});
+  var el=(id===-1)?document.getElementById("nav-all"):document.getElementById("nav-"+id);
+  if(el)el.classList.add("act");
+  document.querySelectorAll(".ds").forEach(function(d){d.classList.remove("vis");});
+  var t=(id===-1)?document.getElementById("d-all"):document.getElementById("d-"+id);
+  if(t)t.classList.add("vis");
+  closeDP();applyFilter();
+}
+function setF(f){
+  curFilter=f;
+  var ids=["ball","brpa","bai","bri"],cls=["fall","frpa","fai","fri"];
+  ids.forEach(function(id,i){document.getElementById(id).className="fb"+(i===f?" "+cls[i]:"");});
+  applyFilter();
+}
+function applyFilter(){
+  var q=curSearch.toLowerCase();
+  var tm={1:"RPA",2:"AI",3:"RPA+AI"};
+  var ft=curFilter?tm[curFilter]:"";
+  if(q){document.querySelectorAll(".wbod").forEach(function(b){b.classList.add("op");});document.querySelectorAll(".wh").forEach(function(h){h.classList.add("op");});document.querySelectorAll(".wa").forEach(function(a){a.classList.add("op");});}
+  var vis=0;
+  document.querySelectorAll(".nr").forEach(function(r){
+    var ok=(!ft||r.dataset.type===ft)&&(!q||(r.dataset.node+r.dataset.opp+r.dataset.eff).toLowerCase().indexOf(q)>=0);
+    r.classList.toggle("hid",!ok);if(ok)vis++;
+    if(q&&ok){r.querySelectorAll(".nm,.ot,.et").forEach(function(el){var re=new RegExp(q.replace(/[.*+?^${}()|[\]\\]/g,"\\$&"),"gi");el.innerHTML=el.textContent.replace(re,function(m){return'<mark class="hl">'+m+'</mark>';});});}
+    else{r.querySelectorAll(".nm,.ot,.et").forEach(function(el){el.innerHTML=el.textContent;});}
+  });
+  document.getElementById("scnt").textContent=(q||ft)?(vis+"\u6761"):"";
+  document.getElementById("empty").classList.toggle("vis",vis===0&&curDept!==-1);
+}
+var sinp=document.getElementById("sinp");
+sinp.addEventListener("input",function(){curSearch=sinp.value;document.getElementById("sclr").style.display=curSearch?"flex":"none";applyFilter();});
+sinp.addEventListener("keydown",function(e){if(e.key==="Escape")clrS();});
+function clrS(){sinp.value="";curSearch="";document.getElementById("sclr").style.display="none";applyFilter();}
+function openDP(tr,node,typ,opp,eff,wfName){
+  document.querySelectorAll(".nr").forEach(function(r){r.classList.remove("act");});tr.classList.add("act");
+  var tc=(typ==="RPA"?"trpa2":typ==="AI"?"tai2":"tri2");
+  document.getElementById("dp-wf").textContent=wfName;
+  document.getElementById("dp-nm").textContent=node;
+  document.getElementById("dp-type").innerHTML='<span class="tb '+tc+'">'+typ+'</span>';
+  document.getElementById("dp-opp").textContent=opp;
+  document.getElementById("dp-eff").textContent=eff;
+  document.getElementById("dp").classList.add("op");
+}
+function closeDP(){document.getElementById("dp").classList.remove("op");document.querySelectorAll(".nr").forEach(function(r){r.classList.remove("act");});}
+document.getElementById("nav-all").classList.add("act");document.getElementById('nc-all').textContent=81;
+
+</script>
+
+<style>
+.back-btn {
+  position: fixed; bottom: 28px; left: 24px; z-index: 9999;
+  display: flex; align-items: center; gap: 7px;
+  background: #fff; color: #1d4ed8;
+  border: 1px solid #bfdbfe; border-radius: 24px;
+  padding: 9px 18px 9px 14px;
+  font-family: -apple-system, BlinkMacSystemFont, 'PingFang SC', sans-serif;
+  font-size: 13px; font-weight: 500;
+  text-decoration: none; cursor: pointer;
+  box-shadow: 0 2px 12px rgba(29,78,216,0.15);
+  transition: all 0.18s;
+}
+.back-btn:hover {
+  background: #eff6ff; border-color: #93c5fd;
+  box-shadow: 0 4px 16px rgba(29,78,216,0.22);
+  transform: translateY(-1px);
+}
+.back-btn-arrow { font-size: 16px; line-height: 1; }
+</style>
+<a class="back-btn" href="index.html">
+  <span class="back-btn-arrow">←</span>
+  <span>返回地图合集</span>
+</a>
+
+</body>
+</html>
